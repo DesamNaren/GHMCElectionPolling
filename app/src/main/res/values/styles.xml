@@ -113,8 +113,22 @@
     <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>
+
     <style name="exitdialog_animation1">
         <item name="android:windowEnterAnimation">@anim/exitdialog_anim1</item>
         <item name="android:windowExitAnimation">@anim/exitdialog_anim2</item>
+    </style>
+
+    <style name="item_text_label">
+        <item name="android:textSize">@dimen/dimen_16sp</item>
+        <item name="android:fontFamily">@font/elmessiri_regular</item>
+
+    </style>
+
+    <style name="item_text_data">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/dimen_16sp</item>
+        <item name="android:layout_marginLeft">@dimen/dimen_5dp</item>
+        <item name="android:fontFamily">@font/elmessiri_regular</item>
     </style>
 </resources>
