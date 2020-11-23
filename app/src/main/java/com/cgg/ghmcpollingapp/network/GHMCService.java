@@ -2,7 +2,9 @@ package com.cgg.ghmcpollingapp.network;
 
 import com.cgg.ghmcpollingapp.BuildConfig;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
+import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
+import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,8 +35,11 @@ public interface GHMCService {
         }
     }
 
-    @POST("PettyTradeLoginDetails")
+    @POST("GHMCElection/Login")
     Call<LoginResponse> getLoginResponse(@Body LoginRequest loginRequest);
+
+    @POST("GHMCElection/MPIN")
+    Call<MPINResponse> updateMPINResponse(@Body GenerateMPINRequest generateMPINRequest);
 }
 
 

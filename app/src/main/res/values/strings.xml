@@ -53,6 +53,7 @@
     <string name="invalid_mpin">Entered MPIN is invalid, Please try again</string>
     <string name="confirm_4_digit_mpin">Confirm 4-Digit MPIN</string>
     <string name="cancel_otp_process">Are you sure, Do you want cancel registration process?</string>
+    <string name="cancel_mapping_process">Are you sure, Do you want cancel map sector process?</string>
     <string name="otpverified">OTP Verified Successfully</string>
     <string name="otpempty">OTP is empty from server</string>
 

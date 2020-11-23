@@ -17,12 +17,20 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.cgg.ghmcpollingapp.ui.DashboardActivity;
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.ui.LoginActivity;
+import com.cgg.ghmcpollingapp.ui.MapSectorActivity;
 
 import org.json.JSONObject;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 import okhttp3.ResponseBody;
 
@@ -67,6 +75,26 @@ public class Utils {
                 && conMgr.getActiveNetworkInfo().isAvailable()
                 && conMgr.getActiveNetworkInfo().isConnected();
     }
+
+    public static String getLocalIpAddress() {
+        String ipAddress = "0.0.0.0";
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        ipAddress = inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return ipAddress;
+    }
+
+
 
 
     public static String getDeviceID(Context context) {
@@ -212,6 +240,7 @@ public class Utils {
             e.printStackTrace();
         }
     }
+
     public static void customCancelAlert(Activity activity, String title, String
             msg, SharedPreferences.Editor editor) {
         try {
@@ -264,6 +293,41 @@ public class Utils {
     }
 
 
+    public static void customMPINSuccessAlert(Activity activity, String msg) {
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (dialog.getWindow() != null && dialog.getWindow().getAttributes() != null) {
+                dialog.getWindow().getAttributes().windowAnimations = R.style.exitdialog_animation1;
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.custom_alert_success);
+                dialog.setCancelable(false);
+                TextView versionTitle = dialog.findViewById(R.id.version_tv);
+                versionTitle.setText("Version: " + Utils.getVersionName(activity));
+                TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+                dialogTitle.setText(activity.getString(R.string.app_name));
+                TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
+                dialogMessage.setVisibility(View.VISIBLE);
+                dialogMessage.setText(msg);
+                Button btDialogYes = dialog.findViewById(R.id.btDialogYes);
+                btDialogYes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        activity.startActivity(new Intent(activity, MapSectorActivity.class));
+                        activity.finish();
+                    }
+                });
 
+
+                if (!dialog.isShowing())
+                    dialog.show();
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -58,9 +58,7 @@ public class LoginViewModel extends ViewModel {
                              public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
                                  customProgressDialog.dismiss();
                                  if (response.isSuccessful() && response.body() != null) {
-                                     LoginResponse list = response.body();
-                                     if (list != null)
-                                         responseMutableLiveData.setValue(list);
+                                     responseMutableLiveData.setValue(response.body());
                                  } else {
                                      errorHandlerInterface.handleError(context.getString(R.string.server_not), context);
                                  }

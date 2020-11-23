@@ -1,4 +1,4 @@
-package com.cgg.ghmcpollingapp;
+package com.cgg.ghmcpollingapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -6,10 +6,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.cgg.ghmcpollingapp.R;
+import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.databinding.ActivityMapSectorBinding;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
@@ -20,12 +23,17 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     private ActivityMapSectorBinding binding;
     private Context context;
     private String zoneName, cirName, wardName, secName;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = MapSectorActivity.this;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map_sector);
+
+        sharedPreferences = PollingApplication.get(context).getPreferences();
+        editor = PollingApplication.get(context).getPreferencesEditor();
 
         binding.btnClear.setOnClickListener(this);
         binding.btnSubmit.setOnClickListener(this);
@@ -97,6 +105,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
-        finish();
+        Utils.customCancelAlert(MapSectorActivity.this, getResources().getString(R.string.app_name_release),
+                getString(R.string.cancel_mapping_process), editor);
     }
 }

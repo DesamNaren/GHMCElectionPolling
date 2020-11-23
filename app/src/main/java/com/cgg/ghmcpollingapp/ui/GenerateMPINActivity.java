@@ -12,13 +12,18 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.cgg.ghmcpollingapp.R;
+import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityGenerateMpinBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
+import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.GenerateMPINViewModel;
@@ -32,12 +37,8 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
     private SharedPreferences.Editor editor;
     private GenerateMPINViewModel generateMPINViewModel;
     private CustomProgressDialog customProgressDialog;
-    private String userName;
     private LoginResponse loginResponse;
-    private Gson gson;
-    private String empName, email, pic;
-    private String sessionToken;
-
+    private String mobNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +47,9 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
 
         customProgressDialog = new CustomProgressDialog(context);
 
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        gson = new Gson();
+        SharedPreferences sharedPreferences = PollingApplication.get(context).getPreferences();
+        editor = PollingApplication.get(context).getPreferencesEditor();
+        Gson gson = PollingApplication.get(context).getGson();
 
 
         binding =
@@ -58,13 +59,14 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
 
         try {
 
-                String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
-                loginResponse = gson.fromJson(data, LoginResponse.class);
+            String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
+            mobNum = sharedPreferences.getString(AppConstants.MOBILE_NO, "");
+            loginResponse = gson.fromJson(data, LoginResponse.class);
 
-//
-//                if (!(loginResponse != null && loginResponse.getData() != null)) {
-//                    Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something));
-//                }
+
+            if (!(loginResponse != null && loginResponse.getLoginData() != null)) {
+                Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something));
+            }
 
         } catch (Exception e) {
             Toast.makeText(context, getString(R.string.something), Toast.LENGTH_SHORT).show();
@@ -139,7 +141,7 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
             binding.enterMPIN.requestFocus();
             return;
 
-        } else if (binding.enterMPIN.getText().toString().length() < 4) {
+        } else if (binding.enterMPIN.getText() != null && binding.enterMPIN.getText().toString().length() < 4) {
             binding.enterMPIN.setError(context.getString(R.string.please_enter_4_digit_mpin));
             binding.enterMPIN.requestFocus();
             return;
@@ -153,7 +155,7 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
             binding.confirmMPIN.requestFocus();
             return;
 
-        } else if (binding.confirmMPIN.getText().toString().length() < 4) {
+        } else if (binding.confirmMPIN.getText() != null && binding.confirmMPIN.getText().toString().length() < 4) {
             binding.confirmMPIN.setError(context.getString(R.string.please_enter_4_digit_confirm_mpin));
             binding.confirmMPIN.requestFocus();
             return;
@@ -169,7 +171,7 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
     private void VerifyMPIN(String mPin, String conMPin) {
         Utils.hideKeyboard(context, binding.btnSubmit);
         if (mPin.equals(conMPin)) {
-            generateMPINCall(userName, mPin);
+            generateMPINCall(mobNum, mPin);
         } else {
             Snackbar.make(binding.rootCl, R.string.confirm_mpin, Snackbar.LENGTH_SHORT).show();
         }
@@ -181,38 +183,33 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
         super.onResume();
     }
 
-    private void generateMPINCall(String username, String mPIN) {
+    private void generateMPINCall(String mobNum, String mPIN) {
         if (Utils.checkInternetConnection(context)) {
             customProgressDialog.show();
-//            LiveData<MPINResponse> mpinResponseLiveData = generateMPINViewModel.generateMPINCall(sessionToken, username,
-//                    mPIN, AppConstants.HEADER);
-//            mpinResponseLiveData.observe(com.cgg.virtuo.ui.general.GenerateMPINActivity.this, new Observer<MPINResponse>() {
-//                @Override
-//                public void onChanged(MPINResponse mpinResponse) {
-//                    customProgressDialog.hide();
-//                    mpinResponseLiveData.removeObservers(com.cgg.virtuo.ui.general.GenerateMPINActivity.this);
-//                    if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
-//                        if (mpinResponse.getStatusCode() == AppConstants.SESSION_EXPIRE) {
-//                            Utils.customSessionAlert(com.cgg.virtuo.ui.general.GenerateMPINActivity.this, getString(R.string.app_name),
-//                                    getString(R.string.session_expire), editor);
-//
-//                        } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
-//                                !TextUtils.isEmpty(mpinResponse.getmPin())) {
-//                            Utils.customMPINSuccessAlert(com.cgg.virtuo.ui.general.GenerateMPINActivity.this, getString(R.string.app_name),
-//                                    mpinResponse.getStatusMessage(), mpinResponse.getmPin(), editor);
-//
-//                        } else {
-//                            customProgressDialog.hide();
-//                            Utils.customErrorAlert(context, getString(R.string.app_name),
-//                                    mpinResponse.getStatusMessage());
-//                        }
-//                    } else {
-//                        customProgressDialog.hide();
-//                        Utils.customErrorAlert(context, getString(R.string.app_name),
-//                                getString(R.string.server_not));
-//                    }
-//                }
-//            });
+            GenerateMPINRequest generateMPINRequest = new GenerateMPINRequest();
+            generateMPINRequest.setMobileNo(mobNum);
+            generateMPINRequest.setMPIN(mPIN);
+            LiveData<MPINResponse> mpinResponseLiveData = generateMPINViewModel.generateMPINCall(generateMPINRequest);
+            mpinResponseLiveData.observe(GenerateMPINActivity.this, new Observer<MPINResponse>() {
+                @Override
+                public void onChanged(MPINResponse mpinResponse) {
+                    customProgressDialog.hide();
+                    mpinResponseLiveData.removeObservers(GenerateMPINActivity.this);
+                    if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
+                        if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                            Utils.customMPINSuccessAlert(GenerateMPINActivity.this, mpinResponse.getResponseMessage());
+                        } else {
+                            customProgressDialog.hide();
+                            Utils.customErrorAlert(context, getString(R.string.app_name),
+                                    mpinResponse.getResponseMessage());
+                        }
+                    } else {
+                        customProgressDialog.hide();
+                        Utils.customErrorAlert(context, getString(R.string.app_name),
+                                getString(R.string.server_not));
+                    }
+                }
+            });
         } else {
             Utils.customErrorAlert(context, getResources().getString(R.string.app_name_release), getString(R.string.plz_check_int));
         }
