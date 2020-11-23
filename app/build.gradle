@@ -11,29 +11,105 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
-
+        versionName "1"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        dataBinding true
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("polling.jks")
+            storePassword "cggapps"
+            keyAlias "cggapps"
+            keyPassword "cggapps"
+        }
+
     }
 
     buildTypes {
         release {
+            resValue "string", "app_name", "@string/app_name_release"
+            versionNameSuffix ".0"
+            buildConfigField("String", "SERVER_URL", "\"https://virtuo.cgg.gov.in/api/\"")
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        uat {
+            resValue "string", "app_name", "@string/app_name_demo"
+            applicationIdSuffix ".uat"
+            versionNameSuffix ".0"
+            buildConfigField("String", "SERVER_URL", "\"http://uat2.cgg.gov.in/virtuosuite/api/\"")
+            signingConfig signingConfigs.release
+            debuggable true
+        }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
 }
 
 dependencies {
+    def appCompact = '1.2.0'
+    def constraint = '2.0.4'
+    def espresso = '3.3.0'
+    def junit = '4.13.1'
+    def cardview = '1.0.0'
+    def recyclerview = '1.1.0'
+    def rxBinding = '2.0.0'
+    def material = '1.2.1'
+    def supportLibraryVersion = '28.0.0'
+    def retrofitVersion = '2.3.0'
+    def glide = '3.8.0'
+    def room = '2.2.5'
+    def roomRxJava2 = '1.0.0-alpha1'
+    def lifecycle_version = '2.2.0'
+    def pinview = '1.4.3'
+    def viewmodel = '2.2.0'
+    def jUnit = '1.1.2'
+    def multidex = '2.0.1'
+    def navigation = '2.3.1'
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "androidx.appcompat:appcompat:$appCompact"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint"
+    implementation "com.google.android.material:material:$material"
+    implementation "androidx.cardview:cardview:$cardview"
+    implementation "androidx.legacy:legacy-support-v13:$cardview"
+    implementation "androidx.legacy:legacy-support-v4:$cardview"
+    implementation "androidx.recyclerview:recyclerview:$recyclerview"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "androidx.multidex:multidex:$multidex"
+    implementation "com.github.bumptech.glide:glide:$glide"
+    implementation "androidx.room:room-runtime:$room"
+    annotationProcessor "androidx.room:room-compiler:$room"
+    implementation "androidx.room:room-rxjava2:$room"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "com.jakewharton.rxbinding2:rxbinding:$rxBinding"
+    implementation "com.chaos.view:pinview:$pinview"
+    implementation "androidx.navigation:navigation-fragment:$navigation"
+    implementation "androidx.navigation:navigation-ui:$navigation"
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test.ext:junit:$jUnit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$viewmodel"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewmodel"
 }
