@@ -1,0 +1,153 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+<!--    <data>-->
+
+<!--        <variable-->
+<!--            name="viewModel"-->
+<!--            type="com.cgg.pettytrade.viewmodel.LoginViewModel" />-->
+<!--    </data>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_telangana"
+                android:layout_width="@dimen/_80dp"
+                android:layout_height="@dimen/_80dp"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:background="@drawable/telangana_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/img_ghmc"
+                android:layout_toRightOf="@id/img_telangana"
+                android:shadowColor="@color/colorPrimary"
+                android:text="@string/app_name_release"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dp_20"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/img_ghmc"
+                android:layout_width="@dimen/_60dp"
+                android:layout_height="@dimen/_60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_20"
+                android:background="@drawable/ghmc_right" />
+
+        </RelativeLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingTop="@dimen/dp_20">
+
+
+            <LinearLayout
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:layout_marginRight="@dimen/dp_20"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+
+                <LinearLayout
+                    android:id="@+id/ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_5dp">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tip_username"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="@dimen/_40dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="@dimen/dimen_5dp">
+
+                        <EditText
+                            android:id="@+id/et_mobileNo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="Mobile number"
+                            android:imeOptions="actionNext"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:singleLine="true"
+                            android:textAllCaps="true" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_20dp"
+                        android:layout_marginRight="@dimen/dimen_20dp"
+                        android:backgroundTint="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="Submit"
+                        android:textColor="@color/white" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="@dimen/_80dp"
+                android:layout_height="@dimen/_80dp"
+                android:src="@drawable/telangana_logo"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toTopOf="@+id/card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/card"
+                app:layout_constraintVertical_bias="0.5"
+                app:layout_constraintVertical_weight="0.5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40dp"
+            android:layout_alignParentBottom="true"
+            android:background="#333"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:src="@drawable/footer" />
+    </RelativeLayout>
+</layout>
