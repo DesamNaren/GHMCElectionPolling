@@ -1,9 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.PSWiseEntryActivity">
+    android:orientation="vertical"
+    tools:context=".MapSectorActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <include layout="@layout/activity_basic_layout" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_zone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/elmessiri_regular"
+                    android:padding="@dimen/dimen_5dp"
+                    android:text="@string/select_polling_station"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimen_16sp" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/sp_polling_station"
+                    style="@style/Widget.App.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_circle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/elmessiri_regular"
+                    android:padding="@dimen/dimen_5dp"
+                    android:text="@string/select_time_slot"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimen_16sp" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/sp_time_slot"
+                    style="@style/Widget.App.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tv_plot_no_effected"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_5dp"
+                android:hint="@string/votes_polled_during_selected_hour"
+                android:textColorHint="@color/white"
+                android:visibility="visible"
+                app:errorEnabled="true">
+
+
+                <EditText
+                    android:id="@+id/et_plot_no_effected"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/elmessiri_regular"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:maxLength="50"
+                    android:textSize="16dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_20dp"
+                    android:layout_marginRight="@dimen/dimen_20dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/clear"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:backgroundTint="@color/colorAccent" />
+
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_20dp"
+                    android:layout_marginRight="@dimen/dimen_20dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/submit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    app:backgroundTint="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

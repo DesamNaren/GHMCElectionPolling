@@ -44,7 +44,7 @@
                         android:fontFamily="@font/muli_bold"
                         android:gravity="center"
                         android:padding="@dimen/dimen_5dp"
-                        android:text="PS wise Entry"
+                        android:text="@string/ps_wise_entry"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="@dimen/dimen_18sp" />
@@ -83,7 +83,7 @@
                         android:fontFamily="@font/muli_bold"
                         android:gravity="center"
                         android:padding="@dimen/dimen_5dp"
-                        android:text="PS wise Status"
+                        android:text="@string/ps_wise_status"
                         android:textColor="@color/white"
                         android:textSize="@dimen/dimen_18sp" />
 

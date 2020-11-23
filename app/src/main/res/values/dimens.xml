@@ -34,6 +34,7 @@
     <dimen name="dimen_1dp">1dp</dimen>
     <dimen name="_80dp">80dp</dimen>
     <dimen name="_40dp">40dp</dimen>
+    <dimen name="_50dp">50dp</dimen>
     <dimen name="_60dp">60dp</dimen>
     <dimen name="_35dp">35dp</dimen>
     <dimen name="_10sp">10sp</dimen>
