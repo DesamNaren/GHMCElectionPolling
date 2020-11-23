@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimaryDark"
+            android:background="@color/colorPrimaryDark"
             app:popupTheme="@style/Theme.GHMCPollingApp.PopupOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -159,7 +159,7 @@
 
                     <Button
                         android:id="@+id/btn_clear"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_20dp"
                         android:layout_marginRight="@dimen/dimen_20dp"
@@ -173,7 +173,7 @@
 
                     <Button
                         android:id="@+id/btn_submit"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_20dp"
                         android:layout_marginRight="@dimen/dimen_20dp"
