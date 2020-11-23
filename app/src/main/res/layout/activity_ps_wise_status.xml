@@ -1,47 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:shimmer="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.MapSectorActivity">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/activity_basic_layout" />
+        <include
+            android:id="@+id/header"
+            layout="@layout/activity_basic_layout" />
 
-        <ScrollView
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary">
+            android:layout_below="@+id/header"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            shimmer:duration="500">
 
+            <!-- Adding 3 rows of placeholders -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/dimen_10dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_empty"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:text="@string/data_empty"
-                    android:textColor="@color/white"
-                    android:visibility="visible" />
+                <include layout="@layout/ps_report_placeholder_item" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/dimen_5dp"
-                    android:paddingRight="@dimen/dimen_5dp"
-                    android:paddingBottom="@dimen/dimen_5dp"
-                    tools:listitem="@layout/item_view_status" />
+                <include layout="@layout/ps_report_placeholder_item" />
+
+                <include layout="@layout/ps_report_placeholder_item" />
 
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/attendance_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/header"
+            android:layout_marginTop="@dimen/dimen_4dp"
+            android:padding="@dimen/dimen_2dp"
+            android:visibility="visible"
+            tools:listitem="@layout/item_view_status" />
+
+    </RelativeLayout>
 </layout>
