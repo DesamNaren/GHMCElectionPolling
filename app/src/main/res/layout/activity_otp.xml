@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--    <data>-->
+        <data>
 
-    <!--        <variable-->
-    <!--            name="viewModel"-->
-    <!--            type="com.cgg.virtuo.viewmodel.OTPViewModel" />-->
+            <variable
+                name="viewModel"
+                type="com.cgg.ghmcpollingapp.viewmodel.OTPViewModel" />
 
-    <!--    </data>-->
+        </data>
 
     <RelativeLayout
         android:layout_width="match_parent"

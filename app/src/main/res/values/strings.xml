@@ -42,10 +42,21 @@
     <string name="ps_wise_status">PS wise Status</string>
     <string name="data_empty">No Records Found</string>
     <string name="generate_4_digit_mpin">Set 4 Digit MPIN</string>
-    <string name="confirm_4_digit_mpin">Confirm 4-Digit MPIN</string>
     <string name="proceed">Proceed</string>
     <string name="enter_4_digit_mpin">Enter 4-Digit MPIN</string>
     <string name="not_you">Not You</string>
     <string name="forgot_mpin">Forgot MPIN</string>
     <string name="validate">Validate</string>
-</resources>
+    <string name="please_enter_4_digit_otp">Please enter 4-Digit OTP</string>
+    <string name="please_enter_6_digit_otp">Please enter 6-Digit OTP</string>
+    <string name="invalid_otp">Entered OTP is invalid, Please try again</string>
+    <string name="invalid_mpin">Entered MPIN is invalid, Please try again</string>
+    <string name="confirm_4_digit_mpin">Confirm 4-Digit MPIN</string>
+    <string name="cancel_otp_process">Are you sure, Do you want cancel registration process?</string>
+    <string name="otpverified">OTP Verified Successfully</string>
+    <string name="otpempty">OTP is empty from server</string>
+
+    <string name="plz_check_int">No network connectivity found, please check your internet connection</string>
+    <string name="please_enter_4_digit_mpin">Please enter 4-Digit MPIN</string>
+    <string name="please_enter_4_digit_confirm_mpin">Please confirm 4-Digit MPIN</string>
+    <string name="confirm_mpin">MPIN and confirm MPIN is not matched, Please try again</string></resources>
