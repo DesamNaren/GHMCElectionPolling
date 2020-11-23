@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name_release">GHMC Poll Status App</string>
+    <string name="enter_6_digit_otp">Enter 6 digit OTP sent to</string>
     <string name="app_name_demo">GHMC Poll Status App - Demo</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="submit">Submit</string>
 </resources>
