@@ -59,8 +59,8 @@ public class PSWiseStatusActivity extends AppCompatActivity {
                     getString(R.string.plz_check_int));
         }*/
         adapter = new StatusListAdapter(context, statuslist);
-        binding.attendanceRv.setAdapter(adapter);
-        binding.attendanceRv.setLayoutManager(new LinearLayoutManager(context));
+        binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
     }
 }
