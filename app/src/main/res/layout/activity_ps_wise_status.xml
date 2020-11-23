@@ -18,7 +18,7 @@
             android:layout_below="@+id/header"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:visibility="visible"
             shimmer:duration="500">
 
             <!-- Adding 3 rows of placeholders -->
@@ -45,8 +45,16 @@
             android:layout_below="@+id/header"
             android:layout_marginTop="@dimen/dimen_4dp"
             android:padding="@dimen/dimen_2dp"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:listitem="@layout/item_view_status" />
+
+        <include
+            android:visibility="gone"
+            android:id="@+id/no_records_ll"
+            android:layout_centerInParent="true"
+            layout="@layout/no_record_report"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
 
     </RelativeLayout>
 </layout>
