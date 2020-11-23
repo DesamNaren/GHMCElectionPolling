@@ -10,7 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GHMCPollingApp"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MapSectorActivity"></activity>
+
+        <activity android:name=".MapSectorActivity" />
+
+        <activity android:name=".ui.PSWiseStatusActivity" />
+
+        <activity android:name=".ui.PSWiseEntryActivity" />
+
         <activity
             android:name=".DashboardActivity"
             android:label="@string/title_activity_dashboard"
@@ -18,7 +24,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
