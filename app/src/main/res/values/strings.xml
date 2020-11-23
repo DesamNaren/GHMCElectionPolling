@@ -15,4 +15,10 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="zone">Zone*</string>
+    <string name="circle">Circle*</string>
+    <string name="ward">Ward*</string>
+    <string name="sector">Sector*</string>
+    <string name="reset">Reset</string>
+    <string name="clear">Clear</string>
 </resources>
