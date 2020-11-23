@@ -25,4 +25,13 @@
     <string name="total_hourly_report">Total Hourly Report</string>
     <string name="pending_hourly_report">Pending Hourly Report</string>
     <string name="no_records_found">No Records Found</string>
+
+    <string name="con_time_out">The connection has timed out, please try again</string>
+    <string name="something">Something went wrong, please try again</string>
+    <string name="server_not">Server not responding, Please try later</string>
+    <string name="enter_mob_no">Enter mobile No</string>
+    <string name="enter_valid_mobile_no">Enter valid mobile No</string>
+    <string name="ok">OK</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>

@@ -2,17 +2,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <!--    <data>-->
+        <data>
 
-    <!--        <variable-->
-    <!--            name="viewModel"-->
-    <!--            type="com.cgg.pettytrade.viewmodel.LoginViewModel" />-->
-    <!--    </data>-->
+            <variable
+                name="viewModel"
+                type="com.cgg.ghmcpollingapp.viewmodel.LoginViewModel" />
+        </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:id="@+id/relativeLayout"
         android:background="@color/colorPrimary"
         android:orientation="vertical">
 
