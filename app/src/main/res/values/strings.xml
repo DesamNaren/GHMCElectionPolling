@@ -21,4 +21,8 @@
     <string name="sector">Sector*</string>
     <string name="reset">Reset</string>
     <string name="clear">Clear</string>
+    <string name="ps_name">PS Name</string>
+    <string name="total_hourly_report">Total Hourly Report</string>
+    <string name="pending_hourly_report">Pending Hourly Report</string>
+    <string name="no_records_found">No Records Found</string>
 </resources>
