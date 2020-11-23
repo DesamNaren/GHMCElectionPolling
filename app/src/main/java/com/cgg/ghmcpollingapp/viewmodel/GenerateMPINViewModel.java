@@ -3,23 +3,17 @@ package com.cgg.ghmcpollingapp.viewmodel;
 import android.app.Application;
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 
-import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
-import com.cgg.ghmcpollingapp.model.mpin.MPINResponse;
+import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class GenerateMPINViewModel extends AndroidViewModel {
-    private MutableLiveData<MPINResponse> mpinResponseMutableLiveData;
+    private MutableLiveData<GenerateMPINRequest> mpinResponseMutableLiveData;
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
@@ -30,7 +24,7 @@ public class GenerateMPINViewModel extends AndroidViewModel {
         errorHandlerInterface = (ErrorHandlerInterface) context;
     }
 
-    public LiveData<MPINResponse> generateMPINCall(String token, String userName, String mPIN, String header) {
+    public LiveData<GenerateMPINRequest> generateMPINCall(String token, String userName, String mPIN, String header) {
         if (mpinResponseMutableLiveData != null) {
             generateMPINCallService(token, userName,mPIN,  header);
         }

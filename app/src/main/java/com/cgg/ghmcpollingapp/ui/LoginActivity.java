@@ -14,7 +14,7 @@ import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.databinding.ActivityLoginBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
-import com.cgg.ghmcpollingapp.model.login.LoginRequest;
+import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LoginCustomViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.LoginViewModel;

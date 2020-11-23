@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relativeLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/dimen_5dp"
-    android:paddingBottom="@dimen/dimen_5dp">
-
-    <ImageView
-        android:id="@+id/img_telangana"
-        android:layout_width="@dimen/dimen_30dp"
-        android:layout_height="@dimen/dimen_30dp"
-        android:layout_margin="@dimen/dimen_10dp"
-        android:visibility="visible"
-        android:background="@drawable/ic_back"
-        android:padding="@dimen/dimen_50dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
+<layout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
-        android:shadowColor="@color/colorPrimary"
-        android:text="@string/app_name_release"
-        android:textColor="@color/white"
-        android:textSize="@dimen/dimen_20sp"
-        android:textStyle="bold" />
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dimen_5dp"
+        android:paddingBottom="@dimen/dimen_5dp">
 
-    <ImageView
-        android:id="@+id/img_ghmc"
-        android:layout_width="@dimen/_40dp"
-        android:layout_height="@dimen/_40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginRight="@dimen/dp_20"
-        android:background="@drawable/ghmc_right" />
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:visibility="visible"
+            android:background="@drawable/ic_back"
+            android:padding="@dimen/dimen_50dp" />
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:shadowColor="@color/colorPrimary"
+            android:text="@string/app_name_release"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img_ghmc"
+            android:layout_width="@dimen/_40dp"
+            android:layout_height="@dimen/_40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:background="@drawable/ghmc_right" />
+
+    </RelativeLayout>
+</layout>

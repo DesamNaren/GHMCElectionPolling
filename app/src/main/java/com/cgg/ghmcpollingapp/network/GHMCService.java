@@ -1,7 +1,8 @@
 package com.cgg.ghmcpollingapp.network;
 
-import com.cgg.ghmcpollingapp.model.login.LoginRequest;
-import com.cgg.ghmcpollingapp.model.login.LoginResponse;
+import com.cgg.ghmcpollingapp.BuildConfig;
+import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
+import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 
 import java.util.concurrent.TimeUnit;
 

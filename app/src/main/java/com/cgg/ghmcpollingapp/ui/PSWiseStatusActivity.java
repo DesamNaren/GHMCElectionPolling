@@ -28,8 +28,8 @@ public class PSWiseStatusActivity extends AppCompatActivity {
         context = PSWiseStatusActivity.this;
 
         adapter = new StatusListAdapter(context, statuslist);
-        binding.recyclerView.setAdapter(adapter);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        binding.attendanceRv.setAdapter(adapter);
+        binding.attendanceRv.setLayoutManager(new LinearLayoutManager(context));
 
     }
 }

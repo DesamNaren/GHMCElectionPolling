@@ -59,4 +59,11 @@
     <string name="plz_check_int">No network connectivity found, please check your internet connection</string>
     <string name="please_enter_4_digit_mpin">Please enter 4-Digit MPIN</string>
     <string name="please_enter_4_digit_confirm_mpin">Please confirm 4-Digit MPIN</string>
-    <string name="confirm_mpin">MPIN and confirm MPIN is not matched, Please try again</string></resources>
+    <string name="confirm_mpin">MPIN and confirm MPIN is not matched, Please try again</string>
+
+    <string name="select">-Select-</string>
+    <string name="sel_zone">Select Zone</string>
+    <string name="sel_circle">Select Circle</string>
+    <string name="sel_ward">Select Ward</string>
+    <string name="sel_sector">Select Sector</string>
+</resources>

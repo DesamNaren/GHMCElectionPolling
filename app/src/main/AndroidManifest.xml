@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cgg.ghmcpollingapp">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,22 +15,29 @@
         android:theme="@style/Theme.GHMCPollingApp"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".ui.MapSectorActivity" />
-
-        <activity android:name=".ui.PSWiseStatusActivity" />
-
-        <activity android:name=".ui.PSWiseEntryActivity" />
-
         <activity
-            android:name=".ui.DashboardActivity"
-            android:label="@string/title_activity_dashboard"
-            android:theme="@style/Theme.GHMCPollingApp.NoActionBar" />
-        <activity android:name=".MainActivity">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".MapSectorActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.PSWiseStatusActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.PSWiseEntryActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.DashboardActivity"
+            android:label="@string/title_activity_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.GHMCPollingApp.NoActionBar" />
     </application>
 
 </manifest>

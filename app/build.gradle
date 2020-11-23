@@ -48,6 +48,15 @@ android {
             signingConfig signingConfigs.release
             debuggable true
         }
+
+        debug {
+            resValue "string", "app_name", "@string/app_name_demo"
+            applicationIdSuffix ".debug"
+            versionNameSuffix ".0"
+            buildConfigField("String", "SERVER_URL", "\"http://uat2.cgg.gov.in/virtuosuite/api/\"")
+            signingConfig signingConfigs.release
+            debuggable true
+        }
     }
 
     compileOptions {
