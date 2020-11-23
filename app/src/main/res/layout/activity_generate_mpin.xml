@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:id="@+id/root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/dimen_20dp"
+                android:layout_marginRight="@dimen/dimen_20dp"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profile_image"
+                        android:layout_width="@dimen/_80dp"
+                        android:layout_height="@dimen/_80dp"
+                        android:layout_centerInParent="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:src="@drawable/telangana_logo" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:padding="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:id="@+id/ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/enter_6_digit_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_12dp"
+                        android:gravity="center"
+                        android:fontFamily="@font/muli_bold"
+                        android:text="@string/generate_4_digit_mpin"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/dimen_16sp" />
+
+                    <com.chaos.view.PinView
+
+                        android:id="@+id/enterMPIN"
+                        style="@style/PinWidget.PinView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:cursorVisible="true"
+                        android:hint="Hint."
+                        android:inputType="numberPassword"
+                        android:itemBackground="@drawable/mpin_background"
+                        android:padding="@dimen/dimen_10dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/dimen_18sp"
+                        android:textStyle="bold"
+                        app:cursorColor="@color/white"
+                        app:cursorWidth="@dimen/dimen_2dp"
+                        app:hideLineWhenFilled="true"
+                        app:itemCount="4"
+                        app:itemHeight="@dimen/dimen_50dp"
+                        app:itemRadius="4dp"
+                        app:itemSpacing="@dimen/dimen_10dp"
+                        app:itemWidth="@dimen/dimen_50dp"
+                        app:lineWidth="@dimen/dimen_2dp"
+                        app:viewType="rectangle" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_5dp"
+                        android:fontFamily="@font/muli_bold"
+                        android:gravity="center"
+                        android:text="@string/confirm_4_digit_mpin"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/dimen_16sp" />
+
+                    <com.chaos.view.PinView
+
+                        android:id="@+id/confirmMPIN"
+                        style="@style/PinWidget.PinView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:cursorVisible="true"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:itemBackground="@drawable/mpin_background"
+                        android:padding="@dimen/dimen_10dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/dimen_18sp"
+                        android:textStyle="bold"
+                        app:cursorColor="@color/white"
+                        app:cursorWidth="@dimen/dimen_2dp"
+                        app:hideLineWhenFilled="true"
+                        app:itemCount="4"
+                        app:itemHeight="@dimen/dimen_50dp"
+                        app:itemRadius="4dp"
+                        app:itemSpacing="@dimen/dimen_10dp"
+                        app:itemWidth="@dimen/dimen_50dp"
+                        app:lineColor="@color/line_colors"
+                        app:lineWidth="@dimen/dimen_2dp"
+                        app:viewType="rectangle" />
+
+
+                    <Button
+                        android:textAllCaps="false"
+                        android:id="@+id/btn_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginLeft="@dimen/dimen_30dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="@dimen/dimen_30dp"
+                        android:backgroundTint="@color/white"
+                        android:fontFamily="@font/elmessiri_regular"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/proceed"
+                        android:textSize="@dimen/dimen_18sp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </ScrollView>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/root_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fot_lay"
+            android:background="@color/colorAccent" />
+
+        <include
+            android:id="@+id/fot_lay"
+            layout="@layout/footer_layout_new" />
+
+    </RelativeLayout>
+</layout>

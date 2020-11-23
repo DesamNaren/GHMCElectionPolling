@@ -1,4 +1,4 @@
-package com.cgg.ghmcpollingapp.ui.home;
+package com.cgg.ghmcpollingapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.databinding.FragmentHomeBinding;
 import com.cgg.ghmcpollingapp.ui.PSWiseEntryActivity;
 import com.cgg.ghmcpollingapp.ui.PSWiseStatusActivity;
+import com.cgg.ghmcpollingapp.viewmodel.HomeViewModel;
 
 public class HomeFragment extends Fragment {
 

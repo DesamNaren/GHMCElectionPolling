@@ -1,4 +1,4 @@
-package com.cgg.ghmcpollingapp.ui.home;
+package com.cgg.ghmcpollingapp.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

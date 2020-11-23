@@ -11,23 +11,18 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
-import com.cgg.ghmcpollingapp.DashboardActivity;
+import com.cgg.ghmcpollingapp.ui.DashboardActivity;
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.ui.LoginActivity;
 
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.regex.Pattern;
 
 import okhttp3.ResponseBody;
 

@@ -12,9 +12,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface TLService {
+public interface GHMCService {
+    static String BASE_URL = BuildConfig.SERVER_URL;
     class Factory {
-        public static TLService create() {
+        public static GHMCService create() {
 
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .readTimeout(60, TimeUnit.SECONDS)
@@ -23,11 +24,11 @@ public interface TLService {
                     .build();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(GHMCURL.BASE_URL)
+                    .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
                     .build();
-            return retrofit.create(TLService.class);
+            return retrofit.create(GHMCService.class);
         }
     }
 

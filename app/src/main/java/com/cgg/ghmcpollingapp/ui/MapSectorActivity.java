@@ -1,8 +1,10 @@
-package com.cgg.ghmcpollingapp;
+package com.cgg.ghmcpollingapp.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.cgg.ghmcpollingapp.R;
 
 public class MapSectorActivity extends AppCompatActivity {
 

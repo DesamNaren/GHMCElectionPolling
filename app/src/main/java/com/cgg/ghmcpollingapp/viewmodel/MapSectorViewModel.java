@@ -1,4 +1,4 @@
-package com.cgg.ghmcpollingapp;
+package com.cgg.ghmcpollingapp.viewmodel;
 
 import android.app.Application;
 import android.content.Context;

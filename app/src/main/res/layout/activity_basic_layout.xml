@@ -11,7 +11,8 @@
         android:layout_width="@dimen/_50dp"
         android:layout_height="@dimen/_50dp"
         android:layout_margin="@dimen/dimen_10dp"
-        android:background="@drawable/telangana_logo"
+        android:visibility="visible"
+        android:background="@drawable/ic_back"
         android:padding="@dimen/dimen_50dp" />
 
     <TextView
@@ -19,10 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/img_ghmc"
-        android:layout_toLeftOf="@id/img_ghmc"
-        android:layout_toEndOf="@id/img_telangana"
-        android:layout_toRightOf="@id/img_telangana"
         android:gravity="center_horizontal"
         android:shadowColor="@color/colorPrimary"
         android:text="@string/app_name_release"

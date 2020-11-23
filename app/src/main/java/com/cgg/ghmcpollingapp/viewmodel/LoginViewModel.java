@@ -7,14 +7,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.databinding.ActivityLoginBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.model.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.login.LoginResponse;
-import com.cgg.ghmcpollingapp.network.TLService;
+import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
+import com.cgg.ghmcpollingapp.utils.Utils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,8 +23,6 @@ import retrofit2.Response;
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginResponse> responseMutableLiveData;
-    public MutableLiveData<String> username = new MutableLiveData<>();
-    public MutableLiveData<String> password = new MutableLiveData<>();
     public MutableLiveData<String> mobileNum = new MutableLiveData<>();
     private Context context;
     private ActivityLoginBinding binding;
@@ -51,9 +49,9 @@ public class LoginViewModel extends ViewModel {
 
 
     public void callLoginAPI(LoginRequest loginRequest) {
-//        Utils.hideKeyboard(context, binding.btnSubmit);
+        Utils.hideKeyboard(context, binding.btnSubmit);
         customProgressDialog.show();
-        TLService tlService = TLService.Factory.create();
+        GHMCService tlService = GHMCService.Factory.create();
         tlService.getLoginResponse(loginRequest)
                 .enqueue(new Callback<LoginResponse>() {
                              @Override
