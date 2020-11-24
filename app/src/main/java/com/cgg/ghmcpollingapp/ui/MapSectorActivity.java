@@ -12,8 +12,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -23,10 +26,15 @@ import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityMapSectorBinding;
+import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
+import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
+import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
+import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
@@ -35,11 +43,11 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapSectorActivity extends AppCompatActivity implements View.OnClickListener, ErrorHandlerInterface {
+public class MapSectorActivity extends AppCompatActivity implements View.OnClickListener, ErrorHandlerInterface, SectorMappingInterface {
 
     private ActivityMapSectorBinding binding;
     private Context context;
-    private String zoneName, cirName, wardName, secName;
+    private String zoneName, zoneId, cirName, circleId, wardName, wardId, secName, secId;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private LogoutViewModel logoutViewModel;
@@ -47,6 +55,12 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     PollingMasterRep pollingMasterRep;
     MapSectorViewModel mapSectorViewModel;
     List<String> zones;
+    List<String> circles;
+    List<String> wards;
+    List<String> sectors;
+    CustomProgressDialog customProgressDialog;
+    ArrayAdapter selectAdapter;
+    ArrayList sellist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +69,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map_sector);
         logoutViewModel = new LogoutViewModel(this, getApplication());
         mapSectorViewModel = new MapSectorViewModel(this, getApplication());
+        customProgressDialog = new CustomProgressDialog(context);
 
         sharedPreferences = PollingApplication.get(context).getPreferences();
         editor = PollingApplication.get(context).getPreferencesEditor();
@@ -62,14 +77,237 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         binding.btnClear.setOnClickListener(this);
         binding.btnSubmit.setOnClickListener(this);
         binding.headerLyout.imgBack.setOnClickListener(this);
-        pollingMasterRep=new PollingMasterRep(getApplication());
-        zones=new ArrayList<>();
+        pollingMasterRep = new PollingMasterRep(getApplication());
+        zones = new ArrayList<>();
+        circles = new ArrayList<>();
+        wards = new ArrayList<>();
+        sectors = new ArrayList<>();
 
-
+        sellist = new ArrayList();
+        sellist.add(getString(R.string.select));
+        selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
         mapSectorViewModel.getZones().observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> zones) {
-                MapSectorActivity.this.zones=zones;
+                MapSectorActivity.this.zones = zones;
+                if (zones != null && zones.size() > 0) {
+                    zones.add(0, getString(R.string.select));
+                    ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, zones);
+                    binding.zoneSpinner.setAdapter(adapter);
+                } else {
+                    Utils.callSnackBar(binding.cl, getString(R.string.no_zones_found));
+                }
+            }
+        });
+        binding.zoneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (binding.zoneSpinner.getSelectedItemPosition() == 0) {
+                    zoneName = "";
+                    zoneId = "";
+                    cirName = "";
+                    circleId = "";
+                    wardName = "";
+                    wardId = "";
+                    secName = "";
+                    secId = "";
+                    circles.clear();
+                    wards.clear();
+                    sectors.clear();
+                    binding.circleSpinner.setAdapter(selectAdapter);
+                    binding.wardSpinner.setAdapter(selectAdapter);
+                    binding.sectorSpinner.setAdapter(selectAdapter);
+                } else {
+                    cirName = "";
+                    circleId = "";
+                    wardName = "";
+                    wardId = "";
+                    secName = "";
+                    secId = "";
+                    circles.clear();
+                    wards.clear();
+                    sectors.clear();
+                    binding.wardSpinner.setAdapter(selectAdapter);
+                    binding.sectorSpinner.setAdapter(selectAdapter);
+                    customProgressDialog.show();
+                    zoneName = binding.zoneSpinner.getSelectedItem().toString().trim();
+                    mapSectorViewModel.getZoneId(zoneName).observe(MapSectorActivity.this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String zoneId) {
+                            MapSectorActivity.this.zoneId = zoneId;
+                            mapSectorViewModel.getCircles(zoneId).observe(MapSectorActivity.this, new Observer<List<String>>() {
+                                @Override
+                                public void onChanged(List<String> circles) {
+                                    customProgressDialog.dismiss();
+                                    MapSectorActivity.this.circles = circles;
+                                    if (circles != null && circles.size() > 0) {
+                                        circles.add(0, getString(R.string.select));
+                                        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, circles);
+                                        binding.circleSpinner.setAdapter(adapter);
+                                    } else {
+                                        Utils.callSnackBar(binding.cl, getString(R.string.no_circles_found));
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        binding.circleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (binding.circleSpinner.getSelectedItemPosition() == 0) {
+                    cirName = "";
+                    circleId = "";
+                    wardName = "";
+                    wardId = "";
+                    secName = "";
+                    secId = "";
+                    wards.clear();
+                    sectors.clear();
+                    binding.wardSpinner.setAdapter(selectAdapter);
+                    binding.sectorSpinner.setAdapter(selectAdapter);
+                } else {
+                    wardName = "";
+                    wardId = "";
+                    secName = "";
+                    secId = "";
+                    wards.clear();
+                    sectors.clear();
+                    binding.sectorSpinner.setAdapter(selectAdapter);
+                    customProgressDialog.show();
+                    cirName = binding.circleSpinner.getSelectedItem().toString().trim();
+                    mapSectorViewModel.getCircleId(cirName, zoneId).observe(MapSectorActivity.this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String circleId) {
+                            MapSectorActivity.this.circleId = circleId;
+                            mapSectorViewModel.getWards(zoneId, circleId).observe(MapSectorActivity.this, new Observer<List<String>>() {
+                                @Override
+                                public void onChanged(List<String> wards) {
+                                    customProgressDialog.dismiss();
+                                    MapSectorActivity.this.wards = wards;
+                                    if (wards != null && wards.size() > 0) {
+                                        wards.add(0, getString(R.string.select));
+                                        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, wards);
+                                        binding.wardSpinner.setAdapter(adapter);
+                                    } else {
+                                        Utils.callSnackBar(binding.cl, getString(R.string.no_wards_found));
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        binding.wardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (binding.wardSpinner.getSelectedItemPosition() == 0) {
+                    wardName = "";
+                    wardId = "";
+                    secName = "";
+                    secId = "";
+                    sectors.clear();
+                    binding.sectorSpinner.setAdapter(selectAdapter);
+                } else {
+                    secName = "";
+                    secId = "";
+                    sectors.clear();
+                    customProgressDialog.show();
+                    wardName = binding.wardSpinner.getSelectedItem().toString().trim();
+                    mapSectorViewModel.getWardId(wardName, zoneId, circleId).observe(MapSectorActivity.this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String wardId) {
+                            MapSectorActivity.this.wardId = wardId;
+                            mapSectorViewModel.getSectors(zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<List<String>>() {
+                                @Override
+                                public void onChanged(List<String> sectors) {
+                                    customProgressDialog.dismiss();
+                                    MapSectorActivity.this.sectors = sectors;
+                                    if (sectors != null && sectors.size() > 0) {
+                                        sectors.add(0, getString(R.string.select));
+                                        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sectors);
+                                        binding.sectorSpinner.setAdapter(adapter);
+                                    } else {
+                                        Utils.callSnackBar(binding.cl, getString(R.string.no_sectors_found));
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        binding.sectorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (binding.sectorSpinner.getSelectedItemPosition() == 0) {
+                    secName = "";
+                } else {
+                    customProgressDialog.show();
+                    secName = binding.sectorSpinner.getSelectedItem().toString().trim();
+                    mapSectorViewModel.getSectorId(secName, zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<String>() {
+                        @Override
+                        public void onChanged(String sectorId) {
+                            customProgressDialog.dismiss();
+                            MapSectorActivity.this.secId = sectorId;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(validateData()){
+                        if (Utils.checkInternetConnection(context)) {
+                            customProgressDialog.show();
+                            PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
+                            psEntrySubmitRequest.setDeviceId(Utils.getDeviceID(context));
+                            psEntrySubmitRequest.setIpAddress(Utils.getLocalIpAddress());
+                            psEntrySubmitRequest.setMPIN(Utils.getLocalIpAddress());
+//                            psEntrySubmitRequest.setPollingStationId(psId);
+//                            psEntrySubmitRequest.setTimeSlotId(psId);
+//                            psEntrySubmitRequest.setUserName(psId);
+//                            psEntrySubmitRequest.setVotesPolled(psId);
+                            mapSectorViewModel.getPSDetails(psEntrySubmitRequest);
+                        } else {
+                            Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
+                        }
+                    } else {
+                        Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), "Not getting polling station id");
+                    }
+            }
+        });
+
+        binding.btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
             }
         });
 
@@ -173,13 +411,28 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                         logoutViewModel.logoutCall(logoutRequest).observe(MapSectorActivity.this, new Observer<LogoutResponse>() {
                             @Override
                             public void onChanged(LogoutResponse logoutResponse) {
-                                editor.clear();
-                                editor.commit();
-                                Intent newIntent = new Intent(activity, LoginActivity.class);
-                                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                activity.startActivity(newIntent);
-                                activity.finish();
+                                if (logoutResponse != null && logoutResponse.getStatusCode() != null) {
+                                    if (logoutResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                                        //visible time slot and load spinner
+                                        editor.clear();
+                                        editor.commit();
+                                        Intent newIntent = new Intent(activity, LoginActivity.class);
+                                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        activity.startActivity(newIntent);
+                                        activity.finish();
+                                    } else if (logoutResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                                        Utils.customErrorAlert(context, getString(R.string.app_name),
+                                                logoutResponse.getResponseMessage());
+                                    } else {
+                                        Utils.customErrorAlert(context, getString(R.string.app_name),
+                                                getString(R.string.something) + " No status code found in mark attendance web service response");
+                                    }
+                                } else {
+                                    Utils.customErrorAlert(context, getString(R.string.app_name),
+                                            getString(R.string.server_not) + " : Mark attendance web service");
+                                }
+
                             }
                         });
 
@@ -207,11 +460,48 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void handleError(Throwable e, Context context) {
-
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
+        String errMsg = ErrorHandler.handleError(e, context);
+        Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
 
     @Override
-    public void handleError(String e, Context context) {
+    public void handleError(String errMsg, Context context) {
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
+        Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
+    }
 
+    @Override
+    public void submitPSEntry(PSEntrySubmitResponse psEntrySubmitResponse) {
+        try {
+            customProgressDialog.hide();
+            if (psEntrySubmitResponse != null && psEntrySubmitResponse.getStatusCode() != null) {
+                if (psEntrySubmitResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                    //visible time slot and load spinner
+                    editor.putString(AppConstants.ZONE_ID,zoneId);
+                    editor.putString(AppConstants.CIRCLE_ID,circleId);
+                    editor.putString(AppConstants.WARD_ID,wardId);
+                    editor.putString(AppConstants.SECTOR_ID,secId);
+                    editor.commit();
+                  Utils.customSuccessAlert(MapSectorActivity.this,getString(R.string.app_name),psEntrySubmitResponse.getResponseMessage());
+
+                } else if (psEntrySubmitResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                    Utils.customErrorAlert(context, getString(R.string.app_name),
+                            psEntrySubmitResponse.getResponseMessage());
+                } else {
+                    Utils.customErrorAlert(context, getString(R.string.app_name),
+                            getString(R.string.something) + " No status code found in mark attendance web service response");
+                }
+            } else {
+                Utils.customErrorAlert(context, getString(R.string.app_name),
+                        getString(R.string.server_not) + " : Mark attendance web service");
+            }
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            customProgressDialog.hide();
+            e.printStackTrace();
+        }
     }
 }

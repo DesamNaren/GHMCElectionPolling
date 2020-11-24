@@ -23,6 +23,7 @@ import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.ui.LoginActivity;
 import com.cgg.ghmcpollingapp.ui.MapSectorActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
 
@@ -95,8 +96,6 @@ public class Utils {
     }
 
 
-
-
     public static String getDeviceID(Context context) {
         String deviceID = "";
         try {
@@ -141,8 +140,7 @@ public class Utils {
         }
     }
 
-    public static void customSuccessAlert(final Activity activity, String title, String msg,
-                                          boolean flag) {
+    public static void customSuccessAlert(final Activity activity, String title, String msg) {
         try {
             final Dialog dialog = new Dialog(activity);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -156,11 +154,7 @@ public class Utils {
                 TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
                 dialogTitle.setText(title);
                 TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
-                if (flag) {
-                    dialogMessage.setVisibility(View.VISIBLE);
-                } else {
-                    dialogMessage.setVisibility(View.GONE);
-                }
+                dialogMessage.setVisibility(View.VISIBLE);
                 dialogMessage.setText(msg);
                 Button btDialogYes = dialog.findViewById(R.id.btDialogYes);
                 btDialogYes.setOnClickListener(new View.OnClickListener() {
@@ -330,4 +324,8 @@ public class Utils {
         }
     }
 
+    public static void callSnackBar(View view, String msg) {
+        Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
 }

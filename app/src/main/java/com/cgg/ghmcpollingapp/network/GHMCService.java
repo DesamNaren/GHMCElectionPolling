@@ -57,6 +57,9 @@ public interface GHMCService {
 
     @POST("GHMCElection/submitPSPollStatus")
     Call<PSEntrySubmitResponse> getPSSubmitResponse(@Body PSEntrySubmitRequest psEntrySubmitRequest);
+
+    @POST("GHMCElection/submitPSPollStatus")
+    Call<PSEntrySubmitResponse> getPSSubmit(@Body PSEntrySubmitRequest psEntrySubmitRequest);
 }
 
 
