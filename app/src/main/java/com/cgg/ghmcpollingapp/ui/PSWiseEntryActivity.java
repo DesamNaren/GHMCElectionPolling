@@ -1,6 +1,7 @@
 package com.cgg.ghmcpollingapp.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -36,10 +37,17 @@ public class PSWiseEntryActivity extends AppCompatActivity {
             }
         });
 
+        binding.header.imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 
     private boolean validateData() {
-//        Utils.hideKeyboard(context, binding.btnSubmit);
+        Utils.hideKeyboard(context, binding.btnSubmit);
 
         if (binding.spPollingStation.getSelectedItem() != null) {
             pollingStation = binding.spPollingStation.getSelectedItem().toString().trim();
@@ -67,5 +75,14 @@ public class PSWiseEntryActivity extends AppCompatActivity {
 
     private void showSnackBar(String str) {
         Snackbar.make(binding.cl, str, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent newIntent = new Intent(this, DashboardActivity.class);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(newIntent);
+        finish();
     }
 }

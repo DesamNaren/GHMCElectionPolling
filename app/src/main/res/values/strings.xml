@@ -67,4 +67,7 @@
     <string name="sel_circle">Select Circle</string>
     <string name="sel_ward">Select Ward</string>
     <string name="sel_sector">Select Sector</string>
+    <string name="home">Home</string>
+    <string name="logout_menu">Logout</string>
+    <string name="logout_from_app">Are you sure you want to logout from app?</string>
 </resources>
