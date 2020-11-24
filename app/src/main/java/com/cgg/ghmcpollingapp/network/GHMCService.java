@@ -3,11 +3,13 @@ package com.cgg.ghmcpollingapp.network;
 import com.cgg.ghmcpollingapp.BuildConfig;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
+import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
+import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
@@ -58,8 +60,8 @@ public interface GHMCService {
     @POST("GHMCElection/submitPSPollStatus")
     Call<PSEntrySubmitResponse> getPSSubmitResponse(@Body PSEntrySubmitRequest psEntrySubmitRequest);
 
-    @POST("GHMCElection/submitPSPollStatus")
-    Call<PSEntrySubmitResponse> getPSSubmit(@Body PSEntrySubmitRequest psEntrySubmitRequest);
+    @POST("GHMCElection/AddSectorToUser")
+    Call<SectorMapResponse> mapSector(@Body SectorMapRequest sectorMapRequest);
 }
 
 

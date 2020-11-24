@@ -68,6 +68,10 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                             String loginRes = gson.toJson(loginResponse);
                             editor.putString(AppConstants.MOBILE_NO, loginResponse.getLoginData().get(0).getMobileNo());
                             editor.putString(AppConstants.LOGIN_RES, loginRes);
+                            editor.putString(AppConstants.ZONE_ID,loginResponse.getLoginData().get(0).getZoneID());
+                            editor.putString(AppConstants.CIRCLE_ID,loginResponse.getLoginData().get(0).getCircleID());
+                            editor.putString(AppConstants.WARD_ID,loginResponse.getLoginData().get(0).getWardID());
+                            editor.putString(AppConstants.SECTOR_ID,loginResponse.getLoginData().get(0).getSectorID());
                             editor.commit();
                             if (TextUtils.isEmpty(loginResponse.getLoginData().get(0).getMPIN())) {
                                 startActivity(new Intent(context, OTPActivity.class));

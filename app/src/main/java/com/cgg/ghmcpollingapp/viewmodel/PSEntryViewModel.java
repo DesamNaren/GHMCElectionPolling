@@ -42,20 +42,21 @@ public class PSEntryViewModel extends AndroidViewModel {
         psEntryInterface = (PSEntryInterface) context;
         pollingMasterRep = new PollingMasterRep(application);
         pollingStations = new MutableLiveData<>();
+        pollingStationId = new MutableLiveData<>();
 
     }
 
 
-    public LiveData<List<String>> getPollingStations() {
+    public LiveData<List<String>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
         if (pollingStations != null) {
-            pollingStations = pollingMasterRep.getPollingStations();
+            pollingStations = pollingMasterRep.getPollingStations(zoneId,circleId,wardId,sectorId);
         }
         return pollingStations;
     }
 
     public LiveData<String> getPollingStationId(String psName, String zoneId, String circleId, String wardId, String sectorId) {
         if (pollingStationId != null) {
-            pollingStationId = pollingMasterRep.getPollingStationId(psName, sectorId, zoneId, circleId, wardId);
+            pollingStationId = pollingMasterRep.getPollingStationId(psName, zoneId, circleId, wardId,sectorId);
         }
         return pollingStationId;
     }

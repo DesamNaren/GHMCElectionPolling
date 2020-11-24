@@ -21,8 +21,8 @@ public class PollingMasterRep {
         return pollingMasterDao.getZones();
     }
 
-    public LiveData<List<String>> getPollingStations() {
-        return pollingMasterDao.getPollingStations();
+    public LiveData<List<String>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
+        return pollingMasterDao.getPsNames(sectorId,zoneId,circleId,wardId);
     }
 
     public LiveData<String> getPollingStationId(String psName, String zoneId ,String circleId, String wardId, String sectorId) {

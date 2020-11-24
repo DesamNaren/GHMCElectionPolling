@@ -30,8 +30,11 @@ import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
+import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
+import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
+import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
@@ -39,6 +42,7 @@ import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +51,10 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
     private ActivityMapSectorBinding binding;
     private Context context;
-    private String zoneName, zoneId, cirName, circleId, wardName, wardId, secName, secId;
+    private String zoneName, zoneId, cirName, circleId, wardName, wardId, secName, secId,mobNo,userId;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private LogoutViewModel logoutViewModel;
-    private String mobNum;
     PollingMasterRep pollingMasterRep;
     MapSectorViewModel mapSectorViewModel;
     List<String> zones;
@@ -61,6 +64,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     CustomProgressDialog customProgressDialog;
     ArrayAdapter selectAdapter;
     ArrayList sellist;
+    LoginResponse loginResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
         sharedPreferences = PollingApplication.get(context).getPreferences();
         editor = PollingApplication.get(context).getPreferencesEditor();
-        mobNum = sharedPreferences.getString(AppConstants.MOBILE_NO, "");
+        mobNo = sharedPreferences.getString(AppConstants.MOBILE_NO, "");
         binding.btnClear.setOnClickListener(this);
         binding.btnSubmit.setOnClickListener(this);
         binding.headerLyout.imgBack.setOnClickListener(this);
@@ -82,7 +86,16 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         circles = new ArrayList<>();
         wards = new ArrayList<>();
         sectors = new ArrayList<>();
+        String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
+        LoginResponse loginResponse = new Gson().fromJson(data, LoginResponse.class);
 
+        if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
+
+            userId=loginResponse.getLoginData().get(0).getUserID();
+        } else {
+            Utils.customErrorAlert(context, getString(R.string.app_name),
+                    getString(R.string.something) + " while fetching login response onCreate");
+        }
         sellist = new ArrayList();
         sellist.add(getString(R.string.select));
         selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
@@ -285,15 +298,14 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                 if(validateData()){
                         if (Utils.checkInternetConnection(context)) {
                             customProgressDialog.show();
-                            PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
-                            psEntrySubmitRequest.setDeviceId(Utils.getDeviceID(context));
-                            psEntrySubmitRequest.setIpAddress(Utils.getLocalIpAddress());
-                            psEntrySubmitRequest.setMPIN(Utils.getLocalIpAddress());
-//                            psEntrySubmitRequest.setPollingStationId(psId);
-//                            psEntrySubmitRequest.setTimeSlotId(psId);
-//                            psEntrySubmitRequest.setUserName(psId);
-//                            psEntrySubmitRequest.setVotesPolled(psId);
-                            mapSectorViewModel.getPSDetails(psEntrySubmitRequest);
+                            SectorMapRequest sectorMapRequest = new SectorMapRequest();
+                            sectorMapRequest.setZoneID(zoneId);
+                            sectorMapRequest.setCircleID(circleId);
+                            sectorMapRequest.setWardID(wardId);
+                            sectorMapRequest.setSectorID(secId);
+                            sectorMapRequest.setMobileNo(mobNo);
+                            sectorMapRequest.setUserID(userId);
+                            mapSectorViewModel.mapSector(sectorMapRequest);
                         } else {
                             Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                         }
@@ -407,7 +419,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                             dialog.dismiss();
                         }
                         LogoutRequest logoutRequest = new LogoutRequest();
-                        logoutRequest.setMobileNo(mobNum);
+                        logoutRequest.setMobileNo(mobNo);
                         logoutViewModel.logoutCall(logoutRequest).observe(MapSectorActivity.this, new Observer<LogoutResponse>() {
                             @Override
                             public void onChanged(LogoutResponse logoutResponse) {
@@ -474,22 +486,22 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
-    public void submitPSEntry(PSEntrySubmitResponse psEntrySubmitResponse) {
+    public void mapSectorResponse(SectorMapResponse sectorMapResponse) {
         try {
             customProgressDialog.hide();
-            if (psEntrySubmitResponse != null && psEntrySubmitResponse.getStatusCode() != null) {
-                if (psEntrySubmitResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+            if (sectorMapResponse != null && sectorMapResponse.getStatusCode() != null) {
+                if (sectorMapResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
                     //visible time slot and load spinner
                     editor.putString(AppConstants.ZONE_ID,zoneId);
                     editor.putString(AppConstants.CIRCLE_ID,circleId);
                     editor.putString(AppConstants.WARD_ID,wardId);
                     editor.putString(AppConstants.SECTOR_ID,secId);
                     editor.commit();
-                  Utils.customSuccessAlert(MapSectorActivity.this,getString(R.string.app_name),psEntrySubmitResponse.getResponseMessage());
+                  Utils.customSuccessAlert(MapSectorActivity.this,getString(R.string.app_name),sectorMapResponse.getResponseMessage());
 
-                } else if (psEntrySubmitResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                } else if (sectorMapResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
-                            psEntrySubmitResponse.getResponseMessage());
+                            sectorMapResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
                             getString(R.string.something) + " No status code found in mark attendance web service response");

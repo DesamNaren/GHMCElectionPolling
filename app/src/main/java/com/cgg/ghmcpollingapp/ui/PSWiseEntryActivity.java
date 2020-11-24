@@ -2,6 +2,7 @@ package com.cgg.ghmcpollingapp.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 
 import com.cgg.ghmcpollingapp.R;
+import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityPsWiseEntryBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
@@ -42,7 +44,10 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
     List<String> timeSlots;
     String psId;
     private CustomProgressDialog customProgressDialog;
-
+    String zoneId,circleId,wardId,sectorId;
+    SharedPreferences sharedPreferences;
+    ArrayAdapter selectAdapter;
+    ArrayList sellist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +55,19 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
         context = PSWiseEntryActivity.this;
         customProgressDialog = new CustomProgressDialog(context);
 
+        sharedPreferences= PollingApplication.get(context).getPreferences();
+        zoneId=sharedPreferences.getString(AppConstants.ZONE_ID,"");
+        circleId=sharedPreferences.getString(AppConstants.CIRCLE_ID,"");
+        wardId=sharedPreferences.getString(AppConstants.WARD_ID,"");
+        sectorId=sharedPreferences.getString(AppConstants.SECTOR_ID,"");
         viewModel = new PSEntryViewModel(this, getApplication());
         pollingStations = new ArrayList<>();
 
+        sellist = new ArrayList();
+        sellist.add(getString(R.string.select));
+        selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
+        binding.spTimeSlot.setAdapter(selectAdapter);
+        binding.spPollingStation.setAdapter(selectAdapter);
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,8 +89,6 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                         binding.spPollingStation.setSelection(0);
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
-                } else {
-                    Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), "Not getting polling station id");
                 }
             }
         });
@@ -95,14 +108,19 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             }
         });
 
-        viewModel.getPollingStations().observe(this, new Observer<List<String>>() {
+        viewModel.getPollingStations(zoneId,circleId,wardId,sectorId).observe(this, new Observer<List<String>>() {
             @Override
             public void onChanged(List<String> ps) {
-                pollingStations = ps;
-                pollingStations.add(0, getString(R.string.select));
-                ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
-                        pollingStations);
-                binding.spPollingStation.setAdapter(adapter);
+                if(ps!=null && ps.size()>0){
+                    pollingStations = ps;
+                    pollingStations.add(0, getString(R.string.select));
+                    ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
+                            pollingStations);
+                    binding.spPollingStation.setAdapter(adapter);
+                }else{
+                    Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), getString(R.string.no_pollings_found));
+                }
+
             }
         });
 
@@ -111,26 +129,26 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String psName = binding.spPollingStation.getSelectedItem().toString();
                 if (binding.spPollingStation.getSelectedItemId() != 0) {
-                    viewModel.getPollingStationId(psName, "", "", "", "")
+                    viewModel.getPollingStationId(psName, zoneId, circleId, wardId, sectorId)
                             .observe(PSWiseEntryActivity.this, new Observer<String>() {
                                 @Override
                                 public void onChanged(String psId) {
                                     if (!TextUtils.isEmpty(psId)) {
                                         PSWiseEntryActivity.this.psId = psId;
-                                        if (Utils.checkInternetConnection(context)) {
-                                            customProgressDialog.show();
-                                            PSEntryRequest psEntryRequest = new PSEntryRequest();
-                                            psEntryRequest.setDeviceId(Utils.getDeviceID(context));
-                                            psEntryRequest.setIpAddress(Utils.getLocalIpAddress());
-                                            psEntryRequest.setMPIN(Utils.getLocalIpAddress());
-                                            psEntryRequest.setPollingStationId(psId);
-                                            psEntryRequest.setUserName(psId);
-                                            viewModel.getPSDetails(psEntryRequest);
-                                        } else {
-                                            PSWiseEntryActivity.this.psId = "";
-                                            binding.spPollingStation.setSelection(0);
-                                            Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
-                                        }
+//                                        if (Utils.checkInternetConnection(context)) {
+//                                            customProgressDialog.show();
+//                                            PSEntryRequest psEntryRequest = new PSEntryRequest();
+//                                            psEntryRequest.setDeviceId(Utils.getDeviceID(context));
+//                                            psEntryRequest.setIpAddress(Utils.getLocalIpAddress());
+//                                            psEntryRequest.setMPIN(Utils.getLocalIpAddress());
+//                                            psEntryRequest.setPollingStationId(psId);
+//                                            psEntryRequest.setUserName(psId);
+//                                            viewModel.getPSDetails(psEntryRequest);
+//                                        } else {
+//                                            PSWiseEntryActivity.this.psId = "";
+//                                            binding.spPollingStation.setSelection(0);
+//                                            Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
+//                                        }
                                     } else {
                                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), "Not getting polling station id");
                                     }

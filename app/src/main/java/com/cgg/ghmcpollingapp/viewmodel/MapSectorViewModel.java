@@ -10,9 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
-import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
-import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
-import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
+import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
+import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.google.gson.Gson;
@@ -115,20 +114,20 @@ public class MapSectorViewModel extends AndroidViewModel {
         }
         return sectorId;
     }
-    public void getPSDetails(PSEntrySubmitRequest attendanceRequest) {
+    public void mapSector(SectorMapRequest sectorMapRequest) {
         Gson gson = new Gson();
-        String str = gson.toJson(attendanceRequest);
+        String str = gson.toJson(sectorMapRequest);
         GHMCService virtuoService = GHMCService.Factory.create();
-        virtuoService.getPSSubmitResponse(attendanceRequest).enqueue(new Callback<PSEntrySubmitResponse>() {
+        virtuoService.mapSector(sectorMapRequest).enqueue(new Callback<SectorMapResponse>() {
             @Override
-            public void onResponse(@NonNull Call<PSEntrySubmitResponse> call, @NonNull Response<PSEntrySubmitResponse> response) {
+            public void onResponse(@NonNull Call<SectorMapResponse> call, @NonNull Response<SectorMapResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    sectorMappingInterface.submitPSEntry(response.body());
+                    sectorMappingInterface.mapSectorResponse(response.body());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<PSEntrySubmitResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<SectorMapResponse> call, @NonNull Throwable t) {
                 errorHandlerInterface.handleError(t, context);
             }
         });

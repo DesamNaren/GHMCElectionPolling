@@ -74,4 +74,5 @@
     <string name="no_circles_found">No circles found</string>
     <string name="no_wards_found">No wards found</string>
     <string name="no_sectors_found">No sectors found</string>
+    <string name="no_pollings_found">No polling stations found</string>
 </resources>
