@@ -10,10 +10,10 @@
                 <corners android:radius="3dp" />
 
                 <padding
-                    android:bottom="3dp"
-                    android:left="3dp"
-                    android:right="3dp"
-                    android:top="3dp" />
+                    android:bottom="5dp"
+                    android:left="5dp"
+                    android:right="@dimen/dimen_10dp"
+                    android:top="5dp" />
                 <stroke
                     android:width="2dp"
                     android:color="@color/dark_gray"/>
@@ -21,7 +21,7 @@
         </item>
         <item >
             <bitmap android:gravity="center|right"
-                android:src="@drawable/down_arrow_new"
+                android:src="@drawable/drop_down_arrow"
                 android:tint="@color/dark_gray"/>
         </item>
     </layer-list></item>
