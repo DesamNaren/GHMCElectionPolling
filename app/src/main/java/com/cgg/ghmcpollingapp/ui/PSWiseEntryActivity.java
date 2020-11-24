@@ -5,15 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.databinding.ActivityPsWiseEntryBinding;
 import com.cgg.ghmcpollingapp.utils.Utils;
+import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
+import com.cgg.ghmcpollingapp.viewmodel.PSEntryViewModel;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PSWiseEntryActivity extends AppCompatActivity {
 
@@ -21,12 +28,17 @@ public class PSWiseEntryActivity extends AppCompatActivity {
     private String pollingStation, timeSlot;
     private String votes;
     private Context context;
+    private PSEntryViewModel viewModel;
+    List<String> pollingStations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ps_wise_entry);
         context = PSWiseEntryActivity.this;
+        viewModel = new PSEntryViewModel(this, getApplication());
+        pollingStations=new ArrayList<>();
+
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +53,17 @@ public class PSWiseEntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+
+        viewModel.getpollingStations().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> ps) {
+                pollingStations = ps;
+
+                ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
+                        pollingStations);
+                binding.spPollingStation.setAdapter(adapter);
             }
         });
 
