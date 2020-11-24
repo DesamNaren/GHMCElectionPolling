@@ -25,5 +25,9 @@ public class PollingMasterRep {
         return pollingMasterDao.getPollingStations();
     }
 
+    public LiveData<String> getPollingStationId(String psName, String zoneId ,String circleId, String wardId, String sectorId) {
+        return pollingMasterDao.getPsId(psName, sectorId, zoneId, circleId, wardId);
+    }
+
 
 }

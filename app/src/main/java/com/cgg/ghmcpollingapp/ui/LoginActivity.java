@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                 get(LoginViewModel.class);
         binding.setViewModel(loginViewModel);
 
-        PollingMasterRep pollingMasterRep=new PollingMasterRep(getApplication());
+        new PollingMasterRep(getApplication());
 
         loginViewModel.getLoginCall().observe(this, new Observer<LoginResponse>() {
             @Override
@@ -71,10 +71,10 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                             editor.commit();
                             if (TextUtils.isEmpty(loginResponse.getLoginData().get(0).getMPIN())) {
                                 startActivity(new Intent(context, OTPActivity.class));
-                            }else if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
+                            } else if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
                                     !loginResponse.getLoginData().get(0).getIsSectorMapped().equalsIgnoreCase(AppConstants.TRUE)) {
                                 startActivity(new Intent(context, MapSectorActivity.class));
-                            }  else  {
+                            } else {
                                 startActivity(new Intent(context, DashboardActivity.class));
                             }
                         } else {

@@ -226,7 +226,8 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
 
     @Override
     public void handleError(Throwable e, Context context) {
-        customProgressDialog.dismiss();
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
         String errMsg = ErrorHandler.handleError(e, context);
         Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
     }
@@ -239,6 +240,8 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
 
     @Override
     public void handleError(String errMsg, Context context) {
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
         Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
     }
 }

@@ -11,21 +11,27 @@ import androidx.databinding.DataBindingUtil;
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.adapter.StatusListAdapter;
 import com.cgg.ghmcpollingapp.databinding.ActivityPsWiseStatusBinding;
+import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
+import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.model.status.StatusListData;
+import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
+import com.cgg.ghmcpollingapp.utils.Utils;
 
 import java.util.List;
 
-public class PSWiseStatusActivity extends AppCompatActivity {
+public class PSWiseStatusActivity extends AppCompatActivity implements ErrorHandlerInterface {
     private Context context;
     private List<StatusListData> statuslist;
     private StatusListAdapter adapter;
     private ActivityPsWiseStatusBinding binding;
+    private CustomProgressDialog customProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ps_wise_status);
         context = PSWiseStatusActivity.this;
+        customProgressDialog = new CustomProgressDialog(context);
 
         /*if (Utils.checkInternetConnection(DashboardActivity.this)) {
             viewModel.getApplicationListCall(request).observe(this, new Observer<ApplicationRes>() {
@@ -65,7 +71,6 @@ public class PSWiseStatusActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
     }
 
     @Override
@@ -75,5 +80,24 @@ public class PSWiseStatusActivity extends AppCompatActivity {
                 Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(newIntent);
         finish();
+    }
+
+    @Override
+    public void handleError(Throwable e, Context context) {
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
+        binding.shimmerViewContainer.stopShimmerAnimation();
+        binding.shimmerViewContainer.setVisibility(View.GONE);
+        String errMsg = ErrorHandler.handleError(e, context);
+        Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
+    }
+
+    @Override
+    public void handleError(String errMsg, Context context) {
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
+        binding.shimmerViewContainer.stopShimmerAnimation();
+        binding.shimmerViewContainer.setVisibility(View.GONE);
+        Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
 }

@@ -9,4 +9,8 @@ public class AppConstants {
     public static final String MOBILE_NO = "MOBILE_NO";
     public static final String TRUE = "TRUE";
     public static final String FALSE = "FALSE";
+    public static final String SECTOR_ID = "SECTOR_ID";
+    public static final String WARD_ID = "WARD_ID";
+    public static final String CIRCLE_ID = "CIRCLE_ID";
+    public static final String ZONE_ID = "ZONE_ID";
 }

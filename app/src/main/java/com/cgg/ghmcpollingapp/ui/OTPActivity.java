@@ -26,6 +26,7 @@ import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
+import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LoginViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.OTPViewModel;
@@ -42,6 +43,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
     private int cnt = 0;
     private Gson gson;
     private String mobNum;
+    private CustomProgressDialog customProgressDialog;
 
 
     @Override
@@ -88,36 +90,41 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
             @Override
             public void onClick(View v) {
 
+                if (Utils.checkInternetConnection(context)) {
+                    if (!TextUtils.isEmpty(mobNum)) {
+                        customProgressDialog.show();
+                        cnt++;
+                        binding.firstPinView.setText("");
+                        LoginRequest loginRequest = new LoginRequest();
 
-                if (!TextUtils.isEmpty(mobNum)) {
+                        loginRequest.setMobileNo(mobNum);
+                        loginRequest.setDeviceID(Utils.getDeviceID(context));
+                        loginRequest.setIPAddress(Utils.getLocalIpAddress());
 
-                    cnt++;
-                    binding.firstPinView.setText("");
-                    LoginRequest loginRequest = new LoginRequest();
-
-                    loginRequest.setMobileNo(mobNum);
-                    loginRequest.setDeviceID(Utils.getDeviceID(context));
-                    loginRequest.setIPAddress(Utils.getLocalIpAddress());
-
-                    otpViewModel.callResendOTP(loginRequest).observe(OTPActivity.this, loginResponse -> {
-
-                        OTPActivity.this.loginResponse = loginResponse;
-                        if (loginResponse != null && loginResponse.getStatusCode() != null) {
-                            if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
-                                    loginResponse.getLoginData() != null) {
-                                otpTimer();
-                                storeLoginRes(loginResponse);
-                            } else if (loginResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
-                                Utils.customErrorAlert(context, getString(R.string.app_name_release), loginResponse.getResponseMessage());
+                        otpViewModel.callResendOTP(loginRequest).observe(OTPActivity.this, loginResponse -> {
+                            customProgressDialog.hide();
+                            OTPActivity.this.loginResponse = loginResponse;
+                            if (loginResponse != null && loginResponse.getStatusCode() != null) {
+                                if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
+                                        loginResponse.getLoginData() != null) {
+                                    otpTimer();
+                                    storeLoginRes(loginResponse);
+                                } else if (loginResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                                    Utils.customErrorAlert(context, getString(R.string.app_name_release), loginResponse.getResponseMessage());
+                                } else {
+                                    Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something));
+                                }
                             } else {
-                                Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something));
-                            }
-                        } else {
-                            Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.server_not));
+                                Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.server_not));
 
-                        }
-                    });
+                            }
+                        });
+                    }
+
+                } else {
+                    Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                 }
+
             }
         });
 
@@ -188,13 +195,6 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
     }
 
     @Override
-    public void handleError(Throwable e, Context context) {
-        String errMsg = ErrorHandler.handleError(e, context);
-        Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
-    }
-
-
-    @Override
     public void onBackPressed() {
         Utils.customCancelAlert(OTPActivity.this, getResources().getString(R.string.app_name_release),
                 getString(R.string.cancel_otp_process), editor);
@@ -222,7 +222,17 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
     }
 
     @Override
+    public void handleError(Throwable e, Context context) {
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
+        String errMsg = ErrorHandler.handleError(e, context);
+        Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
+    }
+
+    @Override
     public void handleError(String errMsg, Context context) {
-        Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.hide();
+        Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
 }
