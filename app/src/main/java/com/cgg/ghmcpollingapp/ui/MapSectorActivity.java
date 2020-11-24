@@ -1,9 +1,5 @@
 package com.cgg.ghmcpollingapp.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,11 +7,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.databinding.ActivityMapSectorBinding;
 import com.cgg.ghmcpollingapp.utils.Utils;
-import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 public class MapSectorActivity extends AppCompatActivity implements View.OnClickListener {
@@ -97,9 +95,10 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                 onBackPressed();
                 break;
             case R.id.btn_submit:
-                if (validateData()) {
-                    MapSectorViewModel mapSectorViewModel = new MapSectorViewModel(context, getApplication());
-                }
+//                if (validateData()) {
+//                    MapSectorViewModel mapSectorViewModel = new MapSectorViewModel(context, getApplication());
+//                }
+                startActivity(new Intent(context, PSWiseEntryActivity.class));
         }
     }
 
