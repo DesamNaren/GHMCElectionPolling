@@ -66,13 +66,13 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                             editor.putString(AppConstants.MOBILE_NO, loginResponse.getLoginData().get(0).getMobileNo());
                             editor.putString(AppConstants.LOGIN_RES, loginRes);
                             editor.commit();
-                            if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
-                                    loginResponse.getLoginData().get(0).getIsSectorMapped().equalsIgnoreCase(AppConstants.TRUE)) {
-                                startActivity(new Intent(context, MapSectorActivity.class));
-                            } else if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getOTP())) {
+                            if (TextUtils.isEmpty(loginResponse.getLoginData().get(0).getMPIN())) {
                                 startActivity(new Intent(context, OTPActivity.class));
-                            } else {
-                                startActivity(new Intent(context, GenerateMPINActivity.class));
+                            }else if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
+                                    !loginResponse.getLoginData().get(0).getIsSectorMapped().equalsIgnoreCase(AppConstants.TRUE)) {
+                                startActivity(new Intent(context, MapSectorActivity.class));
+                            }  else  {
+                                startActivity(new Intent(context, DashboardActivity.class));
                             }
                         } else {
                             Utils.customErrorAlert(context, getString(R.string.app_name), getString(R.string.something));
