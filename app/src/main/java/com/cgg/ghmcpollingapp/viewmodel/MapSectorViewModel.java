@@ -8,20 +8,24 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MapSectorViewModel extends AndroidViewModel {
-//    private SyncLocationRepository syncLocationRepository;
+    private PollingMasterRep pollingMasterRep;
 //    private MutableLiveData<ViewTaskResponse> viewTaskResponseMutableLiveData;
 //    private LogEditInterface viewTaskInterface;
 
 //    private Context context;
 //    private ErrorHandlerInterface errorHandlerInterface;
 
+    private LiveData<List<String>> zones;
 
     public MapSectorViewModel(Context context, Application application) {
         super(application);
@@ -29,9 +33,18 @@ public class MapSectorViewModel extends AndroidViewModel {
 //        viewTaskResponseMutableLiveData = new MutableLiveData<>();
 //        errorHandlerInterface = (ErrorHandlerInterface) context;
 //        viewTaskInterface = (LogEditInterface) context;
+        pollingMasterRep=new PollingMasterRep(application);
+        zones=new MutableLiveData<>();
 
     }
 
+
+    public LiveData<List<String>> getZones() {
+        if (zones != null) {
+            zones = pollingMasterRep.getZones();
+        }
+        return zones;
+    }
 //    public void getPSDetails(AttendanceRequest attendanceRequest) {
 //        Gson gson = new Gson();
 //        String str = gson.toJson(attendanceRequest);

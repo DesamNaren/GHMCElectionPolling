@@ -21,22 +21,26 @@ import com.cgg.ghmcpollingapp.source.PollingEntity;
         version = 1, exportSchema = false)
 public abstract class PollingDatabase extends RoomDatabase {
 
-    private static PollingDatabase INSTANCE;
+    private static PollingDatabase INSTANCE1;
 
     public abstract PollingMasterDao pollingDao();
 
     public static PollingDatabase getDatabase(final Context context) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+        if (INSTANCE1 == null) {
+            synchronized (PollingDatabase.class) {
+                if (INSTANCE1 == null) {
+                    INSTANCE1 = Room.databaseBuilder(context.getApplicationContext(),
                             PollingDatabase.class, "polling.db")
                             // Wipes and rebuilds instead of migrating if no Migration object.
                             // Migration is not part of this codelab.
-//                            .createFromFile(new File("database/districts.json"))
+//                            .createFromFile(f)
+//                            .fallbackToDestructiveMigration()
                             .createFromAsset("database/polling.db")
-                            .fallbackToDestructiveMigration()
                             .build();
                 }
-        return INSTANCE;
+            }
+        }
+        return INSTANCE1;
     }
 
     /**

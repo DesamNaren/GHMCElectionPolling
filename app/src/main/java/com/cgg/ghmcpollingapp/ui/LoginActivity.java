@@ -20,6 +20,7 @@ import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
+import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LoginCustomViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.LoginViewModel;
@@ -53,6 +54,8 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                 this, new LoginCustomViewModel(binding, context)).
                 get(LoginViewModel.class);
         binding.setViewModel(loginViewModel);
+
+        PollingMasterRep pollingMasterRep=new PollingMasterRep(getApplication());
 
         loginViewModel.getLoginCall().observe(this, new Observer<LoginResponse>() {
             @Override

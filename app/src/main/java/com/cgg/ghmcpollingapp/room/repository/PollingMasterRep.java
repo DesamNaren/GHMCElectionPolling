@@ -5,6 +5,8 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 
+import androidx.lifecycle.LiveData;
+
 import com.cgg.ghmcpollingapp.interfaces.PollingInterface;
 import com.cgg.ghmcpollingapp.room.dao.PollingMasterDao;
 import com.cgg.ghmcpollingapp.room.database.PollingDatabase;
@@ -19,34 +21,9 @@ public class PollingMasterRep {
         PollingDatabase db = PollingDatabase.getDatabase(application);
         pollingMasterDao = db.pollingDao();
     }
-
-    public void insertEngSectors(final PollingInterface engSyncInterface, final List<PollingEntity> sectorsEntities) {
-        new InsertSectorsAsyncTask(engSyncInterface, sectorsEntities).execute();
+    public LiveData<List<String>> getZones() {
+        return pollingMasterDao.getZones();
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class InsertSectorsAsyncTask extends AsyncTask<Void, Void, Integer> {
-        List<PollingEntity> sectorsEntities;
-        PollingInterface engSyncInterface;
-
-        InsertSectorsAsyncTask(PollingInterface engSyncInterface,
-                               List<PollingEntity> sectorsEntities) {
-            this.sectorsEntities = sectorsEntities;
-            this.engSyncInterface = engSyncInterface;
-        }
-
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            pollingMasterDao.deletePollingMaster();
-            pollingMasterDao.insertPollingmaster(sectorsEntities);
-            return pollingMasterDao.pollingCount();
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            engSyncInterface.setorsCnt(integer);
-        }
-    }
 
 }

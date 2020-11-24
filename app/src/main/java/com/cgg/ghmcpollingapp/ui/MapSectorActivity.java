@@ -23,13 +23,19 @@ import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityMapSectorBinding;
+import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
+import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
+import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MapSectorActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MapSectorActivity extends AppCompatActivity implements View.OnClickListener, ErrorHandlerInterface {
 
     private ActivityMapSectorBinding binding;
     private Context context;
@@ -38,6 +44,9 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     private SharedPreferences.Editor editor;
     private LogoutViewModel logoutViewModel;
     private String mobNum;
+    PollingMasterRep pollingMasterRep;
+    MapSectorViewModel mapSectorViewModel;
+    List<String> zones;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +54,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         context = MapSectorActivity.this;
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map_sector);
         logoutViewModel = new LogoutViewModel(this, getApplication());
+        mapSectorViewModel = new MapSectorViewModel(this, getApplication());
 
         sharedPreferences = PollingApplication.get(context).getPreferences();
         editor = PollingApplication.get(context).getPreferencesEditor();
@@ -52,6 +62,17 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         binding.btnClear.setOnClickListener(this);
         binding.btnSubmit.setOnClickListener(this);
         binding.headerLyout.imgBack.setOnClickListener(this);
+        pollingMasterRep=new PollingMasterRep(getApplication());
+        zones=new ArrayList<>();
+
+
+        mapSectorViewModel.getZones().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> zones) {
+                MapSectorActivity.this.zones=zones;
+            }
+        });
+
     }
 
     private boolean validateData() {
@@ -182,5 +203,15 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void handleError(Throwable e, Context context) {
+
+    }
+
+    @Override
+    public void handleError(String e, Context context) {
+
     }
 }
