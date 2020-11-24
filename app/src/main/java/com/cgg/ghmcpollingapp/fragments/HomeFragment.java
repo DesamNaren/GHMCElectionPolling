@@ -1,6 +1,7 @@
 package com.cgg.ghmcpollingapp.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,19 +10,40 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.cgg.ghmcpollingapp.R;
+import com.cgg.ghmcpollingapp.application.PollingApplication;
+import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.FragmentHomeBinding;
+import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.ui.PSWiseEntryActivity;
 import com.cgg.ghmcpollingapp.ui.PSWiseStatusActivity;
-import com.cgg.ghmcpollingapp.viewmodel.HomeViewModel;
+import com.cgg.ghmcpollingapp.utils.Utils;
+import com.google.gson.Gson;
 
 public class HomeFragment extends Fragment {
 
+    private FragmentHomeBinding binding;
+    private SharedPreferences sharedPreferences;
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        com.cgg.ghmcpollingapp.databinding.FragmentHomeBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+        sharedPreferences = PollingApplication.get(getActivity()).getPreferences();
+        String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
+        LoginResponse loginResponse = new Gson().fromJson(data, LoginResponse.class);
+
+        if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
+
+            if (loginResponse.getLoginData().get(0).getName() != null)
+                binding.profileLl.tvUserName.setText(loginResponse.getLoginData().get(0).getName());
+
+            if (loginResponse.getLoginData().get(0).getMobileNo() != null)
+                binding.profileLl.tvUserContact.setText(loginResponse.getLoginData().get(0).getMobileNo());
+        } else {
+            Utils.customErrorAlert(getActivity(), getString(R.string.app_name),
+                    getString(R.string.something) + " while fetching login response onCreate");
+        }
 
         binding.llPsWiseEntry.setOnClickListener(new View.OnClickListener() {
             @Override

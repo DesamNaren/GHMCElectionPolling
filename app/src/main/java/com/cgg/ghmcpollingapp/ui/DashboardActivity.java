@@ -9,7 +9,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
@@ -29,14 +29,17 @@ import androidx.navigation.ui.NavigationUI;
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
+import com.cgg.ghmcpollingapp.databinding.ActivityDashboardBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
+import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 public class DashboardActivity extends AppCompatActivity implements ErrorHandlerInterface {
 
@@ -46,11 +49,12 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private Context context;
+    private ActivityDashboardBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard);
 
         context = DashboardActivity.this;
 
@@ -148,6 +152,22 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
             }
         });
 
+        String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
+        LoginResponse loginResponse = new Gson().fromJson(data, LoginResponse.class);
+
+        if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
+
+            TextView tvUser = binding.navView.getHeaderView(0).findViewById(R.id.tv_user_name);
+            if (loginResponse.getLoginData().get(0).getName() != null)
+                tvUser.setText(loginResponse.getLoginData().get(0).getName());
+
+            TextView tvDes = binding.navView.getHeaderView(0).findViewById(R.id.tv_user_mob);
+            if (loginResponse.getLoginData().get(0).getMobileNo() != null)
+                tvDes.setText(loginResponse.getLoginData().get(0).getMobileNo());
+        } else {
+            Utils.customErrorAlert(context, getString(R.string.app_name),
+                    getString(R.string.something) + " while fetching login response onCreate");
+        }
 
     }
 
