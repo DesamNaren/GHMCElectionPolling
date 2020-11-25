@@ -95,13 +95,10 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     if (Utils.checkInternetConnection(context)) {
                         customProgressDialog.show();
                         PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
-                        psEntrySubmitRequest.setDeviceId(Utils.getDeviceID(context));
-                        psEntrySubmitRequest.setIpAddress(Utils.getLocalIpAddress());
-                        psEntrySubmitRequest.setMPIN(Utils.getLocalIpAddress());
                         psEntrySubmitRequest.setPollingStationId(psId);
-                        psEntrySubmitRequest.setTimeSlotId(psId);
-                        psEntrySubmitRequest.setUserName(psId);
-                        psEntrySubmitRequest.setVotesPolled(psId);
+                        psEntrySubmitRequest.setVotesPolled(votes);
+                        psEntrySubmitRequest.setSectorID(sectorId);
+                        psEntrySubmitRequest.setTokenId(tokenID);
                         viewModel.submitPSEntryCall(psEntrySubmitRequest);
                     } else {
                         PSWiseEntryActivity.this.psId = "";
@@ -309,6 +306,9 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     finish();
                 } else if (psEntrySubmitResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
+                            psEntrySubmitResponse.getResponseMessage());
+                } else if (psEntrySubmitResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                    Utils.customSessionAlert(PSWiseEntryActivity.this, getString(R.string.app_name),
                             psEntrySubmitResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
