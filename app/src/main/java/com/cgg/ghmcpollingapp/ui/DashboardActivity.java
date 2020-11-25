@@ -125,11 +125,11 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
         navPSReport.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
-                Intent newIntent = new Intent(DashboardActivity.this, PSWiseStatusActivity.class);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(newIntent);
+//
+//                Intent newIntent = new Intent(DashboardActivity.this, PSWiseStatusActivity.class);
+//                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(newIntent);
                 //do as you want with the button click
 
                 DrawerLayout drawer = findViewById(R.id.drawer_layout);
