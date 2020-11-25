@@ -51,13 +51,13 @@ public class LoginData {
     @Expose
     private String wardID;
 
-    @SerializedName("ZoneID1")
+    @SerializedName("zone_name")
     @Expose
     private String zoneName;
-    @SerializedName("CircleID1")
+    @SerializedName("circle_name")
     @Expose
     private String circleName;
-    @SerializedName("WardID1")
+    @SerializedName("ward_name")
     @Expose
     private String wardName;
     @SerializedName("TokenID")

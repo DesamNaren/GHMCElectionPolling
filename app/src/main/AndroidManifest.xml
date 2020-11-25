@@ -15,6 +15,7 @@
         android:theme="@style/Theme.GHMCPollingApp"
         android:usesCleartextTraffic="true">
         <activity android:name=".ui.ValidateMPINActivity"></activity>
+        <activity android:name=".ui.QuitAppActivity"></activity>
         <activity
             android:name=".ui.MapSectorActivity"
             android:screenOrientation="portrait"

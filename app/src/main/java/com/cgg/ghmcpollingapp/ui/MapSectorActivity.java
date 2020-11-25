@@ -60,9 +60,8 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     List<String> wards;
     List<String> sectors;
     CustomProgressDialog customProgressDialog;
-    ArrayAdapter selectAdapter;
-    ArrayList sellist;
-    LoginResponse loginResponse;
+    private ArrayAdapter<String> selectAdapter;
+    private ArrayList<String> sellist;
     private String tokenId;
 
     @Override
@@ -87,7 +86,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         sectors = new ArrayList<>();
         String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
         LoginResponse loginResponse = new Gson().fromJson(data, LoginResponse.class);
-        tokenId=sharedPreferences.getString(AppConstants.TOKEN_ID,"");
+        tokenId = sharedPreferences.getString(AppConstants.TOKEN_ID, "");
         if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
 
             userId = loginResponse.getLoginData().get(0).getUserID();
@@ -304,7 +303,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                         sectorMapRequest.setSectorID(secId);
                         sectorMapRequest.setMobileNo(mobNo);
                         sectorMapRequest.setUserID(userId);
-                        sectorMapRequest.setTokenID(userId);
+                        sectorMapRequest.setTokenID(tokenId);
                         mapSectorViewModel.mapSector(sectorMapRequest);
                     } else {
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
@@ -493,7 +492,10 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         try {
             customProgressDialog.hide();
             if (sectorMapResponse != null && sectorMapResponse.getStatusCode() != null) {
-                if (sectorMapResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                if (sectorMapResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                    Utils.customSessionAlert(MapSectorActivity.this, getString(R.string.app_name),
+                            sectorMapResponse.getResponseMessage());
+                } else if (sectorMapResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
                     //visible time slot and load spinner
                     editor.putString(AppConstants.ZONE_ID, zoneId);
                     editor.putString(AppConstants.CIRCLE_ID, circleId);

@@ -51,7 +51,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
         super.onCreate(savedInstanceState);
         context = OTPActivity.this;
 
-        customProgressDialog=new CustomProgressDialog(context);
+        customProgressDialog = new CustomProgressDialog(context);
         SharedPreferences sharedPreferences = PollingApplication.get(context).getPreferences();
         editor = PollingApplication.get(context).getPreferencesEditor();
         gson = PollingApplication.get(context).getGson();
@@ -81,6 +81,8 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
                     !TextUtils.isEmpty(loginResponse.getLoginData().get(0).getOTP())
                     && !TextUtils.isEmpty(mobNum))) {
                 Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something));
+            }else{
+                set6DigitText(mobNum);
             }
         } catch (Exception e) {
             Toast.makeText(context, getString(R.string.something), Toast.LENGTH_SHORT).show();
@@ -106,6 +108,10 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
                             customProgressDialog.hide();
                             OTPActivity.this.loginResponse = loginResponse;
                             if (loginResponse != null && loginResponse.getStatusCode() != null) {
+                                if (loginResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                                    Utils.customSessionAlert(OTPActivity.this, getString(R.string.app_name),
+                                            loginResponse.getResponseMessage());
+                                }
                                 if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
                                         loginResponse.getLoginData() != null) {
                                     otpTimer();
@@ -176,11 +182,28 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
 
     }
 
+    private void set6DigitText(String mobileNumber) {
+        String maskedMobNum = mobileNumber.replaceAll("\\w(?=\\w{4})", "*");
+        binding.enter6DigitOtp.setText(getString(R.string.enter_6_digit_otp) + " " + maskedMobNum);
+    }
+
     private void storeLoginRes(LoginResponse loginResponse) {
-        String loginRes = gson.toJson(loginResponse.getLoginData());
+        String loginRes = gson.toJson(loginResponse);
         editor.putString(AppConstants.MOBILE_NO, mobNum);
         editor.putString(AppConstants.LOGIN_RES, loginRes);
+        editor.putString(AppConstants.ZONE_ID, loginResponse.getLoginData().get(0).getZoneID());
+        editor.putString(AppConstants.CIRCLE_ID, loginResponse.getLoginData().get(0).getCircleID());
+        editor.putString(AppConstants.WARD_ID, loginResponse.getLoginData().get(0).getWardID());
+        editor.putString(AppConstants.SECTOR_ID, loginResponse.getLoginData().get(0).getSectorID());
+        editor.putString(AppConstants.ZONE_NAME, loginResponse.getLoginData().get(0).getZoneName());
+        editor.putString(AppConstants.CIRCLE_NAME, loginResponse.getLoginData().get(0).getCircleName());
+        editor.putString(AppConstants.WARD_NAME, loginResponse.getLoginData().get(0).getWardName());
+        editor.putString(AppConstants.SECTOR_NAME, loginResponse.getLoginData().get(0).getSectorName());
+        editor.putString(AppConstants.TOKEN_ID, loginResponse.getLoginData().get(0).getTokenID());
         editor.putString(AppConstants.mPin, loginResponse.getLoginData().get(0).getMPIN());
+
+        editor.commit();
+
         editor.commit();
     }
 

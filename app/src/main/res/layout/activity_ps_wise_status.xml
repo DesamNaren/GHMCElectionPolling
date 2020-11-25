@@ -11,6 +11,7 @@
             android:id="@+id/header"
             layout="@layout/activity_basic_layout" />
 
+
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:layout_below="@+id/header"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="gone"
             shimmer:duration="500">
 
             <!-- Adding 3 rows of placeholders -->
@@ -37,15 +38,19 @@
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
-
+<androidx.appcompat.widget.SearchView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/search"
+    android:layout_below="@id/header"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/header"
+            android:layout_below="@+id/search"
             android:layout_marginTop="@dimen/dimen_4dp"
             android:padding="@dimen/dimen_2dp"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:listitem="@layout/item_view_status" />
 
         <include

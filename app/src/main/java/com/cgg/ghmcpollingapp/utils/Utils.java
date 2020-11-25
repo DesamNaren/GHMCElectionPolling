@@ -23,6 +23,7 @@ import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.ui.LoginActivity;
 import com.cgg.ghmcpollingapp.ui.MapSectorActivity;
+import com.cgg.ghmcpollingapp.ui.ValidateMPINActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONObject;
@@ -350,7 +351,7 @@ public class Utils {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        activity.startActivity(new Intent(activity, MapSectorActivity.class));
+                        activity.startActivity(new Intent(activity, ValidateMPINActivity.class));
                         activity.finish();
                     }
                 });

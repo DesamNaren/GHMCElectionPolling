@@ -37,7 +37,7 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
     private LoginViewModel loginViewModel;
     LoginResponse loginResponse;
     Gson gson;
-    String mobNo,mpin;
+    String mobNo, mpin;
     CustomProgressDialog customProgressDialog;
     GenerateMPINViewModel generateMPINViewModel;
     private String tokenId;
@@ -47,20 +47,20 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_validate_mpin);
-        context= ValidateMPINActivity.this;
+        context = ValidateMPINActivity.this;
 
         sharedPreferences = PollingApplication.get(this).getPreferences();
         editor = sharedPreferences.edit();
-        loginViewModel=new LoginViewModel(context);
-        customProgressDialog=new CustomProgressDialog(context);
-        generateMPINViewModel=new GenerateMPINViewModel(context,getApplication());
+        loginViewModel = new LoginViewModel(context);
+        customProgressDialog = new CustomProgressDialog(context);
+        generateMPINViewModel = new GenerateMPINViewModel(context, getApplication());
 
-        gson=PollingApplication.get(this).getGson();
-        mobNo=sharedPreferences.getString(AppConstants.MOBILE_NO,"");
-        mpin=sharedPreferences.getString(AppConstants.mPin,"");
-        tokenId=sharedPreferences.getString(AppConstants.TOKEN_ID,"");
-        String response=sharedPreferences.getString(AppConstants.LOGIN_RES,"");
-        loginResponse=gson.fromJson(response,LoginResponse.class);
+        gson = PollingApplication.get(this).getGson();
+        mobNo = sharedPreferences.getString(AppConstants.MOBILE_NO, "");
+        mpin = sharedPreferences.getString(AppConstants.mPin, "");
+        tokenId = sharedPreferences.getString(AppConstants.TOKEN_ID, "");
+        String response = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
+        loginResponse = gson.fromJson(response, LoginResponse.class);
         if (!(loginResponse != null && loginResponse.getLoginData() != null && loginResponse
                 .getLoginData().get(0) != null)) {
 
@@ -77,6 +77,18 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
                 }
             }
         });
+        binding.tvNotYou.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editor.clear();
+                editor.commit();
+                Intent newIntent = new Intent(context, LoginActivity.class);
+                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(newIntent);
+                finish();
+            }
+        });
 
         loginViewModel.getLoginCall().observe(this, new Observer<LoginResponse>() {
             @Override
@@ -84,17 +96,24 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
 
                 if (loginResponse != null && loginResponse.getStatusCode() != null) {
 
-                    if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-
+                    if (loginResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                        Utils.customSessionAlert(ValidateMPINActivity.this, getString(R.string.app_name),
+                                loginResponse.getResponseMessage());
+                    } else if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
                         if (loginResponse.getLoginData().get(0) != null && loginResponse.getLoginData().get(0).getMobileNo() != null) {
                             String loginRes = new Gson().toJson(loginResponse);
                             editor.putString(AppConstants.MOBILE_NO, loginResponse.getLoginData().get(0).getMobileNo());
                             editor.putString(AppConstants.LOGIN_RES, loginRes);
-                            editor.putString(AppConstants.ZONE_ID,loginResponse.getLoginData().get(0).getZoneID());
-                            editor.putString(AppConstants.CIRCLE_ID,loginResponse.getLoginData().get(0).getCircleID());
-                            editor.putString(AppConstants.WARD_ID,loginResponse.getLoginData().get(0).getWardID());
-                            editor.putString(AppConstants.SECTOR_ID,loginResponse.getLoginData().get(0).getSectorID());
-                            editor.putString(AppConstants.mPin,loginResponse.getLoginData().get(0).getMPIN());
+                            editor.putString(AppConstants.ZONE_ID, loginResponse.getLoginData().get(0).getZoneID());
+                            editor.putString(AppConstants.CIRCLE_ID, loginResponse.getLoginData().get(0).getCircleID());
+                            editor.putString(AppConstants.WARD_ID, loginResponse.getLoginData().get(0).getWardID());
+                            editor.putString(AppConstants.SECTOR_ID, loginResponse.getLoginData().get(0).getSectorID());
+                            editor.putString(AppConstants.ZONE_NAME, loginResponse.getLoginData().get(0).getZoneName());
+                            editor.putString(AppConstants.CIRCLE_NAME, loginResponse.getLoginData().get(0).getCircleName());
+                            editor.putString(AppConstants.WARD_NAME, loginResponse.getLoginData().get(0).getWardName());
+                            editor.putString(AppConstants.SECTOR_NAME, loginResponse.getLoginData().get(0).getSectorName());
+                            editor.putString(AppConstants.mPin, loginResponse.getLoginData().get(0).getMPIN());
+                            editor.putString(AppConstants.TOKEN_ID, loginResponse.getLoginData().get(0).getTokenID());
                             editor.commit();
 
                             if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
@@ -140,10 +159,13 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
                     customProgressDialog.hide();
                     mpinResponseLiveData.removeObservers(ValidateMPINActivity.this);
                     if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
-                        if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                        if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                            Utils.customSessionAlert(ValidateMPINActivity.this, getString(R.string.app_name),
+                                    mpinResponse.getResponseMessage());
+                        } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
                             editor.clear();
                             editor.commit();
-                            startActivity(new Intent(ValidateMPINActivity.this,LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            startActivity(new Intent(ValidateMPINActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             finish();
                         } else {
                             customProgressDialog.hide();
@@ -174,7 +196,7 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
             binding.firstPinView.requestFocus();
             return;
 
-        }else if (!binding.firstPinView.getText().toString().equalsIgnoreCase(mpin)) {
+        } else if (!binding.firstPinView.getText().toString().equalsIgnoreCase(mpin)) {
             binding.firstPinView.setError(context.getString(R.string.invalid_mpin));
             binding.firstPinView.requestFocus();
             return;
@@ -189,16 +211,16 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
         }
 
 
-
-
     }
+
     private void callLogin(LoginRequest loginRequest) {
         if (Utils.checkInternetConnection(context)) {
-            loginViewModel.callLoginAPI(loginRequest,binding.btnSubmit);
+            loginViewModel.callLoginAPI(loginRequest, binding.btnSubmit);
         } else {
             Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
         }
     }
+
     @Override
     public void handleError(Throwable e, Context context) {
         String errMsg = ErrorHandler.handleError(e, context);
@@ -208,5 +230,14 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
     @Override
     public void handleError(String errMsg, Context context) {
         Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent newIntent = new Intent(ValidateMPINActivity.this, QuitAppActivity.class);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(newIntent);
+        finish();
     }
 }

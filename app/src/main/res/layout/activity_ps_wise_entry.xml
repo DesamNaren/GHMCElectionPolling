@@ -201,7 +201,7 @@
                         android:background="@color/white"
                         android:fontFamily="@font/elmessiri_regular"
                         android:hint="@string/votes_polled_during_selected_hour"
-                        android:imeOptions="actionNext"
+                        android:imeOptions="actionDone"
                         android:inputType="number"
                         android:padding="@dimen/dimen_10dp"
                         android:textColor="@color/colorPrimary"
@@ -253,8 +253,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom"
-            android:background="@color/colorAccent" />
+            android:layout_gravity="bottom" />
 
     </RelativeLayout>
 </layout>

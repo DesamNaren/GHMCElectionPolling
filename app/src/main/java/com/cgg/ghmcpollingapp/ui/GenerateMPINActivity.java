@@ -206,7 +206,10 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
                     customProgressDialog.hide();
                     mpinResponseLiveData.removeObservers(GenerateMPINActivity.this);
                     if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
-                        if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                        if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                            Utils.customSessionAlert(GenerateMPINActivity.this, getString(R.string.app_name),
+                                    mpinResponse.getResponseMessage());
+                        } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
                             editor.putString(AppConstants.mPin,mPIN);
                             editor.commit();
                             Utils.customMPINSuccessAlert(GenerateMPINActivity.this, mpinResponse.getResponseMessage());

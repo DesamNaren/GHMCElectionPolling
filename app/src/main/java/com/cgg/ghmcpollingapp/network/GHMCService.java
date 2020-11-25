@@ -7,12 +7,14 @@ import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
+import com.cgg.ghmcpollingapp.model.request.reports.ReportRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
+import com.cgg.ghmcpollingapp.model.response.report.ReportResponse;
 
 import java.util.concurrent.TimeUnit;
 
@@ -57,11 +59,14 @@ public interface GHMCService {
     @POST("GHMCElection/TimeSlot")
     Call<PSEntryResponse> getTimeSlotResponse(@Body PSEntryRequest psEntryRequest);
 
-    @POST("GHMCElection/submitPSPollStatus")
+    @POST("GHMCElection/AddPollingVotes")
     Call<PSEntrySubmitResponse> getPSSubmitResponse(@Body PSEntrySubmitRequest psEntrySubmitRequest);
 
     @POST("GHMCElection/AddSectorToUser")
     Call<SectorMapResponse> mapSector(@Body SectorMapRequest sectorMapRequest);
+
+    @POST("GHMCElection/AddSectorToUser")
+    Call<ReportResponse> getReport(@Body ReportRequest sectorMapRequest);
 }
 
 

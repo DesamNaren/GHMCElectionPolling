@@ -133,7 +133,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     pollingIDs.add(0, getString(R.string.select));
 
                     for (int i = 0; i < pollingEntities.size(); i++) {
-                        pollingStations.add(pollingEntities.get(i).getPs_name());
+                        pollingStations.add(pollingEntities.get(i).getPs_no() + "-" + pollingEntities.get(i).getPs_name());
                         pollingIDs.add(pollingEntities.get(i).getPs_no());
                     }
 
@@ -152,17 +152,21 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String psName = binding.spPollingStation.getSelectedItem().toString();
+                totalVotes = "";
+                binding.tvTotalVotes.setText(totalVotes);
+                timeSlots.clear();
+                polledvotes = "0";
                 if (binding.spPollingStation.getSelectedItemId() != 0) {
-                    String psId = pollingIDs.get(position);
+                    psId = pollingIDs.get(position);
                     viewModel.getPsVotes(psId, zoneId, circleId, wardId, sectorId)
                             .observe(PSWiseEntryActivity.this, new Observer<PollingEntity>() {
                                 @Override
                                 public void onChanged(PollingEntity pollingEntity) {
                                     if (pollingEntity != null) {
-//                                        PSWiseEntryActivity.this.psId = pollingEntity.getPs_no();
+
                                         PSWiseEntryActivity.this.totalVotes = pollingEntity.getPs_total_cnt();
-                                        timeSlots.clear();
-                                        polledvotes = "0";
+                                        binding.tvTotalVotes.setText(totalVotes);
+
                                         if (Utils.checkInternetConnection(context)) {
                                             customProgressDialog.show();
                                             PSEntryRequest req = new PSEntryRequest();
@@ -181,10 +185,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                                     }
                                 }
                             });
-                } else {
-                    totalVotes = "";
                 }
-                binding.tvTotalVotes.setText(totalVotes);
 
             }
 
@@ -217,10 +218,10 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
         }
         if (TextUtils.isEmpty(votes)) {
             binding.etVotes.requestFocus();
-            showSnackBar(getString(R.string.votes_polled_during_selected_hour));
+            showSnackBar(getString(R.string.enter_poll_count));
             return false;
         }
-        if (Integer.parseInt(votes) + Integer.parseInt(polledvotes) > Integer.parseInt(totalVotes)) {
+        if (Long.parseLong(votes) + Long.parseLong(polledvotes) > Long.parseLong(totalVotes)) {
             binding.etVotes.requestFocus();
             showSnackBar(getString(R.string.exceeded));
             return false;
@@ -268,9 +269,11 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
                             timeSlots);
                     binding.spTimeSlot.setAdapter(adapter);
-                    if (TextUtils.isEmpty(psEntryResponse.getVOTES())) {
+                    if (!TextUtils.isEmpty(psEntryResponse.getVOTES())) {
                         polledvotes = psEntryResponse.getVOTES();
                         binding.tvPolledVotes.setText(polledvotes);
+                    } else {
+                        polledvotes = "0";
                     }
                 } else if (psEntryResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
@@ -287,6 +290,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                         getString(R.string.server_not) + " : Mark attendance web service");
             }
         } catch (Exception e) {
+            polledvotes = "0";
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             customProgressDialog.hide();
             e.printStackTrace();
@@ -299,11 +303,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             customProgressDialog.hide();
             if (psEntrySubmitResponse != null && psEntrySubmitResponse.getStatusCode() != null) {
                 if (psEntrySubmitResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                    Intent newIntent = new Intent(this, DashboardActivity.class);
-                    newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(newIntent);
-                    finish();
+                    Utils.customSuccessAlert(PSWiseEntryActivity.this, getString(R.string.app_name), psEntrySubmitResponse.getResponseMessage());
                 } else if (psEntrySubmitResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
                             psEntrySubmitResponse.getResponseMessage());
