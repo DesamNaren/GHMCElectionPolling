@@ -51,6 +51,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
         super.onCreate(savedInstanceState);
         context = OTPActivity.this;
 
+        customProgressDialog=new CustomProgressDialog(context);
         SharedPreferences sharedPreferences = PollingApplication.get(context).getPreferences();
         editor = PollingApplication.get(context).getPreferencesEditor();
         gson = PollingApplication.get(context).getGson();
@@ -179,6 +180,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
         String loginRes = gson.toJson(loginResponse.getLoginData());
         editor.putString(AppConstants.MOBILE_NO, mobNum);
         editor.putString(AppConstants.LOGIN_RES, loginRes);
+        editor.putString(AppConstants.mPin, loginResponse.getLoginData().get(0).getMPIN());
         editor.commit();
     }
 

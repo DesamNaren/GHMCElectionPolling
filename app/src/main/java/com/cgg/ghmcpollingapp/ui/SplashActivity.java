@@ -39,6 +39,8 @@ import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
 public class SplashActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION_CODE = 2000;
@@ -63,6 +65,7 @@ public class SplashActivity extends AppCompatActivity {
         gson=PollingApplication.get(this).getGson();
         String response=sharedPreferences.getString(AppConstants.LOGIN_RES,"");
         loginResponse=gson.fromJson(response,LoginResponse.class);
+        mPIN=sharedPreferences.getString(AppConstants.mPin,"");
 
         buildVariant = BuildConfig.BUILD_TYPE;
 
@@ -70,9 +73,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    if ((loginResponse != null && loginResponse.getLoginData() != null && loginResponse
-                            .getLoginData().get(0) != null && loginResponse.getLoginData().get(0).getMPIN()!=null)) {
-
+                    if (!TextUtils.isEmpty(mPIN)) {
                         startActivity(new Intent(SplashActivity.this, ValidateMPINActivity.class));
                         finish();
                     }else{

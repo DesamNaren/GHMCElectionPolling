@@ -19,4 +19,5 @@ public class AppConstants {
     public static final String CIRCLE_NAME = "CIRCLE_NAME";
     public static final String ZONE_NAME = "ZONE_NAME";
     public static final String TOKEN_ID = "TOKEN_ID";
+    public static final String mPin = "mPin";
 }

@@ -194,22 +194,23 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
+                        Intent newIntent = new Intent(activity, ValidateMPINActivity.class);
+                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(newIntent);
+                        activity.finish();
 
-                        LogoutRequest logoutRequest = new LogoutRequest();
-                        logoutRequest.setMobileNo(mobNum);
-                        logoutViewModel.logoutCall(logoutRequest).observe(DashboardActivity.this,
-                                new Observer<LogoutResponse>() {
-                                    @Override
-                                    public void onChanged(LogoutResponse logoutResponse) {
-                                        editor.clear();
-                                        editor.commit();
-                                        Intent newIntent = new Intent(activity, LoginActivity.class);
-                                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        activity.startActivity(newIntent);
-                                        activity.finish();
-                                    }
-                                });
+//                        LogoutRequest logoutRequest = new LogoutRequest();
+//                        logoutRequest.setMobileNo(mobNum);
+//                        logoutViewModel.logoutCall(logoutRequest).observe(DashboardActivity.this,
+//                                new Observer<LogoutResponse>() {
+//                                    @Override
+//                                    public void onChanged(LogoutResponse logoutResponse) {
+//                                        editor.clear();
+//                                        editor.commit();
+//
+//                                    }
+//                                });
                     }
                 });
 

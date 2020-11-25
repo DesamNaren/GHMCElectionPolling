@@ -63,6 +63,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     ArrayAdapter selectAdapter;
     ArrayList sellist;
     LoginResponse loginResponse;
+    private String tokenId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         sectors = new ArrayList<>();
         String data = sharedPreferences.getString(AppConstants.LOGIN_RES, "");
         LoginResponse loginResponse = new Gson().fromJson(data, LoginResponse.class);
-
+        tokenId=sharedPreferences.getString(AppConstants.TOKEN_ID,"");
         if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
 
             userId = loginResponse.getLoginData().get(0).getUserID();
@@ -303,6 +304,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                         sectorMapRequest.setSectorID(secId);
                         sectorMapRequest.setMobileNo(mobNo);
                         sectorMapRequest.setUserID(userId);
+                        sectorMapRequest.setTokenID(userId);
                         mapSectorViewModel.mapSector(sectorMapRequest);
                     } else {
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
@@ -416,35 +418,38 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        LogoutRequest logoutRequest = new LogoutRequest();
-                        logoutRequest.setMobileNo(mobNo);
-                        logoutViewModel.logoutCall(logoutRequest).observe(MapSectorActivity.this, new Observer<LogoutResponse>() {
-                            @Override
-                            public void onChanged(LogoutResponse logoutResponse) {
-                                if (logoutResponse != null && logoutResponse.getStatusCode() != null) {
-                                    if (logoutResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                                        //visible time slot and load spinner
-                                        editor.clear();
-                                        editor.commit();
-                                        Intent newIntent = new Intent(activity, LoginActivity.class);
-                                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        activity.startActivity(newIntent);
-                                        activity.finish();
-                                    } else if (logoutResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
-                                        Utils.customErrorAlert(context, getString(R.string.app_name),
-                                                logoutResponse.getResponseMessage());
-                                    } else {
-                                        Utils.customErrorAlert(context, getString(R.string.app_name),
-                                                getString(R.string.something) + " No status code found in mark attendance web service response");
-                                    }
-                                } else {
-                                    Utils.customErrorAlert(context, getString(R.string.app_name),
-                                            getString(R.string.server_not) + " : Mark attendance web service");
-                                }
 
-                            }
-                        });
+                        Intent newIntent = new Intent(activity, ValidateMPINActivity.class);
+                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(newIntent);
+                        activity.finish();
+
+//                        LogoutRequest logoutRequest = new LogoutRequest();
+//                        logoutRequest.setMobileNo(mobNo);
+//                        logoutViewModel.logoutCall(logoutRequest).observe(MapSectorActivity.this, new Observer<LogoutResponse>() {
+//                            @Override
+//                            public void onChanged(LogoutResponse logoutResponse) {
+//                                if (logoutResponse != null && logoutResponse.getStatusCode() != null) {
+//                                    if (logoutResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+//                                        //visible time slot and load spinner
+//                                        editor.clear();
+//                                        editor.commit();
+//
+//                                    } else if (logoutResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+//                                        Utils.customErrorAlert(context, getString(R.string.app_name),
+//                                                logoutResponse.getResponseMessage());
+//                                    } else {
+//                                        Utils.customErrorAlert(context, getString(R.string.app_name),
+//                                                getString(R.string.something) + " No status code found in mark attendance web service response");
+//                                    }
+//                                } else {
+//                                    Utils.customErrorAlert(context, getString(R.string.app_name),
+//                                            getString(R.string.server_not) + " : Mark attendance web service");
+//                                }
+//
+//                            }
+//                        });
 
 
                     }

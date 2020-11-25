@@ -77,15 +77,13 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                             editor.putString(AppConstants.WARD_NAME, loginResponse.getLoginData().get(0).getWardName());
                             editor.putString(AppConstants.SECTOR_NAME, loginResponse.getLoginData().get(0).getSectorName());
                             editor.putString(AppConstants.TOKEN_ID, loginResponse.getLoginData().get(0).getTokenID());
+                            editor.putString(AppConstants.mPin, loginResponse.getLoginData().get(0).getMPIN());
 
                             editor.commit();
                             if (TextUtils.isEmpty(loginResponse.getLoginData().get(0).getMPIN())) {
                                 startActivity(new Intent(context, OTPActivity.class));
-                            } else if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
-                                    !loginResponse.getLoginData().get(0).getIsSectorMapped().equalsIgnoreCase(AppConstants.TRUE)) {
-                                startActivity(new Intent(context, MapSectorActivity.class));
                             } else {
-                                startActivity(new Intent(context, DashboardActivity.class));
+                                startActivity(new Intent(context, ValidateMPINActivity.class));
                             }
                         } else {
                             Utils.customErrorAlert(context, getString(R.string.app_name), getString(R.string.something));
@@ -143,7 +141,7 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
 
     private void callLogin(LoginRequest loginRequest) {
         if (Utils.checkInternetConnection(context)) {
-            loginViewModel.callLoginAPI(loginRequest);
+            loginViewModel.callLoginAPI(loginRequest,binding.btnSubmit);
         } else {
             Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
         }

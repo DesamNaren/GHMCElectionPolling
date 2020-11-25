@@ -23,6 +23,17 @@ public class SectorMapRequest {
     @SerializedName("SectorID")
     @Expose
     private String sectorID;
+  @SerializedName("TokenID")
+    @Expose
+    private String TokenID;
+
+    public String getTokenID() {
+        return TokenID;
+    }
+
+    public void setTokenID(String tokenID) {
+        TokenID = tokenID;
+    }
 
     public String getMobileNo() {
         return mobileNo;

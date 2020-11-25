@@ -1,6 +1,7 @@
 package com.cgg.ghmcpollingapp.viewmodel;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -48,8 +49,8 @@ public class LoginViewModel extends ViewModel {
     }
 
 
-    public void callLoginAPI(LoginRequest loginRequest) {
-        Utils.hideKeyboard(context, binding.btnSubmit);
+    public void callLoginAPI(LoginRequest loginRequest, View view) {
+        Utils.hideKeyboard(context,view);
         customProgressDialog.show();
         GHMCService tlService = GHMCService.Factory.create();
         tlService.getLoginResponse(loginRequest)

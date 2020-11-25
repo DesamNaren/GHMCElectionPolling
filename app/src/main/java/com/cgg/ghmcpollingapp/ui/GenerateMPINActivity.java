@@ -197,7 +197,8 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
             customProgressDialog.show();
             GenerateMPINRequest generateMPINRequest = new GenerateMPINRequest();
             generateMPINRequest.setMobileNo(mobNum);
-            generateMPINRequest.setMPIN(mPIN);
+            generateMPINRequest.setmPIN(mPIN);
+            generateMPINRequest.setTokenID(loginResponse.getLoginData().get(0).getTokenID());
             LiveData<MPINResponse> mpinResponseLiveData = generateMPINViewModel.generateMPINCall(generateMPINRequest);
             mpinResponseLiveData.observe(GenerateMPINActivity.this, new Observer<MPINResponse>() {
                 @Override
@@ -206,6 +207,8 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
                     mpinResponseLiveData.removeObservers(GenerateMPINActivity.this);
                     if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
                         if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                            editor.putString(AppConstants.mPin,mPIN);
+                            editor.commit();
                             Utils.customMPINSuccessAlert(GenerateMPINActivity.this, mpinResponse.getResponseMessage());
                         } else {
                             customProgressDialog.hide();
