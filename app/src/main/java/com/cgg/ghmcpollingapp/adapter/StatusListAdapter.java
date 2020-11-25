@@ -61,7 +61,8 @@ public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.It
                 context.startActivity(new Intent(context, PSWiseTimeSlotActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
                         .putExtra("PS_NO", dataModel.getPollingstationno())
-                        .putExtra("PS_NAME", dataModel.getNameofthebuilding()));
+                        .putExtra("PS_NAME", dataModel.getPollingstationno() + "-"
+                                + dataModel.getNameofthebuilding()));
             }
         });
 
