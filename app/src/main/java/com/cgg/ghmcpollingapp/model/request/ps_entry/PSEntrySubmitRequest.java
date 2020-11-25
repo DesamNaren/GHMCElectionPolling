@@ -5,46 +5,26 @@ import com.google.gson.annotations.SerializedName;
 
 public class PSEntrySubmitRequest {
 
-    @SerializedName("username")
+    @SerializedName("TokenID")
     @Expose
-    private String userName;
-    @SerializedName("MPIN")
-    @Expose
-    private String MPIN;
+    private String tokenId;
     @SerializedName("PollingStationID")
     @Expose
     private String pollingStationId;
-    @SerializedName("timeSlotId")
-    @Expose
-    private String timeSlotId;
     @SerializedName("VotePolled")
     @Expose
     private String votesPolled;
-    @SerializedName("deviceId")
-    @Expose
-    private String deviceId;
-    @SerializedName("ipAddress")
-    @Expose
-    private String ipAddress;
     @SerializedName("SectorID")
     @Expose
     private String SectorID;
 
 
-    public String getUserName() {
-        return userName;
+    public String getTokenId() {
+        return tokenId;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getMPIN() {
-        return MPIN;
-    }
-
-    public void setMPIN(String MPIN) {
-        this.MPIN = MPIN;
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     public String getPollingStationId() {
@@ -55,14 +35,6 @@ public class PSEntrySubmitRequest {
         this.pollingStationId = pollingStationId;
     }
 
-    public String getTimeSlotId() {
-        return timeSlotId;
-    }
-
-    public void setTimeSlotId(String timeSlotId) {
-        this.timeSlotId = timeSlotId;
-    }
-
     public String getVotesPolled() {
         return votesPolled;
     }
@@ -71,19 +43,11 @@ public class PSEntrySubmitRequest {
         this.votesPolled = votesPolled;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public String getSectorID() {
+        return SectorID;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setSectorID(String sectorID) {
+        SectorID = sectorID;
     }
 }
