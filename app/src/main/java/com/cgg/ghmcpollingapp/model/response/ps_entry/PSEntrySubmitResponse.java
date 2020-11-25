@@ -1,5 +1,6 @@
 package com.cgg.ghmcpollingapp.model.response.ps_entry;
 
+import com.cgg.ghmcpollingapp.model.response.login.LoginData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
