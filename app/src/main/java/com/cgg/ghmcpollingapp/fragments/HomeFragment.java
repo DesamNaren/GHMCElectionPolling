@@ -25,6 +25,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private SharedPreferences sharedPreferences;
+    String zoneName, circleName, wardName, sectorName;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,6 +41,18 @@ public class HomeFragment extends Fragment {
 
             if (loginResponse.getLoginData().get(0).getMobileNo() != null)
                 binding.profileLl.tvUserContact.setText(loginResponse.getLoginData().get(0).getMobileNo());
+
+
+            zoneName = sharedPreferences.getString(AppConstants.ZONE_NAME, "");
+            circleName = sharedPreferences.getString(AppConstants.CIRCLE_NAME, "");
+            wardName = sharedPreferences.getString(AppConstants.WARD_NAME, "");
+            sectorName = sharedPreferences.getString(AppConstants.SECTOR_NAME, "");
+
+            binding.tvZone.setText(zoneName);
+            binding.tvCircle.setText(circleName);
+            binding.tvWard.setText(wardName);
+            binding.tvSector.setText(sectorName);
+
         } else {
             Utils.customErrorAlert(getActivity(), getString(R.string.app_name),
                     getString(R.string.something) + " while fetching login response onCreate");

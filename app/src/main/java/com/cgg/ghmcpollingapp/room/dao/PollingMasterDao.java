@@ -58,7 +58,7 @@ public interface PollingMasterDao {
     @Query("SELECT ps_name from polling_master where sector_id LIKE :sector_id AND zone_id LIKE :zone_id AND circle_id LIKE :circle_id AND ward_id LIKE :ward_id ")
     LiveData<List<String>> getPsNames(String sector_id,String zone_id,String circle_id,String ward_id);
 
-    @Query("SELECT ps_no from polling_master where ps_name LIKE :ps_name AND zone_id LIKE :zone_id AND sector_id LIKE :sector_id AND circle_id LIKE :circle_id AND ward_id LIKE :ward_id ")
-    LiveData<String> getPsId(String ps_name,String sector_id,String zone_id,String circle_id,String ward_id);
+    @Query("SELECT * from polling_master where ps_name LIKE :ps_name AND zone_id LIKE :zone_id AND sector_id LIKE :sector_id AND circle_id LIKE :circle_id AND ward_id LIKE :ward_id ")
+    LiveData<PollingEntity> getPsId(String ps_name,String sector_id,String zone_id,String circle_id,String ward_id);
 
 }

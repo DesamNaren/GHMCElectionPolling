@@ -13,4 +13,9 @@ public class AppConstants {
     public static final String WARD_ID = "WARD_ID";
     public static final String CIRCLE_ID = "CIRCLE_ID";
     public static final String ZONE_ID = "ZONE_ID";
+    public static final String SECTOR_NAME = "SECTOR_NAME";
+    public static final String WARD_NAME = "WARD_NAME";
+    public static final String CIRCLE_NAME = "CIRCLE_NAME";
+    public static final String ZONE_NAME = "ZONE_NAME";
+    public static final String TOKEN_ID = "TOKEN_ID";
 }

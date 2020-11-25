@@ -51,6 +51,51 @@ public class LoginData {
     @Expose
     private String wardID;
 
+    @SerializedName("ZoneID1")
+    @Expose
+    private String zoneName;
+    @SerializedName("CircleID1")
+    @Expose
+    private String circleName;
+    @SerializedName("WardID1")
+    @Expose
+    private String wardName;
+    @SerializedName("TokenID")
+    @Expose
+    private String tokenID;
+
+    public String getTokenID() {
+        return tokenID;
+    }
+
+    public void setTokenID(String tokenID) {
+        this.tokenID = tokenID;
+    }
+
+    public String getZoneName() {
+        return zoneName;
+    }
+
+    public void setZoneName(String zoneName) {
+        this.zoneName = zoneName;
+    }
+
+    public String getCircleName() {
+        return circleName;
+    }
+
+    public void setCircleName(String circleName) {
+        this.circleName = circleName;
+    }
+
+    public String getWardName() {
+        return wardName;
+    }
+
+    public void setWardName(String wardName) {
+        this.wardName = wardName;
+    }
+
     public String getMobileNo() {
         return mobileNo;
     }

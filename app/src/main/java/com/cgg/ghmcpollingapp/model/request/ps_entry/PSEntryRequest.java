@@ -5,59 +5,37 @@ import com.google.gson.annotations.SerializedName;
 
 public class PSEntryRequest {
 
-    @SerializedName("username")
+    @SerializedName("SectorID")
     @Expose
-    private String userName;
-    @SerializedName("MPIN")
+    private String sectorID;
+    @SerializedName("PollingStationID")
     @Expose
-    private String MPIN;
-    @SerializedName("pollingStationId")
+    private String pollingStationID;
+    @SerializedName("TokenID")
     @Expose
-    private String pollingStationId;
-    @SerializedName("deviceId")
-    @Expose
-    private String deviceId;
-    @SerializedName("ipAddress")
-    @Expose
-    private String ipAddress;
+    private String tokenID;
 
-    public String getUserName() {
-        return userName;
+    public String getTokenID() {
+        return tokenID;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setTokenID(String tokenID) {
+        this.tokenID = tokenID;
     }
 
-    public String getMPIN() {
-        return MPIN;
+    public String getSectorID() {
+        return sectorID;
     }
 
-    public void setMPIN(String MPIN) {
-        this.MPIN = MPIN;
+    public void setSectorID(String sectorID) {
+        this.sectorID = sectorID;
     }
 
-    public String getPollingStationId() {
-        return pollingStationId;
+    public String getPollingStationID() {
+        return pollingStationID;
     }
 
-    public void setPollingStationId(String pollingStationId) {
-        this.pollingStationId = pollingStationId;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setPollingStationID(String pollingStationID) {
+        this.pollingStationID = pollingStationID;
     }
 }
