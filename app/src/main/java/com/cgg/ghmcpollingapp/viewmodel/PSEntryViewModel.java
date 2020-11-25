@@ -32,7 +32,7 @@ public class PSEntryViewModel extends AndroidViewModel {
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
-    private LiveData<List<String>> pollingStations;
+    private LiveData<List<PollingEntity>> pollingStations;
     private LiveData<PollingEntity> pollingStationId;
 
     public PSEntryViewModel(Context context, Application application) {
@@ -48,16 +48,16 @@ public class PSEntryViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<List<String>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
+    public LiveData<List<PollingEntity>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
         if (pollingStations != null) {
             pollingStations = pollingMasterRep.getPollingStations(zoneId,circleId,wardId,sectorId);
         }
         return pollingStations;
     }
 
-    public LiveData<PollingEntity> getPollingStationId(String psName, String zoneId, String circleId, String wardId, String sectorId) {
+    public LiveData<PollingEntity> getPsVotes(String psid, String zoneId, String circleId, String wardId, String sectorId) {
         if (pollingStationId != null) {
-            pollingStationId = pollingMasterRep.getPollingStationId(psName, zoneId, circleId, wardId,sectorId);
+            pollingStationId = pollingMasterRep.getPsVotes(psid, zoneId, circleId, wardId,sectorId);
         }
         return pollingStationId;
     }

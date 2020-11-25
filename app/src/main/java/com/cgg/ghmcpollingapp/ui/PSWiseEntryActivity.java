@@ -41,11 +41,12 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
     private String votes;
     private Context context;
     private PSEntryViewModel viewModel;
-    List<String> pollingStations;
+    List<String> pollingStations, pollingIDs;
+    List<PollingEntity> pollingEntities;
     List<String> timeSlots;
     String psId, totalVotes, polledvotes;
     private CustomProgressDialog customProgressDialog;
-    String zoneId, circleId, wardId, sectorId, zoneName, circleName, wardName, sectorName,tokenID;
+    String zoneId, circleId, wardId, sectorId, zoneName, circleName, wardName, sectorName, tokenID;
     SharedPreferences sharedPreferences;
     ArrayAdapter selectAdapter;
     ArrayList sellist;
@@ -76,7 +77,10 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
 
         viewModel = new PSEntryViewModel(this, getApplication());
         pollingStations = new ArrayList<>();
+        pollingIDs = new ArrayList<>();
+        pollingEntities = new ArrayList<>();
         timeSlots = new ArrayList<>();
+        pollingStations.clear();
 
         sellist = new ArrayList();
         sellist.add(getString(R.string.select));
@@ -123,12 +127,19 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             }
         });
 
-        viewModel.getPollingStations(zoneId, circleId, wardId, sectorId).observe(this, new Observer<List<String>>() {
+        viewModel.getPollingStations(zoneId, circleId, wardId, sectorId).observe(this, new Observer<List<PollingEntity>>() {
             @Override
-            public void onChanged(List<String> ps) {
+            public void onChanged(List<PollingEntity> ps) {
                 if (ps != null && ps.size() > 0) {
-                    pollingStations = ps;
+                    pollingEntities.addAll(ps);
                     pollingStations.add(0, getString(R.string.select));
+                    pollingIDs.add(0, getString(R.string.select));
+
+                    for (int i = 0; i < pollingEntities.size(); i++) {
+                        pollingStations.add(pollingEntities.get(i).getPs_name());
+                        pollingIDs.add(pollingEntities.get(i).getPs_no());
+                    }
+
                     ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
                             pollingStations);
                     binding.spPollingStation.setAdapter(adapter);
@@ -145,14 +156,14 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String psName = binding.spPollingStation.getSelectedItem().toString();
                 if (binding.spPollingStation.getSelectedItemId() != 0) {
-                    viewModel.getPollingStationId(psName, zoneId, circleId, wardId, sectorId)
+                    String psId = pollingIDs.get(position);
+                    viewModel.getPsVotes(psId, zoneId, circleId, wardId, sectorId)
                             .observe(PSWiseEntryActivity.this, new Observer<PollingEntity>() {
                                 @Override
                                 public void onChanged(PollingEntity pollingEntity) {
-                                    if (pollingEntity != null && !TextUtils.isEmpty(pollingEntity.getPs_no())) {
-                                        PSWiseEntryActivity.this.psId = pollingEntity.getPs_no();
+                                    if (pollingEntity != null) {
+//                                        PSWiseEntryActivity.this.psId = pollingEntity.getPs_no();
                                         PSWiseEntryActivity.this.totalVotes = pollingEntity.getPs_total_cnt();
-                                        binding.tvTotalVotes.setText(totalVotes);
                                         timeSlots.clear();
                                         polledvotes = "0";
                                         if (Utils.checkInternetConnection(context)) {
@@ -173,7 +184,11 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                                     }
                                 }
                             });
+                } else {
+                    totalVotes = "";
                 }
+                binding.tvTotalVotes.setText(totalVotes);
+
             }
 
             @Override
@@ -262,6 +277,9 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     }
                 } else if (psEntryResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
+                            psEntryResponse.getResponseMessage());
+                } else if (psEntryResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                    Utils.customSessionAlert(PSWiseEntryActivity.this, getString(R.string.app_name),
                             psEntryResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
