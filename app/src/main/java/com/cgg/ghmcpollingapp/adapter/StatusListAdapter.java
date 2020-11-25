@@ -49,8 +49,8 @@ public class StatusListAdapter extends RecyclerView.Adapter<StatusListAdapter.It
         holder.listItemBinding.setStatusData(dataModel);
         holder.bind(dataModel);
 
-        holder.listItemBinding.psSlNo.setText(dataModel.getPollingstationno());
-        holder.listItemBinding.psNo.setText(dataModel.getNameofthebuilding());
+        holder.listItemBinding.psSlNo.setText(dataModel.getNameofthebuilding());
+        holder.listItemBinding.psNo.setText(dataModel.getPollingstationno());
         holder.listItemBinding.totalReport.setText(dataModel.getTotalhourlyreport());
         holder.listItemBinding.pendingReport.setText(dataModel.getPendinghourlyreport());
         holder.listItemBinding.tvTotalVotes.setText(dataModel.gettOTALVOTES());
