@@ -38,6 +38,7 @@
     <string name="select_polling_station">Select Polling Station</string>
     <string name="select_time_slot">Select Time Slot</string>
     <string name="votes_polled_during_selected_hour">Votes polled during selected hour</string>
+    <string name="exceeded">Entered polled votes should not exceed the Selected polling station count</string>
     <string name="ps_wise_entry">PS wise Entry</string>
     <string name="ps_wise_status">PS wise Status</string>
     <string name="data_empty">No Records Found</string>

@@ -31,11 +31,9 @@ import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
-import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
-import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
@@ -51,7 +49,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
     private ActivityMapSectorBinding binding;
     private Context context;
-    private String zoneName, zoneId, cirName, circleId, wardName, wardId, secName, secId,mobNo,userId;
+    private String zoneName, zoneId, cirName, circleId, wardName, wardId, secName, secId, mobNo, userId;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private LogoutViewModel logoutViewModel;
@@ -91,7 +89,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
         if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
 
-            userId=loginResponse.getLoginData().get(0).getUserID();
+            userId = loginResponse.getLoginData().get(0).getUserID();
         } else {
             Utils.customErrorAlert(context, getString(R.string.app_name),
                     getString(R.string.something) + " while fetching login response onCreate");
@@ -295,23 +293,23 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validateData()){
-                        if (Utils.checkInternetConnection(context)) {
-                            customProgressDialog.show();
-                            SectorMapRequest sectorMapRequest = new SectorMapRequest();
-                            sectorMapRequest.setZoneID(zoneId);
-                            sectorMapRequest.setCircleID(circleId);
-                            sectorMapRequest.setWardID(wardId);
-                            sectorMapRequest.setSectorID(secId);
-                            sectorMapRequest.setMobileNo(mobNo);
-                            sectorMapRequest.setUserID(userId);
-                            mapSectorViewModel.mapSector(sectorMapRequest);
-                        } else {
-                            Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
-                        }
+                if (validateData()) {
+                    if (Utils.checkInternetConnection(context)) {
+                        customProgressDialog.show();
+                        SectorMapRequest sectorMapRequest = new SectorMapRequest();
+                        sectorMapRequest.setZoneID(zoneId);
+                        sectorMapRequest.setCircleID(circleId);
+                        sectorMapRequest.setWardID(wardId);
+                        sectorMapRequest.setSectorID(secId);
+                        sectorMapRequest.setMobileNo(mobNo);
+                        sectorMapRequest.setUserID(userId);
+                        mapSectorViewModel.mapSector(sectorMapRequest);
                     } else {
-                        Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), "Not getting polling station id");
+                        Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
+                } else {
+                    Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), "Not getting polling station id");
+                }
             }
         });
 
@@ -492,12 +490,16 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
             if (sectorMapResponse != null && sectorMapResponse.getStatusCode() != null) {
                 if (sectorMapResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
                     //visible time slot and load spinner
-                    editor.putString(AppConstants.ZONE_ID,zoneId);
-                    editor.putString(AppConstants.CIRCLE_ID,circleId);
-                    editor.putString(AppConstants.WARD_ID,wardId);
-                    editor.putString(AppConstants.SECTOR_ID,secId);
+                    editor.putString(AppConstants.ZONE_ID, zoneId);
+                    editor.putString(AppConstants.CIRCLE_ID, circleId);
+                    editor.putString(AppConstants.WARD_ID, wardId);
+                    editor.putString(AppConstants.SECTOR_ID, secId);
+                    editor.putString(AppConstants.ZONE_NAME, zoneName);
+                    editor.putString(AppConstants.CIRCLE_NAME, cirName);
+                    editor.putString(AppConstants.WARD_NAME, wardName);
+                    editor.putString(AppConstants.SECTOR_NAME, secName);
                     editor.commit();
-                  Utils.customSuccessAlert(MapSectorActivity.this,getString(R.string.app_name),sectorMapResponse.getResponseMessage());
+                    Utils.customSuccessAlert(MapSectorActivity.this, getString(R.string.app_name), sectorMapResponse.getResponseMessage());
 
                 } else if (sectorMapResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),

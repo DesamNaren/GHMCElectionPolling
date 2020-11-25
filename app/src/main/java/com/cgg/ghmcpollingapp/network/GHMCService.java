@@ -54,8 +54,8 @@ public interface GHMCService {
     @POST("GHMCElection/Logout")
     Call<LogoutResponse> logoutResponse(@Body LogoutRequest logoutRequest);
 
-    @POST("GHMCElection/getPSPollData")
-    Call<PSEntryResponse> getPSDetailsResponse(@Body PSEntryRequest psEntryRequest);
+    @POST("GHMCElection/TimeSlot")
+    Call<PSEntryResponse> getTimeSlotResponse(@Body PSEntryRequest psEntryRequest);
 
     @POST("GHMCElection/submitPSPollStatus")
     Call<PSEntrySubmitResponse> getPSSubmitResponse(@Body PSEntrySubmitRequest psEntrySubmitRequest);

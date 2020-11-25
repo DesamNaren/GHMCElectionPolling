@@ -16,6 +16,7 @@ import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
+import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -31,8 +32,8 @@ public class PSEntryViewModel extends AndroidViewModel {
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
-    private LiveData<List<String>> pollingStations;
-    private LiveData<String> pollingStationId;
+    private LiveData<List<PollingEntity>> pollingStations;
+    private LiveData<PollingEntity> pollingStationId;
 
     public PSEntryViewModel(Context context, Application application) {
         super(application);
@@ -47,26 +48,26 @@ public class PSEntryViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<List<String>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
+    public LiveData<List<PollingEntity>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
         if (pollingStations != null) {
             pollingStations = pollingMasterRep.getPollingStations(zoneId,circleId,wardId,sectorId);
         }
         return pollingStations;
     }
 
-    public LiveData<String> getPollingStationId(String psName, String zoneId, String circleId, String wardId, String sectorId) {
+    public LiveData<PollingEntity> getPsVotes(String psid, String zoneId, String circleId, String wardId, String sectorId) {
         if (pollingStationId != null) {
-            pollingStationId = pollingMasterRep.getPollingStationId(psName, zoneId, circleId, wardId,sectorId);
+            pollingStationId = pollingMasterRep.getPsVotes(psid, zoneId, circleId, wardId,sectorId);
         }
         return pollingStationId;
     }
 
 
-    public void getPSDetails(PSEntryRequest psEntryRequest) {
+    public void getTimeslotDetails(PSEntryRequest psEntryRequest) {
         Gson gson = new Gson();
         String str = gson.toJson(psEntryRequest);
         GHMCService ghmcService = GHMCService.Factory.create();
-        ghmcService.getPSDetailsResponse(psEntryRequest).enqueue(new Callback<PSEntryResponse>() {
+        ghmcService.getTimeSlotResponse(psEntryRequest).enqueue(new Callback<PSEntryResponse>() {
             @Override
             public void onResponse(@NonNull Call<PSEntryResponse> call, @NonNull Response<PSEntryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

@@ -68,10 +68,16 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                             String loginRes = gson.toJson(loginResponse);
                             editor.putString(AppConstants.MOBILE_NO, loginResponse.getLoginData().get(0).getMobileNo());
                             editor.putString(AppConstants.LOGIN_RES, loginRes);
-                            editor.putString(AppConstants.ZONE_ID,loginResponse.getLoginData().get(0).getZoneID());
-                            editor.putString(AppConstants.CIRCLE_ID,loginResponse.getLoginData().get(0).getCircleID());
-                            editor.putString(AppConstants.WARD_ID,loginResponse.getLoginData().get(0).getWardID());
-                            editor.putString(AppConstants.SECTOR_ID,loginResponse.getLoginData().get(0).getSectorID());
+                            editor.putString(AppConstants.ZONE_ID, loginResponse.getLoginData().get(0).getZoneID());
+                            editor.putString(AppConstants.CIRCLE_ID, loginResponse.getLoginData().get(0).getCircleID());
+                            editor.putString(AppConstants.WARD_ID, loginResponse.getLoginData().get(0).getWardID());
+                            editor.putString(AppConstants.SECTOR_ID, loginResponse.getLoginData().get(0).getSectorID());
+                            editor.putString(AppConstants.ZONE_NAME, loginResponse.getLoginData().get(0).getZoneName());
+                            editor.putString(AppConstants.CIRCLE_NAME, loginResponse.getLoginData().get(0).getCircleName());
+                            editor.putString(AppConstants.WARD_NAME, loginResponse.getLoginData().get(0).getWardName());
+                            editor.putString(AppConstants.SECTOR_NAME, loginResponse.getLoginData().get(0).getSectorName());
+                            editor.putString(AppConstants.TOKEN_ID, loginResponse.getLoginData().get(0).getTokenID());
+
                             editor.commit();
                             if (TextUtils.isEmpty(loginResponse.getLoginData().get(0).getMPIN())) {
                                 startActivity(new Intent(context, OTPActivity.class));
@@ -86,7 +92,10 @@ public class LoginActivity extends AppCompatActivity implements ErrorHandlerInte
                         }
 
                     } else if (loginResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
-                        Utils.customErrorAlert(context, getString(R.string.app_name), loginResponse.getResponseMessage());
+                        if (loginResponse.getResponseMessage() != null)
+                            Utils.customErrorAlert(context, getString(R.string.app_name), loginResponse.getResponseMessage());
+                        else
+                            Utils.customErrorAlert(context, getString(R.string.app_name), getString(R.string.something));
                     } else {
                         Utils.customErrorAlert(context, getString(R.string.app_name), getString(R.string.something));
                     }

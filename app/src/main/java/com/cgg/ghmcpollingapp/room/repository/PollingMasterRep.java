@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 
 import com.cgg.ghmcpollingapp.room.dao.PollingMasterDao;
 import com.cgg.ghmcpollingapp.room.database.PollingDatabase;
+import com.cgg.ghmcpollingapp.source.PollingEntity;
 
 import java.util.List;
 
@@ -21,12 +22,12 @@ public class PollingMasterRep {
         return pollingMasterDao.getZones();
     }
 
-    public LiveData<List<String>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
+    public LiveData<List<PollingEntity>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
         return pollingMasterDao.getPsNames(sectorId,zoneId,circleId,wardId);
     }
 
-    public LiveData<String> getPollingStationId(String psName, String zoneId ,String circleId, String wardId, String sectorId) {
-        return pollingMasterDao.getPsId(psName, sectorId, zoneId, circleId, wardId);
+    public LiveData<PollingEntity> getPsVotes(String psid, String zoneId , String circleId, String wardId, String sectorId) {
+        return pollingMasterDao.getPsVotes(psid, sectorId, zoneId, circleId, wardId);
     }
     public LiveData<String> getZoneId(String zoneName) {
         return pollingMasterDao.getZoneId(zoneName);

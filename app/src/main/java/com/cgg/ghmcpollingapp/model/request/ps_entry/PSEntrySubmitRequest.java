@@ -11,13 +11,13 @@ public class PSEntrySubmitRequest {
     @SerializedName("MPIN")
     @Expose
     private String MPIN;
-    @SerializedName("pollingStationId")
+    @SerializedName("PollingStationID")
     @Expose
     private String pollingStationId;
     @SerializedName("timeSlotId")
     @Expose
     private String timeSlotId;
-    @SerializedName("votesPolled")
+    @SerializedName("VotePolled")
     @Expose
     private String votesPolled;
     @SerializedName("deviceId")
@@ -26,6 +26,9 @@ public class PSEntrySubmitRequest {
     @SerializedName("ipAddress")
     @Expose
     private String ipAddress;
+    @SerializedName("SectorID")
+    @Expose
+    private String SectorID;
 
 
     public String getUserName() {
