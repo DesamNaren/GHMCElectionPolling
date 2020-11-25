@@ -65,7 +65,7 @@ public interface GHMCService {
     @POST("GHMCElection/AddSectorToUser")
     Call<SectorMapResponse> mapSector(@Body SectorMapRequest sectorMapRequest);
 
-    @POST("GHMCElection/AddSectorToUser")
+    @POST("GHMCElection/Reports")
     Call<ReportResponse> getReport(@Body ReportRequest sectorMapRequest);
 }
 

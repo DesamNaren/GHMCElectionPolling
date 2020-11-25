@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -12,14 +13,33 @@
             layout="@layout/activity_basic_layout" />
 
 
+        <View
+            android:id="@+id/view"
+            android:layout_below="@id/header"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <TextView
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_18sp"
+            android:padding="@dimen/dimen_8dp"
+            android:id="@+id/psNameTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:layout_marginEnd="@dimen/dimen_8dp"
+            android:layout_marginRight="@dimen/dimen_8dp"
+            android:fontFamily="@font/muli_bold" />
+
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/header"
+            android:layout_below="@+id/psNameTv"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="gone"
             shimmer:duration="500">
 
             <!-- Adding 3 rows of placeholders -->
@@ -39,21 +59,22 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <androidx.appcompat.widget.SearchView
-            android:visibility="gone"
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/header" />
+            android:layout_below="@id/psNameTv"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/colorPrimary"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/search"
+            android:layout_below="@+id/psNameTv"
             android:layout_marginTop="@dimen/dimen_4dp"
             android:padding="@dimen/dimen_2dp"
-            android:visibility="gone"
-            tools:listitem="@layout/item_view_status" />
+            android:visibility="visible"
+            tools:listitem="@layout/item_view_time_slot_status" />
 
         <include
             android:id="@+id/no_records_ll"

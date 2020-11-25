@@ -1,11 +1,9 @@
 package com.cgg.ghmcpollingapp.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +12,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cgg.ghmcpollingapp.R;
-import com.cgg.ghmcpollingapp.adapter.StatusListAdapter;
+import com.cgg.ghmcpollingapp.adapter.StatusListTimeSlotAdapter;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
-import com.cgg.ghmcpollingapp.databinding.ActivityPsWiseStatusBinding;
+import com.cgg.ghmcpollingapp.databinding.ActivityPsWiseTimeSlotStatusBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.PsStatusInterface;
@@ -30,28 +28,34 @@ import com.cgg.ghmcpollingapp.viewmodel.PSStatusViewModel;
 
 import java.util.List;
 
-public class PSWiseStatusActivity extends AppCompatActivity implements
+public class PSWiseTimeSlotActivity extends AppCompatActivity implements
         ErrorHandlerInterface, PsStatusInterface {
     private Context context;
     private List<StatusListData> statuslist;
-    private StatusListAdapter adapter;
-    private ActivityPsWiseStatusBinding binding;
+    private StatusListTimeSlotAdapter adapter;
+    private ActivityPsWiseTimeSlotStatusBinding binding;
     private CustomProgressDialog customProgressDialog;
     String sectorId, tokenID;
     SharedPreferences sharedPreferences;
     PSStatusViewModel viewModel;
+    private String psNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_ps_wise_status);
-        context = PSWiseStatusActivity.this;
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_ps_wise_time_slot_status);
+        context = PSWiseTimeSlotActivity.this;
         viewModel = new PSStatusViewModel(this, getApplication());
         customProgressDialog = new CustomProgressDialog(context);
         try {
             sharedPreferences = PollingApplication.get(context).getPreferences();
             sectorId = sharedPreferences.getString(AppConstants.SECTOR_ID, "");
             tokenID = sharedPreferences.getString(AppConstants.TOKEN_ID, "");
+            if (getIntent() != null) {
+                psNo = getIntent().getStringExtra("PS_NO");
+                String psName = getIntent().getStringExtra("PS_NAME");
+                binding.psNameTv.setText(psName);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,7 +68,7 @@ public class PSWiseStatusActivity extends AppCompatActivity implements
 
             ReportRequest req = new ReportRequest();
             req.setSectorID(sectorId);
-            req.setPollingStationID("0");
+            req.setPollingStationID(psNo);
             req.setTokenID(tokenID);
 
             viewModel.getReports(req);
@@ -84,10 +88,6 @@ public class PSWiseStatusActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        Intent newIntent = new Intent(this, DashboardActivity.class);
-        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(newIntent);
         finish();
     }
 
@@ -118,22 +118,22 @@ public class PSWiseStatusActivity extends AppCompatActivity implements
                     if (reportResponse.getReportData() != null && reportResponse.getReportData().size() > 0) {
                         binding.noRecordsLl.llData.setVisibility(View.GONE);
                         binding.recyclerView.setVisibility(View.VISIBLE);
-                        binding.search.setVisibility(View.VISIBLE);
+//                        binding.search.setVisibility(View.VISIBLE);
 
-                        adapter = new StatusListAdapter(context, reportResponse.getReportData());
+                        adapter = new StatusListTimeSlotAdapter(context, reportResponse.getReportData());
                         binding.recyclerView.setAdapter(adapter);
                         binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
                     } else {
                         binding.noRecordsLl.llData.setVisibility(View.VISIBLE);
                         binding.recyclerView.setVisibility(View.GONE);
-                        binding.search.setVisibility(View.GONE);
+//                        binding.search.setVisibility(View.GONE);
                     }
                 } else if (reportResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
                             reportResponse.getResponseMessage());
                 } else if (reportResponse.getStatusCode() == AppConstants.SESSION_CODE) {
-                    Utils.customSessionAlert(PSWiseStatusActivity.this, getString(R.string.app_name),
+                    Utils.customSessionAlert(PSWiseTimeSlotActivity.this, getString(R.string.app_name),
                             reportResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
