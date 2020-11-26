@@ -78,7 +78,8 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         mobNo = sharedPreferences.getString(AppConstants.MOBILE_NO, "");
         binding.btnClear.setOnClickListener(this);
         binding.btnSubmit.setOnClickListener(this);
-        binding.headerLyout.imgBack.setOnClickListener(this);
+        binding.header.imgBack.setOnClickListener(this);
+        binding.header.title.setText(getResources().getString(R.string.map_sector_title));
         pollingMasterRep = new PollingMasterRep(getApplication());
         zones = new ArrayList<>();
         circles = new ArrayList<>();

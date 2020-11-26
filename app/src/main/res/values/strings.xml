@@ -77,4 +77,7 @@
     <string name="no_wards_found">No wards found</string>
     <string name="no_sectors_found">No sectors found</string>
     <string name="no_pollings_found">No polling stations found</string>
+    <string name="map_sector_title">Map Sector</string>
+    <string name="ps_entry_title">PS Wise Entry</string>
+    <string name="ps_status_title">PS Wise Status</string>
 </resources>

@@ -47,6 +47,7 @@ public class PSWiseStatusActivity extends AppCompatActivity implements
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ps_wise_status);
         context = PSWiseStatusActivity.this;
         viewModel = new PSStatusViewModel(this, getApplication());
+        binding.header.title.setText(getResources().getString(R.string.ps_status_title));
         customProgressDialog = new CustomProgressDialog(context);
         try {
             sharedPreferences = PollingApplication.get(context).getPreferences();

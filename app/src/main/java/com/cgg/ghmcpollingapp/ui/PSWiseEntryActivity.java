@@ -74,7 +74,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        binding.header.title.setText(getResources().getString(R.string.ps_entry_title));
         viewModel = new PSEntryViewModel(this, getApplication());
         pollingStations = new ArrayList<>();
         pollingIDs = new ArrayList<>();
