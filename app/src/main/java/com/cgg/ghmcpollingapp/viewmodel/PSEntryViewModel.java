@@ -63,7 +63,7 @@ public class PSEntryViewModel extends AndroidViewModel {
             @Override
             public void onResponse(@NonNull Call<PSEntryResponse> call, @NonNull Response<PSEntryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    psEntryInterface.getPSDetails(response.body());
+                    psEntryInterface.getTimeslotDetails(response.body());
                 }
             }
 

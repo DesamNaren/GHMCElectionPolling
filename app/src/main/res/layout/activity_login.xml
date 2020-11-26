@@ -81,6 +81,7 @@
                         android:layout_marginTop="@dimen/dimen_20dp"
                         android:layout_marginRight="@dimen/dimen_20dp"
                         android:layout_marginBottom="@dimen/dimen_20dp"
+                        android:padding="15dp"
                         android:backgroundTint="@color/colorPrimaryDark"
                         android:gravity="center"
                         android:text="Submit"

@@ -246,7 +246,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
     }
 
     @Override
-    public void getPSDetails(PSEntryResponse psEntryResponse) {
+    public void getTimeslotDetails(PSEntryResponse psEntryResponse) {
         polledvotes = "";
         binding.tvPolledVotes.setText(polledvotes);
         try {
@@ -259,16 +259,21 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
                             timeSlots);
                     binding.spTimeSlot.setAdapter(adapter);
-                    if (!TextUtils.isEmpty(psEntryResponse.getVOTES())) {
-                        polledvotes = psEntryResponse.getVOTES();
+                    polledvotes = psEntryResponse.getVOTES();
+                    if (!TextUtils.isEmpty(polledvotes)) {
                         binding.tvPolledVotes.setText(polledvotes);
                     } else {
                         Utils.customErrorAlert(context, getString(R.string.app_name),
                                 psEntryResponse.getResponseMessage());
                     }
                 } else if (psEntryResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                    polledvotes = psEntryResponse.getVOTES();
+                    if (!TextUtils.isEmpty(polledvotes)) {
+                        binding.tvPolledVotes.setText(polledvotes);
+                    }
                     Utils.customErrorAlert(context, getString(R.string.app_name),
                             psEntryResponse.getResponseMessage());
+
                 } else if (psEntryResponse.getStatusCode() == AppConstants.SESSION_CODE) {
                     Utils.customSessionAlert(PSWiseEntryActivity.this, getString(R.string.app_name),
                             psEntryResponse.getResponseMessage());
