@@ -1,12 +1,10 @@
 package com.cgg.ghmcpollingapp.ui;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.telephony.SmsMessage;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
@@ -28,7 +25,6 @@ import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
-import com.cgg.ghmcpollingapp.viewmodel.LoginViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.OTPViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -80,10 +76,11 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
             if (!(loginResponse != null && loginResponse.getLoginData() != null &&
                     !TextUtils.isEmpty(loginResponse.getLoginData().get(0).getOTP())
                     && !TextUtils.isEmpty(mobNum))) {
-                Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something));
-            }else{
-                set6DigitText(mobNum);
+                Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something_wrong_otp));
             }
+
+            set6DigitText(mobNum);
+            binding.loggedIn.setText(loginResponse.getLoginData().get(0).getName());
         } catch (Exception e) {
             Toast.makeText(context, getString(R.string.something), Toast.LENGTH_SHORT).show();
         }
@@ -111,8 +108,10 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
                                 if (loginResponse.getStatusCode() == AppConstants.SESSION_CODE) {
                                     Utils.customSessionAlert(OTPActivity.this, getString(R.string.app_name),
                                             loginResponse.getResponseMessage());
-                                }
-                                if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
+                                } else if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
+                                        loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0).getOTP() == null) {
+                                    Utils.customErrorAlert(context, getString(R.string.app_name_release), getString(R.string.something_wrong_otp));
+                                } else if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE &&
                                         loginResponse.getLoginData() != null) {
                                     otpTimer();
                                     storeLoginRes(loginResponse);

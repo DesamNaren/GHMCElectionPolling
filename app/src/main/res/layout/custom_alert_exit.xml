@@ -87,7 +87,7 @@
 
 
             <Button
-                app:backgroundTint ="@color/blue"
+                app:backgroundTint ="@color/colorPrimary"
                 android:textAllCaps="false"
                 android:layout_weight="1"
                 android:id="@+id/btDialogCancel"

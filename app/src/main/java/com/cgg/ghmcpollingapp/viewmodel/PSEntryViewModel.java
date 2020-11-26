@@ -55,14 +55,6 @@ public class PSEntryViewModel extends AndroidViewModel {
         return pollingStations;
     }
 
-    public LiveData<PollingEntity> getPsVotes(String psid, String zoneId, String circleId, String wardId, String sectorId) {
-        if (pollingStationId != null) {
-            pollingStationId = pollingMasterRep.getPsVotes(psid, zoneId, circleId, wardId,sectorId);
-        }
-        return pollingStationId;
-    }
-
-
     public void getTimeslotDetails(PSEntryRequest psEntryRequest) {
         Gson gson = new Gson();
         String str = gson.toJson(psEntryRequest);

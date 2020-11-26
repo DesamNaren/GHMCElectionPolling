@@ -1,16 +1,16 @@
 package com.cgg.ghmcpollingapp.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
@@ -67,6 +67,9 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
             Utils.customErrorAlert(context, getString(R.string.app_name),
                     getString(R.string.something) + " while fetching login response onCreate");
         }
+        set6DigitText(mobNo);
+        binding.loggedIn.setText(loginResponse.getLoginData().get(0).getName());
+
         binding.tvForgot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +146,11 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
                 validateMPIN();
             }
         });
+    }
+
+    private void set6DigitText(String mobileNumber) {
+        String maskedMobNum = mobileNumber.replaceAll("\\w(?=\\w{4})", "*");
+        binding.empEmailTv.setText(getString(R.string.logged_with) + " " + maskedMobNum);
     }
 
     private void forgotMPINCall() {

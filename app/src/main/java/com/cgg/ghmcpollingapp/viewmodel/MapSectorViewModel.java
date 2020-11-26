@@ -14,6 +14,7 @@ import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
+import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -24,20 +25,16 @@ import retrofit2.Response;
 
 public class MapSectorViewModel extends AndroidViewModel {
     private PollingMasterRep pollingMasterRep;
-//    private MutableLiveData<ViewTaskResponse> viewTaskResponseMutableLiveData;
+    //    private MutableLiveData<ViewTaskResponse> viewTaskResponseMutableLiveData;
     private SectorMappingInterface sectorMappingInterface;
 
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
-    private LiveData<List<String>> zones;
-    private LiveData<List<String>> circles;
-    private LiveData<List<String>> wards;
-    private LiveData<List<String>> sectors;
-    private LiveData<String> zoneId;
-    private LiveData<String> circleId;
-    private LiveData<String> wardId;
-    private LiveData<String> sectorId;
+    private LiveData<List<PollingEntity>> zones;
+    private LiveData<List<PollingEntity>> circles;
+    private LiveData<List<PollingEntity>> wards;
+    private LiveData<List<PollingEntity>> sectors;
 
     public MapSectorViewModel(Context context, Application application) {
         super(application);
@@ -50,70 +47,38 @@ public class MapSectorViewModel extends AndroidViewModel {
         circles = new MutableLiveData<>();
         wards = new MutableLiveData<>();
         sectors = new MutableLiveData<>();
-        zoneId = new MutableLiveData<>();
-        circleId = new MutableLiveData<>();
-        wardId = new MutableLiveData<>();
-        sectorId = new MutableLiveData<>();
-
     }
 
 
-    public LiveData<List<String>> getZones() {
+    public LiveData<List<PollingEntity>> getZones() {
         if (zones != null) {
             zones = pollingMasterRep.getZones();
         }
         return zones;
     }
 
-    public LiveData<String> getZoneId(String zoneName) {
-        if (zoneId != null) {
-            zoneId = pollingMasterRep.getZoneId(zoneName);
-        }
-        return zoneId;
-    }
 
-
-    public LiveData<List<String>> getCircles(String zoneId) {
+    public LiveData<List<PollingEntity>> getCircles(String zoneId) {
         if (circles != null) {
             circles = pollingMasterRep.getCircles(zoneId);
         }
         return circles;
     }
 
-    public LiveData<String> getCircleId(String circleName, String zoneId) {
-        if (circleId != null) {
-            circleId = pollingMasterRep.getCircleId(circleName, zoneId);
-        }
-        return circleId;
-    }
-
-    public LiveData<List<String>> getWards(String zoneId, String circleId) {
+    public LiveData<List<PollingEntity>> getWards(String zoneId, String circleId) {
         if (wards != null) {
             wards = pollingMasterRep.getWards(zoneId, circleId);
         }
         return wards;
     }
 
-    public LiveData<String> getWardId(String wardName, String zoneId, String circleId) {
-        if (wardId != null) {
-            wardId = pollingMasterRep.getWardId(wardName, zoneId, circleId);
-        }
-        return wardId;
-    }
-
-    public LiveData<List<String>> getSectors(String zoneId, String circleId, String wardId) {
+    public LiveData<List<PollingEntity>> getSectors(String zoneId, String circleId, String wardId) {
         if (sectors != null) {
             sectors = pollingMasterRep.getSectors(zoneId, circleId, wardId);
         }
         return sectors;
     }
 
-    public LiveData<String> getSectorId(String sectorName, String zoneId, String circleId, String wardId) {
-        if (sectorId != null) {
-            sectorId = pollingMasterRep.getSectorId(sectorName, zoneId, circleId, wardId);
-        }
-        return sectorId;
-    }
     public void mapSector(SectorMapRequest sectorMapRequest) {
         Gson gson = new Gson();
         String str = gson.toJson(sectorMapRequest);
@@ -135,6 +100,5 @@ public class MapSectorViewModel extends AndroidViewModel {
 
 
 }
-
 
 

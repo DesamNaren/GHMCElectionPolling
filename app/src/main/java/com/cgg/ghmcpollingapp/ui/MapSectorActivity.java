@@ -29,12 +29,11 @@ import com.cgg.ghmcpollingapp.databinding.ActivityMapSectorBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
-import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
-import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
+import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
@@ -56,9 +55,13 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     PollingMasterRep pollingMasterRep;
     MapSectorViewModel mapSectorViewModel;
     List<String> zones;
+    List<PollingEntity> zonesPollingEntities;
     List<String> circles;
+    List<PollingEntity> circlesPollingEntities;
     List<String> wards;
+    List<PollingEntity> wardPollingEntities;
     List<String> sectors;
+    List<PollingEntity> sectorsPollingEntities;
     CustomProgressDialog customProgressDialog;
     private ArrayAdapter<String> selectAdapter;
     private ArrayList<String> sellist;
@@ -98,12 +101,18 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         sellist = new ArrayList();
         sellist.add(getString(R.string.select));
         selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
-        mapSectorViewModel.getZones().observe(this, new Observer<List<String>>() {
+        mapSectorViewModel.getZones().observe(this, new Observer<List<PollingEntity>>() {
             @Override
-            public void onChanged(List<String> zones) {
-                MapSectorActivity.this.zones = zones;
-                if (zones != null && zones.size() > 0) {
+            public void onChanged(List<PollingEntity> zonesPollingEntities) {
+                MapSectorActivity.this.zonesPollingEntities = zonesPollingEntities;
+                if (zonesPollingEntities != null && zonesPollingEntities.size() > 0) {
                     zones.add(0, getString(R.string.select));
+                    for (int x = 0; x < zonesPollingEntities.size(); x++) {
+                        if (!TextUtils.isEmpty(zonesPollingEntities.get(x).getZone_name())) {
+                            zones.add(zonesPollingEntities.get(x).getZone_name());
+                        }
+                    }
+
                     ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, zones);
                     binding.zoneSpinner.setAdapter(adapter);
                 } else {
@@ -143,24 +152,25 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     binding.sectorSpinner.setAdapter(selectAdapter);
                     customProgressDialog.show();
                     zoneName = binding.zoneSpinner.getSelectedItem().toString().trim();
-                    mapSectorViewModel.getZoneId(zoneName).observe(MapSectorActivity.this, new Observer<String>() {
+                    zoneId = String.valueOf(zonesPollingEntities.get(position - 1).getZone_id());
+                    mapSectorViewModel.getCircles(zoneId).observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
                         @Override
-                        public void onChanged(String zoneId) {
-                            MapSectorActivity.this.zoneId = zoneId;
-                            mapSectorViewModel.getCircles(zoneId).observe(MapSectorActivity.this, new Observer<List<String>>() {
-                                @Override
-                                public void onChanged(List<String> circles) {
-                                    customProgressDialog.dismiss();
-                                    MapSectorActivity.this.circles = circles;
-                                    if (circles != null && circles.size() > 0) {
-                                        circles.add(0, getString(R.string.select));
-                                        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, circles);
-                                        binding.circleSpinner.setAdapter(adapter);
-                                    } else {
-                                        Utils.callSnackBar(binding.cl, getString(R.string.no_circles_found));
+                        public void onChanged(List<PollingEntity> circlesPollingEntities) {
+                            customProgressDialog.dismiss();
+                            MapSectorActivity.this.circlesPollingEntities = circlesPollingEntities;
+
+                            if (circlesPollingEntities != null && circlesPollingEntities.size() > 0) {
+                                circles.add(0, getString(R.string.select));
+                                for (int x = 0; x < circlesPollingEntities.size(); x++) {
+                                    if (!TextUtils.isEmpty(circlesPollingEntities.get(x).getCircle_name())) {
+                                        circles.add(circlesPollingEntities.get(x).getCircle_name());
                                     }
                                 }
-                            });
+                                ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, circles);
+                                binding.circleSpinner.setAdapter(adapter);
+                            } else {
+                                Utils.callSnackBar(binding.cl, getString(R.string.no_circles_found));
+                            }
                         }
                     });
                 }
@@ -195,24 +205,24 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     binding.sectorSpinner.setAdapter(selectAdapter);
                     customProgressDialog.show();
                     cirName = binding.circleSpinner.getSelectedItem().toString().trim();
-                    mapSectorViewModel.getCircleId(cirName, zoneId).observe(MapSectorActivity.this, new Observer<String>() {
+                    circleId = String.valueOf(circlesPollingEntities.get(position - 1).getCircle_id());
+                    mapSectorViewModel.getWards(zoneId, circleId).observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
                         @Override
-                        public void onChanged(String circleId) {
-                            MapSectorActivity.this.circleId = circleId;
-                            mapSectorViewModel.getWards(zoneId, circleId).observe(MapSectorActivity.this, new Observer<List<String>>() {
-                                @Override
-                                public void onChanged(List<String> wards) {
-                                    customProgressDialog.dismiss();
-                                    MapSectorActivity.this.wards = wards;
-                                    if (wards != null && wards.size() > 0) {
-                                        wards.add(0, getString(R.string.select));
-                                        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, wards);
-                                        binding.wardSpinner.setAdapter(adapter);
-                                    } else {
-                                        Utils.callSnackBar(binding.cl, getString(R.string.no_wards_found));
+                        public void onChanged(List<PollingEntity> wardPollingEntities) {
+                            customProgressDialog.dismiss();
+                            MapSectorActivity.this.wardPollingEntities = wardPollingEntities;
+                            if (wardPollingEntities != null && wardPollingEntities.size() > 0) {
+                                wards.add(0, getString(R.string.select));
+                                for (int x = 0; x < wardPollingEntities.size(); x++) {
+                                    if (!TextUtils.isEmpty(wardPollingEntities.get(x).getWard_name())) {
+                                        wards.add(wardPollingEntities.get(x).getWard_name());
                                     }
                                 }
-                            });
+                                ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, wards);
+                                binding.wardSpinner.setAdapter(adapter);
+                            } else {
+                                Utils.callSnackBar(binding.cl, getString(R.string.no_wards_found));
+                            }
                         }
                     });
                 }
@@ -239,24 +249,24 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     sectors.clear();
                     customProgressDialog.show();
                     wardName = binding.wardSpinner.getSelectedItem().toString().trim();
-                    mapSectorViewModel.getWardId(wardName, zoneId, circleId).observe(MapSectorActivity.this, new Observer<String>() {
+                    wardId = String.valueOf(wardPollingEntities.get(position - 1).getWard_id());
+                    mapSectorViewModel.getSectors(zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
                         @Override
-                        public void onChanged(String wardId) {
-                            MapSectorActivity.this.wardId = wardId;
-                            mapSectorViewModel.getSectors(zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<List<String>>() {
-                                @Override
-                                public void onChanged(List<String> sectors) {
-                                    customProgressDialog.dismiss();
-                                    MapSectorActivity.this.sectors = sectors;
-                                    if (sectors != null && sectors.size() > 0) {
-                                        sectors.add(0, getString(R.string.select));
-                                        ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sectors);
-                                        binding.sectorSpinner.setAdapter(adapter);
-                                    } else {
-                                        Utils.callSnackBar(binding.cl, getString(R.string.no_sectors_found));
+                        public void onChanged(List<PollingEntity> sectorsPollingEntities) {
+                            customProgressDialog.dismiss();
+                            MapSectorActivity.this.sectorsPollingEntities = sectorsPollingEntities;
+                            if (sectorsPollingEntities != null && sectorsPollingEntities.size() > 0) {
+                                sectors.add(0, getString(R.string.select));
+                                for (int x = 0; x < sectorsPollingEntities.size(); x++) {
+                                    if (!TextUtils.isEmpty(sectorsPollingEntities.get(x).getSector_name())) {
+                                        sectors.add(sectorsPollingEntities.get(x).getSector_name());
                                     }
                                 }
-                            });
+                                ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sectors);
+                                binding.sectorSpinner.setAdapter(adapter);
+                            } else {
+                                Utils.callSnackBar(binding.cl, getString(R.string.no_sectors_found));
+                            }
                         }
                     });
                 }
@@ -273,15 +283,8 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                 if (binding.sectorSpinner.getSelectedItemPosition() == 0) {
                     secName = "";
                 } else {
-                    customProgressDialog.show();
                     secName = binding.sectorSpinner.getSelectedItem().toString().trim();
-                    mapSectorViewModel.getSectorId(secName, zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<String>() {
-                        @Override
-                        public void onChanged(String sectorId) {
-                            customProgressDialog.dismiss();
-                            MapSectorActivity.this.secId = sectorId;
-                        }
-                    });
+                    secId = String.valueOf(sectorsPollingEntities.get(position - 1).getSector_id());
                 }
             }
 

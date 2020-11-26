@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name_release">GHMC Poll Status App</string>
     <string name="enter_6_digit_otp">Enter 6 digit OTP sent to</string>
+    <string name="logged_with">Logged with</string>
     <string name="app_name_demo">GHMC Poll Status App - Demo</string>
     <string name="resend_otp">Resend OTP</string>
     <string name="submit">Submit</string>
@@ -28,6 +29,7 @@
 
     <string name="con_time_out">The connection has timed out, please try again</string>
     <string name="something">Something went wrong, please try again</string>
+    <string name="something_wrong_otp">Something went wrong, while receiving OTP</string>
     <string name="server_not">Server not responding, Please try later</string>
     <string name="enter_mob_no">Enter mobile No</string>
     <string name="enter_valid_mobile_no">Enter valid mobile No</string>

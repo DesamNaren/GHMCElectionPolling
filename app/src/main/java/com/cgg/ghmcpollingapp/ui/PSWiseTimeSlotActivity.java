@@ -46,6 +46,7 @@ public class PSWiseTimeSlotActivity extends AppCompatActivity implements
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ps_wise_time_slot_status);
         context = PSWiseTimeSlotActivity.this;
         binding.header.title.setText(getResources().getString(R.string.ps_status_title));
+
         viewModel = new PSStatusViewModel(this, getApplication());
         customProgressDialog = new CustomProgressDialog(context);
         try {

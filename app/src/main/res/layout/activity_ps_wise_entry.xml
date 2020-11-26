@@ -200,7 +200,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white"
                         android:fontFamily="@font/elmessiri_regular"
-                        android:hint="@string/votes_polled_during_selected_hour"
                         android:imeOptions="actionDone"
                         android:inputType="number"
                         android:padding="@dimen/dimen_10dp"

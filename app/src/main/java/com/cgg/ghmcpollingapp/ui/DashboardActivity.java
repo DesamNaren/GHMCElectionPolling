@@ -171,6 +171,12 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
 
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
 
     private void customLogoutAlert(Activity activity, String msg) {
         try {
