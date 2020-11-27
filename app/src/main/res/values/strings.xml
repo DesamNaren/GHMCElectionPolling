@@ -84,6 +84,7 @@
     <string name="ps_status_title">PS Wise Status</string>
     <string name="download">Download</string>
     <string name="re_download">Re-Download</string>
+    <string name="re_download_masters"><u>Re-Download Masters</u></string>
 
     <string name="ps_master">Polling Master</string>
     <string name="ps_sub_master">(Polling Stations &amp; Time Slots)</string>

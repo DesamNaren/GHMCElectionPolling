@@ -203,7 +203,7 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
             mpinResponseLiveData.observe(GenerateMPINActivity.this, new Observer<MPINResponse>() {
                 @Override
                 public void onChanged(MPINResponse mpinResponse) {
-                    customProgressDialog.hide();
+                    customProgressDialog.dismiss();
                     mpinResponseLiveData.removeObservers(GenerateMPINActivity.this);
                     if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
                         if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
@@ -214,12 +214,12 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
                             editor.commit();
                             Utils.customMPINSuccessAlert(GenerateMPINActivity.this, mpinResponse.getResponseMessage());
                         } else {
-                            customProgressDialog.hide();
+                            customProgressDialog.dismiss();
                             Utils.customErrorAlert(context, getString(R.string.app_name),
                                     mpinResponse.getResponseMessage());
                         }
                     } else {
-                        customProgressDialog.hide();
+                        customProgressDialog.dismiss();
                         Utils.customErrorAlert(context, getString(R.string.app_name),
                                 getString(R.string.server_not));
                     }
@@ -233,7 +233,7 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
     @Override
     public void handleError(Throwable e, Context context) {
         if (customProgressDialog != null && customProgressDialog.isShowing())
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
         String errMsg = ErrorHandler.handleError(e, context);
         Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
     }
@@ -247,7 +247,14 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
     @Override
     public void handleError(String errMsg, Context context) {
         if (customProgressDialog != null && customProgressDialog.isShowing())
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
         Utils.customErrorAlert(context, getString(R.string.app_name_release), errMsg);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.dismiss();
     }
 }

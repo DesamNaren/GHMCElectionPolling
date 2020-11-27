@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -173,6 +172,17 @@
 
             </LinearLayout>
         </ScrollView>
+
+        <TextView
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/dimen_8dp"
+            android:textColor="@color/white"
+            android:text="@string/re_download_masters"
+            android:id="@+id/re_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/cl"

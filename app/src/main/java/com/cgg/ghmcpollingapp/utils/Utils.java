@@ -209,8 +209,7 @@ public class Utils {
                         if (!TextUtils.isEmpty(fromClass) &&
                                 fromClass.equalsIgnoreCase(MapSectorActivity.class.getSimpleName())) {
                             Intent newIntent = new Intent(activity, MapSectorActivity.class);
-                            newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             activity.startActivity(newIntent);
                             activity.finish();
                         } else if (!TextUtils.isEmpty(fromClass) &&

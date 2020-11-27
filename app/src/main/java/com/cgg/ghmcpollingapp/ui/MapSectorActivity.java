@@ -348,8 +348,6 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     } else {
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
-                } else {
-                    Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), "Not getting polling station id");
                 }
             }
         });
@@ -359,6 +357,17 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
             public void onClick(View v) {
                 Intent intent = getIntent();
                 startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+            }
+        });
+
+        binding.reDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent newIntent = new Intent(MapSectorActivity.this, DownloadMasterActivity.class);
+                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(newIntent);
+                finish();
             }
         });
 
@@ -515,7 +524,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void handleError(Throwable e, Context context) {
         if (customProgressDialog != null && customProgressDialog.isShowing())
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
         String errMsg = ErrorHandler.handleError(e, context);
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
@@ -523,14 +532,14 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void handleError(String errMsg, Context context) {
         if (customProgressDialog != null && customProgressDialog.isShowing())
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
 
     @Override
     public void mapSectorResponse(SectorMapResponse sectorMapResponse) {
         try {
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
             if (sectorMapResponse != null && sectorMapResponse.getStatusCode() != null) {
                 if (sectorMapResponse.getStatusCode() == AppConstants.SESSION_CODE) {
                     Utils.customSessionAlert(MapSectorActivity.this, getString(R.string.app_name),
@@ -561,7 +570,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
             }
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
             e.printStackTrace();
         }
     }

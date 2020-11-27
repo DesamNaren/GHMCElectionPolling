@@ -20,7 +20,6 @@ import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.DownloadMasterInterface;
 import com.cgg.ghmcpollingapp.model.request.MasterDataRequest;
-import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.master.MasterDataResponse;
 import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
 import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
@@ -29,7 +28,6 @@ import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.DownloadMasterViewModel;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class DownloadMasterActivity extends AppCompatActivity implements ErrorHandlerInterface, DownloadMasterInterface {
@@ -126,16 +124,16 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
                                                 getString(R.string.something));
                                     }
                                 } else if (masterDataResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
-                                    customProgressDialog.hide();
+                                    customProgressDialog.dismiss();
                                     Utils.customErrorAlert(context, getString(R.string.app_name),
                                             masterDataResponse.getResponseMessage());
                                 } else {
-                                    customProgressDialog.hide();
+                                    customProgressDialog.dismiss();
                                     Utils.customErrorAlert(context, getString(R.string.app_name),
                                             getString(R.string.something));
                                 }
                             } else {
-                                customProgressDialog.hide();
+                                customProgressDialog.dismiss();
                                 Utils.customErrorAlert(context, getString(R.string.app_name),
                                         getString(R.string.server_not));
                             }
@@ -151,7 +149,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
 
     @Override
     public void handleError(Throwable e, Context context) {
-        customProgressDialog.hide();
+        customProgressDialog.dismiss();
         String errMsg = ErrorHandler.handleError(e, context);
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
@@ -167,7 +165,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
                         getString(R.string.something));
             }
         } else {
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
             Utils.customErrorAlert(DownloadMasterActivity.this, getResources().getString(R.string.app_name),
                     getString(R.string.no_ps_data_found));
         }
@@ -175,7 +173,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
 
     @Override
     public void timeSlotDataCount(int count) {
-        customProgressDialog.hide();
+        customProgressDialog.dismiss();
         if (count > 0) {
             binding.btnPsMaster.setText(getString(R.string.re_download));
             Utils.customMapSuccessAlert(DownloadMasterActivity.this, getString(R.string.app_name),
@@ -188,7 +186,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
 
     @Override
     public void handleError(String errMsg, Context context) {
-        customProgressDialog.hide();
+        customProgressDialog.dismiss();
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
 
@@ -216,6 +214,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        customProgressDialog.hide();
+        if (customProgressDialog != null && customProgressDialog.isShowing())
+            customProgressDialog.dismiss();
     }
 }

@@ -121,8 +121,10 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
 
                             if (!TextUtils.isEmpty(loginResponse.getLoginData().get(0).getIsSectorMapped()) &&
                                     !loginResponse.getLoginData().get(0).getIsSectorMapped().equalsIgnoreCase(AppConstants.TRUE)) {
+                                binding.firstPinView.setText("");
                                 startActivity(new Intent(context, MapSectorActivity.class));
                             } else {
+                                binding.firstPinView.setText("");
                                 startActivity(new Intent(context, DashboardActivity.class));
                             }
                         } else {
@@ -164,7 +166,7 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
             mpinResponseLiveData.observe(ValidateMPINActivity.this, new Observer<MPINResponse>() {
                 @Override
                 public void onChanged(MPINResponse mpinResponse) {
-                    customProgressDialog.hide();
+                    customProgressDialog.dismiss();
                     mpinResponseLiveData.removeObservers(ValidateMPINActivity.this);
                     if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
                         if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
@@ -176,12 +178,12 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
                             startActivity(new Intent(ValidateMPINActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             finish();
                         } else {
-                            customProgressDialog.hide();
+                            customProgressDialog.dismiss();
                             Utils.customErrorAlert(context, getString(R.string.app_name),
                                     mpinResponse.getResponseMessage());
                         }
                     } else {
-                        customProgressDialog.hide();
+                        customProgressDialog.dismiss();
                         Utils.customErrorAlert(context, getString(R.string.app_name),
                                 getString(R.string.server_not));
                     }

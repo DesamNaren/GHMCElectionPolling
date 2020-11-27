@@ -102,7 +102,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
                         loginRequest.setIPAddress(Utils.getLocalIpAddress());
 
                         otpViewModel.callResendOTP(loginRequest).observe(OTPActivity.this, loginResponse -> {
-                            customProgressDialog.hide();
+                            customProgressDialog.dismiss();
                             OTPActivity.this.loginResponse = loginResponse;
                             if (loginResponse != null && loginResponse.getStatusCode() != null) {
                                 if (loginResponse.getStatusCode() == AppConstants.SESSION_CODE) {
@@ -248,7 +248,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
     @Override
     public void handleError(Throwable e, Context context) {
         if (customProgressDialog != null && customProgressDialog.isShowing())
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
         String errMsg = ErrorHandler.handleError(e, context);
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
@@ -256,7 +256,7 @@ public class OTPActivity extends AppCompatActivity implements ErrorHandlerInterf
     @Override
     public void handleError(String errMsg, Context context) {
         if (customProgressDialog != null && customProgressDialog.isShowing())
-            customProgressDialog.hide();
+            customProgressDialog.dismiss();
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
     }
 }
