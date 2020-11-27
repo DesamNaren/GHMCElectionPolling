@@ -12,9 +12,10 @@ import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -31,15 +32,14 @@ public class MapSectorViewModel extends AndroidViewModel {
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
-    private LiveData<List<PollingEntity>> zones;
-    private LiveData<List<PollingEntity>> circles;
-    private LiveData<List<PollingEntity>> wards;
-    private LiveData<List<PollingEntity>> sectors;
+    private LiveData<List<MasterPSData>> zones;
+    private LiveData<List<MasterPSData>> circles;
+    private LiveData<List<MasterPSData>> wards;
+    private LiveData<List<MasterPSData>> sectors;
+    private LiveData<List<MasterTimeSlotData>> timeSlots;
 
     public MapSectorViewModel(Context context, Application application) {
         super(application);
-//        this.context = context;
-//        viewTaskResponseMutableLiveData = new MutableLiveData<>();
         errorHandlerInterface = (ErrorHandlerInterface) context;
         sectorMappingInterface = (SectorMappingInterface) context;
         pollingMasterRep = new PollingMasterRep(application);
@@ -47,10 +47,11 @@ public class MapSectorViewModel extends AndroidViewModel {
         circles = new MutableLiveData<>();
         wards = new MutableLiveData<>();
         sectors = new MutableLiveData<>();
+        timeSlots = new MutableLiveData<>();
     }
 
 
-    public LiveData<List<PollingEntity>> getZones() {
+    public LiveData<List<MasterPSData>> getZones() {
         if (zones != null) {
             zones = pollingMasterRep.getZones();
         }
@@ -58,21 +59,21 @@ public class MapSectorViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<List<PollingEntity>> getCircles(String zoneId) {
+    public LiveData<List<MasterPSData>> getCircles(String zoneId) {
         if (circles != null) {
             circles = pollingMasterRep.getCircles(zoneId);
         }
         return circles;
     }
 
-    public LiveData<List<PollingEntity>> getWards(String zoneId, String circleId) {
+    public LiveData<List<MasterPSData>> getWards(String zoneId, String circleId) {
         if (wards != null) {
             wards = pollingMasterRep.getWards(zoneId, circleId);
         }
         return wards;
     }
 
-    public LiveData<List<PollingEntity>> getSectors(String zoneId, String circleId, String wardId) {
+    public LiveData<List<MasterPSData>> getSectors(String zoneId, String circleId, String wardId) {
         if (sectors != null) {
             sectors = pollingMasterRep.getSectors(zoneId, circleId, wardId);
         }
@@ -96,6 +97,13 @@ public class MapSectorViewModel extends AndroidViewModel {
                 errorHandlerInterface.handleError(t, context);
             }
         });
+    }
+
+    public LiveData<List<MasterTimeSlotData>> getTimeSlots() {
+        if (timeSlots != null) {
+            timeSlots = pollingMasterRep.getTimeSlots();
+        }
+        return timeSlots;
     }
 
 

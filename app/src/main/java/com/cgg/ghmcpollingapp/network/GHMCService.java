@@ -1,6 +1,7 @@
 package com.cgg.ghmcpollingapp.network;
 
 import com.cgg.ghmcpollingapp.BuildConfig;
+import com.cgg.ghmcpollingapp.model.request.MasterDataRequest;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
@@ -11,6 +12,7 @@ import com.cgg.ghmcpollingapp.model.request.reports.ReportRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterDataResponse;
 import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
@@ -67,6 +69,10 @@ public interface GHMCService {
 
     @POST("GHMCElection/Reports")
     Call<ReportResponse> getReport(@Body ReportRequest sectorMapRequest);
+
+
+    @POST("GHMCElection/GetMasters")
+    Call<MasterDataResponse> getMasterDataResponse(@Body MasterDataRequest masterDataRequest);
 }
 
 

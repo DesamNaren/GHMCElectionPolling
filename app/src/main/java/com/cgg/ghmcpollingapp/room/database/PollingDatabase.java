@@ -9,16 +9,17 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.room.dao.DownloadMasterDao;
 import com.cgg.ghmcpollingapp.room.dao.PollingMasterDao;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 
 /*
  * This is the backend. The database. This used to be done by the OpenHelper.
  * The fact that this has very few comments emphasizes its coolness.
  */
 
-@Database(entities = {PollingEntity.class},
+@Database(entities = {MasterPSData.class, MasterTimeSlotData.class},
         version = 1, exportSchema = false)
 public abstract class PollingDatabase extends RoomDatabase {
 

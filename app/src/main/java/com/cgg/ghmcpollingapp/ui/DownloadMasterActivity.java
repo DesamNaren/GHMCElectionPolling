@@ -19,9 +19,12 @@ import com.cgg.ghmcpollingapp.databinding.ActivityMasterDownloadBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.DownloadMasterInterface;
+import com.cgg.ghmcpollingapp.model.request.MasterDataRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterDataResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.room.repository.DownloadMasterRepository;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.DownloadMasterViewModel;
@@ -39,7 +42,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private String sessionToken;
-    private LoginResponse loginResponse;
+    private MasterDataResponse masterDataResponse;
     private String fromClass;
 
     @Override
@@ -56,7 +59,7 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
         binding.header.imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
 
@@ -68,21 +71,21 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
         downloadMasterViewModel = new DownloadMasterViewModel(this, getApplication());
         downloadMasterRepository = new DownloadMasterRepository(getApplication());
 
-        LiveData<List<PollingEntity>> cListLiveData = downloadMasterViewModel.getMasterPSData();
-        cListLiveData.observe(this, new Observer<List<PollingEntity>>() {
+        LiveData<List<MasterPSData>> cListLiveData = downloadMasterViewModel.getMasterPSData();
+        cListLiveData.observe(this, new Observer<List<MasterPSData>>() {
             @Override
-            public void onChanged(List<PollingEntity> pollingEntities) {
+            public void onChanged(List<MasterPSData> masterPSData) {
                 cListLiveData.removeObservers(DownloadMasterActivity.this);
-                if (pollingEntities == null || pollingEntities.size() <= 0) {
+                if (masterPSData == null || masterPSData.size() <= 0) {
                     binding.btnPsMaster.setText(getString(R.string.download));
                 } else {
-                    LiveData<List<PollingEntity>> wListLiveData = downloadMasterViewModel.getMasterTimeSlotData();
-                    wListLiveData.observe(DownloadMasterActivity.this, new Observer<List<PollingEntity>>() {
+                    LiveData<List<MasterTimeSlotData>> wListLiveData = downloadMasterViewModel.getMasterTimeSlotData();
+                    wListLiveData.observe(DownloadMasterActivity.this, new Observer<List<MasterTimeSlotData>>() {
                         @Override
-                        public void onChanged(List<PollingEntity> pollingEntities1) {
+                        public void onChanged(List<MasterTimeSlotData> masterTimeSlotData) {
                             wListLiveData.removeObservers(DownloadMasterActivity.this);
 
-                            if (pollingEntities1 == null || pollingEntities1.size() <= 0) {
+                            if (masterTimeSlotData == null || masterTimeSlotData.size() <= 0) {
                                 binding.btnPsMaster.setText(getString(R.string.download));
                             } else {
                                 binding.btnPsMaster.setText(getString(R.string.re_download));
@@ -102,28 +105,30 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
                 if (Utils.checkInternetConnection(context)) {
                     binding.btnPsMaster.setText(getString(R.string.download));
                     customProgressDialog.show();
-                    LiveData<LoginResponse> coordniatesMasterResponseLiveData = downloadMasterViewModel.getMasterResponse(sessionToken);
-                    coordniatesMasterResponseLiveData.observe(DownloadMasterActivity.this, new Observer<LoginResponse>() {
+                    MasterDataRequest masterDataRequest = new MasterDataRequest();
+                    masterDataRequest.setTokenID(sessionToken);
+                    LiveData<MasterDataResponse> coordniatesMasterResponseLiveData = downloadMasterViewModel.getMasterResponse(masterDataRequest);
+                    coordniatesMasterResponseLiveData.observe(DownloadMasterActivity.this, new Observer<MasterDataResponse>() {
                         @Override
-                        public void onChanged(LoginResponse loginResponse) {
-                            DownloadMasterActivity.this.loginResponse = loginResponse;
+                        public void onChanged(MasterDataResponse masterDataResponse) {
+                            DownloadMasterActivity.this.masterDataResponse = masterDataResponse;
                             coordniatesMasterResponseLiveData.removeObservers(DownloadMasterActivity.this);
-                            if (loginResponse != null && loginResponse.getStatusCode() != null) {
-                                if (loginResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                            if (masterDataResponse != null && masterDataResponse.getStatusCode() != null) {
+                                if (masterDataResponse.getStatusCode() == AppConstants.SESSION_CODE) {
                                     Utils.customSessionAlert(DownloadMasterActivity.this, getString(R.string.app_name),
-                                            loginResponse.getResponseMessage());
-                                } else if (loginResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                                    if (loginResponse.getLoginData() != null && loginResponse.getLoginData().size() > 0) {
+                                            masterDataResponse.getResponseMessage());
+                                } else if (masterDataResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                                    if (masterDataResponse.getMasterPSData() != null && masterDataResponse.getMasterPSData().size() > 0) {
                                         downloadMasterRepository.insertPSData
-                                                (DownloadMasterActivity.this, Arrays.asList(new PollingEntity()));
+                                                (DownloadMasterActivity.this, masterDataResponse.getMasterPSData());
                                     } else {
                                         Utils.customErrorAlert(DownloadMasterActivity.this, getString(R.string.app_name),
                                                 getString(R.string.something));
                                     }
-                                } else if (loginResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                                } else if (masterDataResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                                     customProgressDialog.hide();
                                     Utils.customErrorAlert(context, getString(R.string.app_name),
-                                            loginResponse.getResponseMessage());
+                                            masterDataResponse.getResponseMessage());
                                 } else {
                                     customProgressDialog.hide();
                                     Utils.customErrorAlert(context, getString(R.string.app_name),
@@ -154,9 +159,9 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
     @Override
     public void psDataCount(int count) {
         if (count > 0) {
-            if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().size() > 0) {
+            if (masterDataResponse != null && masterDataResponse.getMasterTimeSlotData() != null && masterDataResponse.getMasterTimeSlotData().size() > 0) {
                 downloadMasterRepository.insertTimeSlotLocations(
-                        DownloadMasterActivity.this, Arrays.asList(new PollingEntity()));
+                        DownloadMasterActivity.this, masterDataResponse.getMasterTimeSlotData());
             } else {
                 Utils.customErrorAlert(DownloadMasterActivity.this, getString(R.string.app_name),
                         getString(R.string.something));
@@ -206,5 +211,11 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
         } else {
             finish();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        customProgressDialog.hide();
     }
 }

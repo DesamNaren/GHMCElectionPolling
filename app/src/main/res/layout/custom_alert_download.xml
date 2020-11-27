@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:orientation="vertical">
@@ -16,24 +16,24 @@
         android:background="@drawable/dialog_round">
 
         <TextView
-            android:fontFamily="@font/elmessiri_regular"
             android:id="@+id/version_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="35dp"
+            android:fontFamily="@font/elmessiri_regular"
             android:textSize="@dimen/dimen_16sp"
             android:textStyle="normal" />
 
         <TextView
-            android:fontFamily="@font/muli_bold"
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/_60dp"
+            android:fontFamily="@font/muli_bold"
             android:text="@string/app_name"
             android:textSize="@dimen/dimen_20sp"
             android:textStyle="bold" />
@@ -58,9 +58,7 @@
             android:orientation="horizontal">
 
 
-
             <Button
-                app:backgroundTint="@color/red"
                 android:id="@+id/btDialogCancel"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -76,7 +74,8 @@
                 android:text="@string/no"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:backgroundTint="@color/red" />
 
             <Button
                 android:id="@+id/btDialogDownload"
@@ -95,7 +94,6 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:visibility="visible" />
-
 
 
         </LinearLayout>

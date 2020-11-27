@@ -7,9 +7,10 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import com.cgg.ghmcpollingapp.interfaces.DownloadMasterInterface;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.room.dao.DownloadMasterDao;
 import com.cgg.ghmcpollingapp.room.database.PollingDatabase;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 
 import java.util.List;
 
@@ -21,38 +22,38 @@ public class DownloadMasterRepository {
         downloadMasterDao = db.downloadMasterDao();
     }
 
-    public LiveData<List<PollingEntity>> getAllPSData() {
+    public LiveData<List<MasterPSData>> getAllPSData() {
         return downloadMasterDao.getAllPSMasterData();
     }
 
-    public LiveData<List<PollingEntity>> getAllTimeSlotData() {
+    public LiveData<List<MasterTimeSlotData>> getAllTimeSlotData() {
         return downloadMasterDao.getAllTimeSlotMasterData();
     }
 
-    public void insertPSData(final DownloadMasterInterface syncLocationInterface, final List<PollingEntity> PollingEntity) {
-        new InsertPSDataAsyncTask(syncLocationInterface, PollingEntity).execute();
+    public void insertPSData(final DownloadMasterInterface syncLocationInterface, final List<MasterPSData> masterPSData) {
+        new InsertPSDataAsyncTask(syncLocationInterface, masterPSData).execute();
     }
 
 
-    public void insertTimeSlotLocations(final DownloadMasterInterface syncLocationInterface, final List<PollingEntity> PollingEntitys) {
+    public void insertTimeSlotLocations(final DownloadMasterInterface syncLocationInterface, final List<MasterTimeSlotData> PollingEntitys) {
         new InsertTimeSlotAsyncTask(syncLocationInterface, PollingEntitys).execute();
     }
 
     @SuppressLint("StaticFieldLeak")
     private class InsertPSDataAsyncTask extends AsyncTask<Void, Void, Integer> {
-        List<PollingEntity> PollingEntity;
+        List<MasterPSData> masterPSData;
         DownloadMasterInterface downloadMasterInterface;
 
         InsertPSDataAsyncTask(DownloadMasterInterface downloadMasterInterface,
-                                  List<PollingEntity> PollingEntity) {
-            this.PollingEntity = PollingEntity;
+                                  List<MasterPSData> masterPSData) {
+            this.masterPSData = masterPSData;
             this.downloadMasterInterface = downloadMasterInterface;
         }
 
         @Override
         protected Integer doInBackground(Void... voids) {
             downloadMasterDao.deletePSMasterData();
-            downloadMasterDao.insertPSMasterData(PollingEntity);
+            downloadMasterDao.insertPSMasterData(masterPSData);
             return downloadMasterDao.pSMasterDataCount();
         }
 
@@ -65,11 +66,11 @@ public class DownloadMasterRepository {
 
     @SuppressLint("StaticFieldLeak")
     private class InsertTimeSlotAsyncTask extends AsyncTask<Void, Void, Integer> {
-        List<PollingEntity> PollingEntitys;
+        List<MasterTimeSlotData> PollingEntitys;
         DownloadMasterInterface syncLocationInterface;
 
         InsertTimeSlotAsyncTask(DownloadMasterInterface syncLocationInterface,
-                                 List<PollingEntity> PollingEntitys) {
+                                 List<MasterTimeSlotData> PollingEntitys) {
             this.PollingEntitys = PollingEntitys;
             this.syncLocationInterface = syncLocationInterface;
         }

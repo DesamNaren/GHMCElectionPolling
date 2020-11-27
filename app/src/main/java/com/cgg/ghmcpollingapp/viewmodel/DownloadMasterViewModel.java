@@ -10,11 +10,14 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.model.request.MasterDataRequest;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterDataResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.DownloadMasterRepository;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 
 import java.util.List;
 
@@ -24,12 +27,12 @@ import retrofit2.Response;
 
 public class DownloadMasterViewModel extends AndroidViewModel {
     private DownloadMasterRepository downloadMasterRepository;
-    private MutableLiveData<LoginResponse> masterMutableLiveData;
+    private MutableLiveData<MasterDataResponse> masterMutableLiveData;
 
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
-    private LiveData<List<PollingEntity>> masterPSData;
-    private LiveData<List<PollingEntity>> masterTimeSlotData;
+    private LiveData<List<MasterPSData>> masterPSData;
+    private LiveData<List<MasterTimeSlotData>> masterTimeSlotData;
 
     public DownloadMasterViewModel(Context context, Application application) {
         super(application);
@@ -41,32 +44,32 @@ public class DownloadMasterViewModel extends AndroidViewModel {
         errorHandlerInterface = (ErrorHandlerInterface) context;
     }
 
-    public LiveData<List<PollingEntity>> getMasterPSData() {
+    public LiveData<List<MasterPSData>> getMasterPSData() {
         if (masterPSData != null) {
             masterPSData = downloadMasterRepository.getAllPSData();
         }
         return masterPSData;
     }
 
-    public LiveData<List<PollingEntity>> getMasterTimeSlotData() {
+    public LiveData<List<MasterTimeSlotData>> getMasterTimeSlotData() {
         if (masterTimeSlotData != null) {
             masterTimeSlotData = downloadMasterRepository.getAllTimeSlotData();
         }
         return masterTimeSlotData;
     }
 
-    public LiveData<LoginResponse> getMasterResponse(String token) {
+    public LiveData<MasterDataResponse> getMasterResponse(MasterDataRequest masterDataRequest) {
         if (masterMutableLiveData != null) {
-            getMasterResponseCall(token);
+            getMasterResponseCall(masterDataRequest);
         }
         return masterMutableLiveData;
     }
 
-    private void getMasterResponseCall(String token) {
+    private void getMasterResponseCall(MasterDataRequest masterDataRequest) {
         GHMCService ghmcService = GHMCService.Factory.create();
-        ghmcService.getLoginResponse(new LoginRequest()).enqueue(new Callback<LoginResponse>() {
+        ghmcService.getMasterDataResponse(masterDataRequest).enqueue(new Callback<MasterDataResponse>() {
             @Override
-            public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
+            public void onResponse(@NonNull Call<MasterDataResponse> call, @NonNull Response<MasterDataResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     masterMutableLiveData.setValue(response.body());
                 } else {
@@ -75,7 +78,7 @@ public class DownloadMasterViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<MasterDataResponse> call, @NonNull Throwable t) {
                 errorHandlerInterface.handleError(t, context);
             }
         });

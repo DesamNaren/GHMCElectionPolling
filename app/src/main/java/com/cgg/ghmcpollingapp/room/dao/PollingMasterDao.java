@@ -5,7 +5,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.cgg.ghmcpollingapp.source.PollingEntity;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 
 import java.util.List;
 
@@ -22,28 +23,22 @@ import java.util.List;
 @Dao
 public interface PollingMasterDao {
 
-    @Query("DELETE FROM polling_master")
-    void deletePollingMaster();
+    @Query("SELECT * from ps_master_tbl GROUP By zoneId")
+    LiveData<List<MasterPSData>> getZones();
 
-    @Insert
-    void insertPollingmaster(List<PollingEntity> workDetails);
+    @Query("SELECT * from ps_master_tbl where zoneId LIKE :zone_id GROUP By circleId")
+    LiveData<List<MasterPSData>> getCircles(String zone_id);
 
-    @Query("SELECT COUNT(*) FROM polling_master")
-    int pollingCount();
+    @Query("SELECT * from ps_master_tbl where zoneId LIKE :zone_id AND circleId LIKE :circle_id GROUP By wardId")
+    LiveData<List<MasterPSData>> getWards(String zone_id,String circle_id);
 
-    @Query("SELECT * from polling_master GROUP By zone_id")
-    LiveData<List<PollingEntity>> getZones();
+    @Query("SELECT * from ps_master_tbl where zoneId LIKE :zone_id AND circleId LIKE :circle_id AND wardId LIKE :ward_id GROUP By sectorId")
+    LiveData<List<MasterPSData>> getSectors(String zone_id,String circle_id,String ward_id);
 
-    @Query("SELECT * from polling_master where zone_id LIKE :zone_id GROUP By circle_id")
-    LiveData<List<PollingEntity>> getCircles(String zone_id);
+    @Query("SELECT * from ps_master_tbl where sectorId LIKE :sector_id AND zoneId LIKE :zone_id AND circleId LIKE :circle_id AND wardId LIKE :ward_id ")
+    LiveData<List<MasterPSData>> getPsNames(String sector_id,String zone_id,String circle_id,String ward_id);
 
-    @Query("SELECT * from polling_master where zone_id LIKE :zone_id AND circle_id LIKE :circle_id GROUP By ward_id")
-    LiveData<List<PollingEntity>> getWards(String zone_id,String circle_id);
-
-    @Query("SELECT * from polling_master where zone_id LIKE :zone_id AND circle_id LIKE :circle_id AND ward_id LIKE :ward_id GROUP By sector_id")
-    LiveData<List<PollingEntity>> getSectors(String zone_id,String circle_id,String ward_id);
-
-    @Query("SELECT * from polling_master where sector_id LIKE :sector_id AND zone_id LIKE :zone_id AND circle_id LIKE :circle_id AND ward_id LIKE :ward_id ")
-    LiveData<List<PollingEntity>> getPsNames(String sector_id,String zone_id,String circle_id,String ward_id);
+    @Query("SELECT * from Time_Slot_Master_Tbl")
+    LiveData<List<MasterTimeSlotData>> getTimeSlots();
 
 }

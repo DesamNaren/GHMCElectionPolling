@@ -33,8 +33,9 @@ import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.DownloadMasterViewModel;
@@ -57,13 +58,13 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     PollingMasterRep pollingMasterRep;
     MapSectorViewModel mapSectorViewModel;
     List<String> zones;
-    List<PollingEntity> zonesPollingEntities;
+    List<MasterPSData> zonesPollingEntities;
     List<String> circles;
-    List<PollingEntity> circlesPollingEntities;
+    List<MasterPSData> circlesPollingEntities;
     List<String> wards;
-    List<PollingEntity> wardPollingEntities;
+    List<MasterPSData> wardPollingEntities;
     List<String> sectors;
-    List<PollingEntity> sectorsPollingEntities;
+    List<MasterPSData> sectorsPollingEntities;
     CustomProgressDialog customProgressDialog;
     private ArrayAdapter<String> selectAdapter;
     private ArrayList<String> sellist;
@@ -106,34 +107,34 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
 
 
-        LiveData<List<PollingEntity>> cListLiveData = downloadMasterViewModel.getMasterPSData();
-        cListLiveData.observe(this, new Observer<List<PollingEntity>>() {
+        LiveData<List<MasterPSData>> cListLiveData = downloadMasterViewModel.getMasterPSData();
+        cListLiveData.observe(this, new Observer<List<MasterPSData>>() {
             @Override
-            public void onChanged(List<PollingEntity> coOrdinatesMaseter) {
+            public void onChanged(List<MasterPSData> masterPSData) {
                 cListLiveData.removeObservers(MapSectorActivity.this);
-                if (coOrdinatesMaseter == null || coOrdinatesMaseter.size() <= 0) {
+                if (masterPSData == null || masterPSData.size() <= 0) {
                     Utils.customSyncAlertDownload(MapSectorActivity.this,
                             getString(R.string.app_name),
                             getString(R.string.ps_download_message), MapSectorActivity.class.getSimpleName());
                 } else {
-                    LiveData<List<PollingEntity>> wListLiveData = downloadMasterViewModel.getMasterTimeSlotData();
-                    wListLiveData.observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                    LiveData<List<MasterTimeSlotData>> wListLiveData = downloadMasterViewModel.getMasterTimeSlotData();
+                    wListLiveData.observe(MapSectorActivity.this, new Observer<List<MasterTimeSlotData>>() {
                         @Override
-                        public void onChanged(List<PollingEntity> PollingEntitys) {
+                        public void onChanged(List<MasterTimeSlotData> masterTimeSlotData) {
                             cListLiveData.removeObservers(MapSectorActivity.this);
-                            if (PollingEntitys == null || PollingEntitys.size() <= 0) {
+                            if (masterTimeSlotData == null || masterTimeSlotData.size() <= 0) {
                                 Utils.customSyncAlertDownload(MapSectorActivity.this, getString(R.string.app_name),
                                         getString(R.string.time_slot_download_message), MapSectorActivity.class.getSimpleName());
                             } else {
-                                mapSectorViewModel.getZones().observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                                mapSectorViewModel.getZones().observe(MapSectorActivity.this, new Observer<List<MasterPSData>>() {
                                     @Override
-                                    public void onChanged(List<PollingEntity> zonesPollingEntities) {
+                                    public void onChanged(List<MasterPSData> zonesPollingEntities) {
                                         MapSectorActivity.this.zonesPollingEntities = zonesPollingEntities;
                                         if (zonesPollingEntities != null && zonesPollingEntities.size() > 0) {
                                             zones.add(0, getString(R.string.select));
                                             for (int x = 0; x < zonesPollingEntities.size(); x++) {
-                                                if (!TextUtils.isEmpty(zonesPollingEntities.get(x).getZone_name())) {
-                                                    zones.add(zonesPollingEntities.get(x).getZone_name());
+                                                if (!TextUtils.isEmpty(zonesPollingEntities.get(x).getZoneName())) {
+                                                    zones.add(zonesPollingEntities.get(x).getZoneName());
                                                 }
                                             }
 
@@ -184,18 +185,18 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     binding.sectorSpinner.setAdapter(selectAdapter);
                     customProgressDialog.show();
                     zoneName = binding.zoneSpinner.getSelectedItem().toString().trim();
-                    zoneId = String.valueOf(zonesPollingEntities.get(position - 1).getZone_id());
-                    mapSectorViewModel.getCircles(zoneId).observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                    zoneId = String.valueOf(zonesPollingEntities.get(position - 1).getZoneId());
+                    mapSectorViewModel.getCircles(zoneId).observe(MapSectorActivity.this, new Observer<List<MasterPSData>>() {
                         @Override
-                        public void onChanged(List<PollingEntity> circlesPollingEntities) {
+                        public void onChanged(List<MasterPSData> circlesPollingEntities) {
                             customProgressDialog.dismiss();
                             MapSectorActivity.this.circlesPollingEntities = circlesPollingEntities;
 
                             if (circlesPollingEntities != null && circlesPollingEntities.size() > 0) {
                                 circles.add(0, getString(R.string.select));
                                 for (int x = 0; x < circlesPollingEntities.size(); x++) {
-                                    if (!TextUtils.isEmpty(circlesPollingEntities.get(x).getCircle_name())) {
-                                        circles.add(circlesPollingEntities.get(x).getCircle_name());
+                                    if (!TextUtils.isEmpty(circlesPollingEntities.get(x).getCircleName())) {
+                                        circles.add(circlesPollingEntities.get(x).getCircleName());
                                     }
                                 }
                                 ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, circles);
@@ -238,17 +239,17 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     binding.sectorSpinner.setAdapter(selectAdapter);
                     customProgressDialog.show();
                     cirName = binding.circleSpinner.getSelectedItem().toString().trim();
-                    circleId = String.valueOf(circlesPollingEntities.get(position - 1).getCircle_id());
-                    mapSectorViewModel.getWards(zoneId, circleId).observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                    circleId = String.valueOf(circlesPollingEntities.get(position - 1).getCircleId());
+                    mapSectorViewModel.getWards(zoneId, circleId).observe(MapSectorActivity.this, new Observer<List<MasterPSData>>() {
                         @Override
-                        public void onChanged(List<PollingEntity> wardPollingEntities) {
+                        public void onChanged(List<MasterPSData> wardPollingEntities) {
                             customProgressDialog.dismiss();
                             MapSectorActivity.this.wardPollingEntities = wardPollingEntities;
                             if (wardPollingEntities != null && wardPollingEntities.size() > 0) {
                                 wards.add(0, getString(R.string.select));
                                 for (int x = 0; x < wardPollingEntities.size(); x++) {
-                                    if (!TextUtils.isEmpty(wardPollingEntities.get(x).getWard_name())) {
-                                        wards.add(wardPollingEntities.get(x).getWard_name());
+                                    if (!TextUtils.isEmpty(wardPollingEntities.get(x).getWardName())) {
+                                        wards.add(wardPollingEntities.get(x).getWardName());
                                     }
                                 }
                                 ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, wards);
@@ -283,17 +284,17 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     sectors.clear();
                     customProgressDialog.show();
                     wardName = binding.wardSpinner.getSelectedItem().toString().trim();
-                    wardId = String.valueOf(wardPollingEntities.get(position - 1).getWard_id());
-                    mapSectorViewModel.getSectors(zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                    wardId = String.valueOf(wardPollingEntities.get(position - 1).getWardId());
+                    mapSectorViewModel.getSectors(zoneId, circleId, wardId).observe(MapSectorActivity.this, new Observer<List<MasterPSData>>() {
                         @Override
-                        public void onChanged(List<PollingEntity> sectorsPollingEntities) {
+                        public void onChanged(List<MasterPSData> sectorsPollingEntities) {
                             customProgressDialog.dismiss();
                             MapSectorActivity.this.sectorsPollingEntities = sectorsPollingEntities;
                             if (sectorsPollingEntities != null && sectorsPollingEntities.size() > 0) {
                                 sectors.add(0, getString(R.string.select));
                                 for (int x = 0; x < sectorsPollingEntities.size(); x++) {
-                                    if (!TextUtils.isEmpty(sectorsPollingEntities.get(x).getSector_name())) {
-                                        sectors.add(sectorsPollingEntities.get(x).getSector_name());
+                                    if (!TextUtils.isEmpty(sectorsPollingEntities.get(x).getSectorName())) {
+                                        sectors.add(sectorsPollingEntities.get(x).getSectorName());
                                     }
                                 }
                                 ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sectors);
@@ -319,7 +320,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                     secName = "";
                 } else {
                     secName = binding.sectorSpinner.getSelectedItem().toString().trim();
-                    secId = String.valueOf(sectorsPollingEntities.get(position - 1).getSector_id());
+                    secId = String.valueOf(sectorsPollingEntities.get(position - 1).getSectorId());
                 }
             }
 

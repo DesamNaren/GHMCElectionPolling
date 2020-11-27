@@ -5,7 +5,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.cgg.ghmcpollingapp.source.PollingEntity;
+import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 
 import java.util.List;
 
@@ -23,28 +24,28 @@ import java.util.List;
 @Dao
 public interface DownloadMasterDao {
 
-    @Query("DELETE FROM polling_master")
+    @Query("DELETE FROM PS_Master_Tbl")
     void deletePSMasterData();
 
     @Insert
-    void insertPSMasterData(List<PollingEntity> pollingEntities);
+    void insertPSMasterData(List<MasterPSData> masterPSData);
 
-    @Query("SELECT COUNT(*) FROM polling_master")
+    @Query("SELECT COUNT(*) FROM PS_Master_Tbl")
     int pSMasterDataCount();
 
-    @Query("DELETE FROM polling_master")
+    @Query("DELETE FROM Time_Slot_Master_Tbl")
     void deleteTimeSlotMasterData();
 
     @Insert
-    void insertTimeSlotMasterData(List<PollingEntity> pollingEntities);
+    void insertTimeSlotMasterData(List<MasterTimeSlotData> pollingEntities);
 
-    @Query("SELECT COUNT(*) FROM polling_master")
+    @Query("SELECT COUNT(*) FROM Time_Slot_Master_Tbl")
     int timeSlotMasterDataCount();
 
-    @Query("SELECT * from polling_master")
-    LiveData<List<PollingEntity>> getAllPSMasterData();
+    @Query("SELECT * from PS_Master_Tbl")
+    LiveData<List<MasterPSData>> getAllPSMasterData();
 
-    @Query("SELECT * from polling_master")
-    LiveData<List<PollingEntity>> getAllTimeSlotMasterData();
+    @Query("SELECT * from Time_Slot_Master_Tbl")
+    LiveData<List<MasterTimeSlotData>> getAllTimeSlotMasterData();
 
 }
