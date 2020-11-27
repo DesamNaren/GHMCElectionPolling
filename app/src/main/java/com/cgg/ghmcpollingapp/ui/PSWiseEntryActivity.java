@@ -220,8 +220,9 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                             timeSlots);
                     binding.spTimeSlot.setAdapter(adapter);
                 } else {
-                    Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), getString(R.string.no_pollings_found));
-                }
+                    Utils.customSyncAlertDownload(PSWiseEntryActivity.this,
+                            getString(R.string.app_name),
+                            getString(R.string.ps_download_message), PSWiseEntryActivity.class.getSimpleName());                }
 
             }
         });

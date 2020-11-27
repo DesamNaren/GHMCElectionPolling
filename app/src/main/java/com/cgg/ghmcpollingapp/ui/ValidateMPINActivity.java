@@ -20,6 +20,7 @@ import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityValidateMpinBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.interfaces.GenerateMPINInterface;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
@@ -30,7 +31,7 @@ import com.cgg.ghmcpollingapp.viewmodel.GenerateMPINViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.LoginViewModel;
 import com.google.gson.Gson;
 
-public class ValidateMPINActivity extends AppCompatActivity implements ErrorHandlerInterface {
+public class ValidateMPINActivity extends AppCompatActivity implements ErrorHandlerInterface, GenerateMPINInterface {
 
     private ActivityValidateMpinBinding binding;
     private SharedPreferences sharedPreferences;
@@ -183,33 +184,7 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
             generateMPINRequest.setMobileNo(mobNo);
             generateMPINRequest.setmPIN(null);
             generateMPINRequest.setTokenID(tokenId);
-            LiveData<MPINResponse> mpinResponseLiveData = generateMPINViewModel.generateMPINCall(generateMPINRequest);
-            mpinResponseLiveData.observe(ValidateMPINActivity.this, new Observer<MPINResponse>() {
-                @Override
-                public void onChanged(MPINResponse mpinResponse) {
-                    customProgressDialog.dismiss();
-                    mpinResponseLiveData.removeObservers(ValidateMPINActivity.this);
-                    if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
-                        if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
-                            Utils.customSessionAlert(ValidateMPINActivity.this, getString(R.string.app_name),
-                                    mpinResponse.getResponseMessage());
-                        } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                            editor.clear();
-                            editor.commit();
-                            startActivity(new Intent(ValidateMPINActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                            finish();
-                        } else {
-                            customProgressDialog.dismiss();
-                            Utils.customErrorAlert(context, getString(R.string.app_name),
-                                    mpinResponse.getResponseMessage());
-                        }
-                    } else {
-                        customProgressDialog.dismiss();
-                        Utils.customErrorAlert(context, getString(R.string.app_name),
-                                getString(R.string.server_not));
-                    }
-                }
-            });
+            generateMPINViewModel.generateMPINCallService(generateMPINRequest);
         } else {
             Utils.customErrorAlert(context, getResources().getString(R.string.app_name_release), getString(R.string.plz_check_int));
         }
@@ -270,5 +245,29 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
                 Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(newIntent);
         finish();
+    }
+
+    @Override
+    public void generateMPINResponse(MPINResponse mpinResponse) {
+        customProgressDialog.dismiss();
+        if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
+            if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                Utils.customSessionAlert(ValidateMPINActivity.this, getString(R.string.app_name),
+                        mpinResponse.getResponseMessage());
+            } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                editor.clear();
+                editor.commit();
+                startActivity(new Intent(ValidateMPINActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
+            } else {
+                customProgressDialog.dismiss();
+                Utils.customErrorAlert(context, getString(R.string.app_name),
+                        mpinResponse.getResponseMessage());
+            }
+        } else {
+            customProgressDialog.dismiss();
+            Utils.customErrorAlert(context, getString(R.string.app_name),
+                    getString(R.string.server_not));
+        }
     }
 }

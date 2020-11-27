@@ -268,7 +268,14 @@ public class Utils {
                                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             activity.startActivity(newIntent);
                             activity.finish();
-                        } else {
+                        } else if (!TextUtils.isEmpty(fromClass) &&
+                                fromClass.equalsIgnoreCase(PSWiseEntryActivity.class.getSimpleName())) {
+                            Intent newIntent = new Intent(activity, PSWiseEntryActivity.class);
+                            newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            activity.startActivity(newIntent);
+                            activity.finish();
+                        }else {
                             activity.finish();
                         }
                     }

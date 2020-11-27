@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.interfaces.DownloadMasterInterface;
 import com.cgg.ghmcpollingapp.model.request.MasterDataRequest;
 import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
@@ -31,6 +32,7 @@ public class DownloadMasterViewModel extends AndroidViewModel {
 
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
+    private DownloadMasterInterface downloadMasterInterface;
     private LiveData<List<MasterPSData>> masterPSData;
     private LiveData<List<MasterTimeSlotData>> masterTimeSlotData;
 
@@ -42,6 +44,7 @@ public class DownloadMasterViewModel extends AndroidViewModel {
         masterPSData = new MutableLiveData<>();
         masterTimeSlotData = new MutableLiveData<>();
         errorHandlerInterface = (ErrorHandlerInterface) context;
+        downloadMasterInterface = (DownloadMasterInterface) context;
     }
 
     public LiveData<List<MasterPSData>> getMasterPSData() {
@@ -58,20 +61,14 @@ public class DownloadMasterViewModel extends AndroidViewModel {
         return masterTimeSlotData;
     }
 
-    public LiveData<MasterDataResponse> getMasterResponse(MasterDataRequest masterDataRequest) {
-        if (masterMutableLiveData != null) {
-            getMasterResponseCall(masterDataRequest);
-        }
-        return masterMutableLiveData;
-    }
 
-    private void getMasterResponseCall(MasterDataRequest masterDataRequest) {
+    public void getMasterResponseCall(MasterDataRequest masterDataRequest) {
         GHMCService ghmcService = GHMCService.Factory.create();
         ghmcService.getMasterDataResponse(masterDataRequest).enqueue(new Callback<MasterDataResponse>() {
             @Override
             public void onResponse(@NonNull Call<MasterDataResponse> call, @NonNull Response<MasterDataResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    masterMutableLiveData.setValue(response.body());
+                    downloadMasterInterface.masterResponse(response.body());
                 } else {
                     errorHandlerInterface.handleError(context.getString(R.string.server_not), context);
                 }

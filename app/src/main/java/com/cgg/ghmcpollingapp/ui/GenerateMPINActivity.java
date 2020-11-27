@@ -1,28 +1,17 @@
 package com.cgg.ghmcpollingapp.ui;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
@@ -30,6 +19,7 @@ import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityGenerateMpinBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.interfaces.GenerateMPINInterface;
 import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
@@ -39,7 +29,7 @@ import com.cgg.ghmcpollingapp.viewmodel.GenerateMPINViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
-public class GenerateMPINActivity extends AppCompatActivity implements ErrorHandlerInterface {
+public class GenerateMPINActivity extends AppCompatActivity implements ErrorHandlerInterface, GenerateMPINInterface {
 
     private Context context;
     private ActivityGenerateMpinBinding binding;
@@ -199,32 +189,7 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
             generateMPINRequest.setMobileNo(mobNum);
             generateMPINRequest.setmPIN(mPIN);
             generateMPINRequest.setTokenID(loginResponse.getLoginData().get(0).getTokenID());
-            LiveData<MPINResponse> mpinResponseLiveData = generateMPINViewModel.generateMPINCall(generateMPINRequest);
-            mpinResponseLiveData.observe(GenerateMPINActivity.this, new Observer<MPINResponse>() {
-                @Override
-                public void onChanged(MPINResponse mpinResponse) {
-                    customProgressDialog.dismiss();
-                    mpinResponseLiveData.removeObservers(GenerateMPINActivity.this);
-                    if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
-                        if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
-                            Utils.customSessionAlert(GenerateMPINActivity.this, getString(R.string.app_name),
-                                    mpinResponse.getResponseMessage());
-                        } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                            editor.putString(AppConstants.mPin,mPIN);
-                            editor.commit();
-                            Utils.customMPINSuccessAlert(GenerateMPINActivity.this, mpinResponse.getResponseMessage());
-                        } else {
-                            customProgressDialog.dismiss();
-                            Utils.customErrorAlert(context, getString(R.string.app_name),
-                                    mpinResponse.getResponseMessage());
-                        }
-                    } else {
-                        customProgressDialog.dismiss();
-                        Utils.customErrorAlert(context, getString(R.string.app_name),
-                                getString(R.string.server_not));
-                    }
-                }
-            });
+            generateMPINViewModel.generateMPINCallService(generateMPINRequest);
         } else {
             Utils.customErrorAlert(context, getResources().getString(R.string.app_name_release), getString(R.string.plz_check_int));
         }
@@ -256,5 +221,28 @@ public class GenerateMPINActivity extends AppCompatActivity implements ErrorHand
         super.onDestroy();
         if (customProgressDialog != null && customProgressDialog.isShowing())
             customProgressDialog.dismiss();
+    }
+
+    @Override
+    public void generateMPINResponse(MPINResponse mpinResponse) {
+        customProgressDialog.dismiss();
+        if (mpinResponse != null && mpinResponse.getStatusCode() != null) {
+            if (mpinResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                Utils.customSessionAlert(GenerateMPINActivity.this, getString(R.string.app_name),
+                        mpinResponse.getResponseMessage());
+            } else if (mpinResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                editor.putString(AppConstants.mPin, binding.enterMPIN.getText().toString());
+                editor.commit();
+                Utils.customMPINSuccessAlert(GenerateMPINActivity.this, mpinResponse.getResponseMessage());
+            } else {
+                customProgressDialog.dismiss();
+                Utils.customErrorAlert(context, getString(R.string.app_name),
+                        mpinResponse.getResponseMessage());
+            }
+        } else {
+            customProgressDialog.dismiss();
+            Utils.customErrorAlert(context, getString(R.string.app_name),
+                    getString(R.string.server_not));
+        }
     }
 }

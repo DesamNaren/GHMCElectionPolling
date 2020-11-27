@@ -105,40 +105,8 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
                     customProgressDialog.show();
                     MasterDataRequest masterDataRequest = new MasterDataRequest();
                     masterDataRequest.setTokenID(sessionToken);
-                    LiveData<MasterDataResponse> coordniatesMasterResponseLiveData = downloadMasterViewModel.getMasterResponse(masterDataRequest);
-                    coordniatesMasterResponseLiveData.observe(DownloadMasterActivity.this, new Observer<MasterDataResponse>() {
-                        @Override
-                        public void onChanged(MasterDataResponse masterDataResponse) {
-                            DownloadMasterActivity.this.masterDataResponse = masterDataResponse;
-                            coordniatesMasterResponseLiveData.removeObservers(DownloadMasterActivity.this);
-                            if (masterDataResponse != null && masterDataResponse.getStatusCode() != null) {
-                                if (masterDataResponse.getStatusCode() == AppConstants.SESSION_CODE) {
-                                    Utils.customSessionAlert(DownloadMasterActivity.this, getString(R.string.app_name),
-                                            masterDataResponse.getResponseMessage());
-                                } else if (masterDataResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                                    if (masterDataResponse.getMasterPSData() != null && masterDataResponse.getMasterPSData().size() > 0) {
-                                        downloadMasterRepository.insertPSData
-                                                (DownloadMasterActivity.this, masterDataResponse.getMasterPSData());
-                                    } else {
-                                        Utils.customErrorAlert(DownloadMasterActivity.this, getString(R.string.app_name),
-                                                getString(R.string.something));
-                                    }
-                                } else if (masterDataResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
-                                    customProgressDialog.dismiss();
-                                    Utils.customErrorAlert(context, getString(R.string.app_name),
-                                            masterDataResponse.getResponseMessage());
-                                } else {
-                                    customProgressDialog.dismiss();
-                                    Utils.customErrorAlert(context, getString(R.string.app_name),
-                                            getString(R.string.something));
-                                }
-                            } else {
-                                customProgressDialog.dismiss();
-                                Utils.customErrorAlert(context, getString(R.string.app_name),
-                                        getString(R.string.server_not));
-                            }
-                        }
-                    });
+                            downloadMasterViewModel.getMasterResponseCall(masterDataRequest);
+
                 } else {
                     Utils.customErrorAlert(context, getResources().getString(R.string.app_name), getString(R.string.plz_check_int));
                 }
@@ -185,6 +153,37 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
     }
 
     @Override
+    public void masterResponse(MasterDataResponse masterDataResponse) {
+        DownloadMasterActivity.this.masterDataResponse = masterDataResponse;
+        if (masterDataResponse != null && masterDataResponse.getStatusCode() != null) {
+            if (masterDataResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                Utils.customSessionAlert(DownloadMasterActivity.this, getString(R.string.app_name),
+                        masterDataResponse.getResponseMessage());
+            } else if (masterDataResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+                if (masterDataResponse.getMasterPSData() != null && masterDataResponse.getMasterPSData().size() > 0) {
+                    downloadMasterRepository.insertPSData
+                            (DownloadMasterActivity.this, masterDataResponse.getMasterPSData());
+                } else {
+                    Utils.customErrorAlert(DownloadMasterActivity.this, getString(R.string.app_name),
+                            getString(R.string.something));
+                }
+            } else if (masterDataResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                customProgressDialog.dismiss();
+                Utils.customErrorAlert(context, getString(R.string.app_name),
+                        masterDataResponse.getResponseMessage());
+            } else {
+                customProgressDialog.dismiss();
+                Utils.customErrorAlert(context, getString(R.string.app_name),
+                        getString(R.string.something));
+            }
+        } else {
+            customProgressDialog.dismiss();
+            Utils.customErrorAlert(context, getString(R.string.app_name),
+                    getString(R.string.server_not));
+        }
+    }
+
+    @Override
     public void handleError(String errMsg, Context context) {
         customProgressDialog.dismiss();
         Utils.customErrorAlert(context, getString(R.string.app_name), errMsg);
@@ -201,6 +200,13 @@ public class DownloadMasterActivity extends AppCompatActivity implements ErrorHa
             finish();
         } else if (!TextUtils.isEmpty(fromClass) &&
                 fromClass.equalsIgnoreCase(DashboardActivity.class.getSimpleName())) {
+            Intent newIntent = new Intent(this, DashboardActivity.class);
+            newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(newIntent);
+            finish();
+        }else if (!TextUtils.isEmpty(fromClass) &&
+                fromClass.equalsIgnoreCase(PSWiseEntryActivity.class.getSimpleName())) {
             Intent newIntent = new Intent(this, DashboardActivity.class);
             newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                     Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
