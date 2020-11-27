@@ -25,7 +25,6 @@ import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.PSEntryViewModel;
