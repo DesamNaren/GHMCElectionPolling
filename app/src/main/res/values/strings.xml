@@ -72,8 +72,8 @@
     <string name="sel_ward">Select Ward</string>
     <string name="sel_sector">Select Sector</string>
     <string name="home">Home</string>
-    <string name="logout_menu">Logout</string>
-    <string name="logout_from_app">Are you sure you want to logout from app?</string>
+    <string name="logout_menu">Exit</string>
+    <string name="logout_from_app">Are you sure you want to exit from app?</string>
     <string name="no_zones_found">No zones found</string>
     <string name="no_circles_found">No circles found</string>
     <string name="no_wards_found">No wards found</string>
@@ -82,4 +82,16 @@
     <string name="map_sector_title">Map Sector</string>
     <string name="ps_entry_title">PS Wise Entry</string>
     <string name="ps_status_title">PS Wise Status</string>
+    <string name="download">Download</string>
+    <string name="re_download">Re-Download</string>
+
+    <string name="ps_master">Polling Master</string>
+    <string name="ps_sub_master">(Polling Stations &amp; Time Slots)</string>
+    <string name="download_master">Download Masters</string>
+    <string name="no_ps_data_found">No master polling stations found</string>
+    <string name="no_time_slot_data_found">No master time slots found</string>
+    <string name="master_message_success">Master data downloaded successfully</string>
+    <string name="ps_download_message">Data not available for Polling Stations, Would you like to download the data?</string>
+    <string name="time_slot_download_message">Data not available for Time Slots, Would you like to download the data?</string>
+
 </resources>

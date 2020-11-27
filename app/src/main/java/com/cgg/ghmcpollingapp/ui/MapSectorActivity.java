@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 
 import com.cgg.ghmcpollingapp.R;
@@ -36,6 +37,7 @@ import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
 import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
+import com.cgg.ghmcpollingapp.viewmodel.DownloadMasterViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.MapSectorViewModel;
 import com.google.android.material.snackbar.Snackbar;
@@ -66,6 +68,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
     private ArrayAdapter<String> selectAdapter;
     private ArrayList<String> sellist;
     private String tokenId;
+    private DownloadMasterViewModel downloadMasterViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map_sector);
         logoutViewModel = new LogoutViewModel(this, getApplication());
         mapSectorViewModel = new MapSectorViewModel(this, getApplication());
+        downloadMasterViewModel = new DownloadMasterViewModel(this, getApplication());
         customProgressDialog = new CustomProgressDialog(context);
 
         sharedPreferences = PollingApplication.get(context).getPreferences();
@@ -92,7 +96,6 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         LoginResponse loginResponse = new Gson().fromJson(data, LoginResponse.class);
         tokenId = sharedPreferences.getString(AppConstants.TOKEN_ID, "");
         if (loginResponse != null && loginResponse.getLoginData() != null && loginResponse.getLoginData().get(0) != null) {
-
             userId = loginResponse.getLoginData().get(0).getUserID();
         } else {
             Utils.customErrorAlert(context, getString(R.string.app_name),
@@ -101,25 +104,54 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
         sellist = new ArrayList();
         sellist.add(getString(R.string.select));
         selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
-        mapSectorViewModel.getZones().observe(this, new Observer<List<PollingEntity>>() {
-            @Override
-            public void onChanged(List<PollingEntity> zonesPollingEntities) {
-                MapSectorActivity.this.zonesPollingEntities = zonesPollingEntities;
-                if (zonesPollingEntities != null && zonesPollingEntities.size() > 0) {
-                    zones.add(0, getString(R.string.select));
-                    for (int x = 0; x < zonesPollingEntities.size(); x++) {
-                        if (!TextUtils.isEmpty(zonesPollingEntities.get(x).getZone_name())) {
-                            zones.add(zonesPollingEntities.get(x).getZone_name());
-                        }
-                    }
 
-                    ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, zones);
-                    binding.zoneSpinner.setAdapter(adapter);
+
+        LiveData<List<PollingEntity>> cListLiveData = downloadMasterViewModel.getMasterPSData();
+        cListLiveData.observe(this, new Observer<List<PollingEntity>>() {
+            @Override
+            public void onChanged(List<PollingEntity> coOrdinatesMaseter) {
+                cListLiveData.removeObservers(MapSectorActivity.this);
+                if (coOrdinatesMaseter == null || coOrdinatesMaseter.size() <= 0) {
+                    Utils.customSyncAlertDownload(MapSectorActivity.this,
+                            getString(R.string.app_name),
+                            getString(R.string.ps_download_message), MapSectorActivity.class.getSimpleName());
                 } else {
-                    Utils.callSnackBar(binding.cl, getString(R.string.no_zones_found));
+                    LiveData<List<PollingEntity>> wListLiveData = downloadMasterViewModel.getMasterTimeSlotData();
+                    wListLiveData.observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                        @Override
+                        public void onChanged(List<PollingEntity> PollingEntitys) {
+                            cListLiveData.removeObservers(MapSectorActivity.this);
+                            if (PollingEntitys == null || PollingEntitys.size() <= 0) {
+                                Utils.customSyncAlertDownload(MapSectorActivity.this, getString(R.string.app_name),
+                                        getString(R.string.time_slot_download_message), MapSectorActivity.class.getSimpleName());
+                            } else {
+                                mapSectorViewModel.getZones().observe(MapSectorActivity.this, new Observer<List<PollingEntity>>() {
+                                    @Override
+                                    public void onChanged(List<PollingEntity> zonesPollingEntities) {
+                                        MapSectorActivity.this.zonesPollingEntities = zonesPollingEntities;
+                                        if (zonesPollingEntities != null && zonesPollingEntities.size() > 0) {
+                                            zones.add(0, getString(R.string.select));
+                                            for (int x = 0; x < zonesPollingEntities.size(); x++) {
+                                                if (!TextUtils.isEmpty(zonesPollingEntities.get(x).getZone_name())) {
+                                                    zones.add(zonesPollingEntities.get(x).getZone_name());
+                                                }
+                                            }
+
+                                            ArrayAdapter adapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, zones);
+                                            binding.zoneSpinner.setAdapter(adapter);
+                                        } else {
+                                            Utils.callSnackBar(binding.cl, getString(R.string.no_zones_found));
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
+
             }
         });
+
         binding.zoneSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -181,6 +213,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
+
         binding.circleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -233,6 +266,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
+
         binding.wardSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -277,6 +311,7 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 
             }
         });
+
         binding.sectorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -9,6 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.cgg.ghmcpollingapp.room.dao.DownloadMasterDao;
 import com.cgg.ghmcpollingapp.room.dao.PollingMasterDao;
 import com.cgg.ghmcpollingapp.source.PollingEntity;
 
@@ -21,26 +22,26 @@ import com.cgg.ghmcpollingapp.source.PollingEntity;
         version = 1, exportSchema = false)
 public abstract class PollingDatabase extends RoomDatabase {
 
-    private static PollingDatabase INSTANCE1;
+    private static PollingDatabase pollingDatabase;
 
     public abstract PollingMasterDao pollingDao();
+    public abstract DownloadMasterDao downloadMasterDao();
 
     public static PollingDatabase getDatabase(final Context context) {
-        if (INSTANCE1 == null) {
+        if (pollingDatabase == null) {
             synchronized (PollingDatabase.class) {
-                if (INSTANCE1 == null) {
-                    INSTANCE1 = Room.databaseBuilder(context.getApplicationContext(),
+                if (pollingDatabase == null) {
+                    pollingDatabase = Room.databaseBuilder(context.getApplicationContext(),
                             PollingDatabase.class, "polling.db")
                             // Wipes and rebuilds instead of migrating if no Migration object.
-                            // Migration is not part of this codelab.
 //                            .createFromFile(f)
-//                            .fallbackToDestructiveMigration()
-                            .createFromAsset("database/polling.db")
+//                            .createFromAsset("database/polling.db")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }
         }
-        return INSTANCE1;
+        return pollingDatabase;
     }
 
     /**

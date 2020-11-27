@@ -8,8 +8,12 @@
         <item
             android:id="@+id/nav_my_home"
             android:icon="@drawable/home"
-            android:title="@string/home"
-            android:visible="true" />
+            android:title="@string/home" />
+
+        <item
+            android:id="@+id/nav_download_master"
+            android:icon="@drawable/download"
+            android:title="@string/download_master" />
 
         <item
             android:id="@+id/nav_ps_entry"
@@ -19,7 +23,6 @@
             android:id="@+id/nav_ps_report"
             android:icon="@drawable/status"
             android:title="@string/ps_wise_status" />
-
 
         <item
             android:id="@+id/nav_log_out"

@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.cgg.ghmcpollingapp.ui.DashboardActivity;
 import com.cgg.ghmcpollingapp.R;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
+import com.cgg.ghmcpollingapp.ui.DownloadMasterActivity;
 import com.cgg.ghmcpollingapp.ui.LoginActivity;
 import com.cgg.ghmcpollingapp.ui.MapSectorActivity;
 import com.cgg.ghmcpollingapp.ui.ValidateMPINActivity;
@@ -169,6 +171,58 @@ public class Utils {
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         activity.startActivity(newIntent);
                         activity.finish();
+                    }
+                });
+
+
+                if (!dialog.isShowing())
+                    dialog.show();
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void customMapSuccessAlert(final Activity activity, String title, String msg, String fromClass) {
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (dialog.getWindow() != null && dialog.getWindow().getAttributes() != null) {
+                dialog.getWindow().getAttributes().windowAnimations = R.style.exitdialog_animation1;
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.custom_alert_success);
+                dialog.setCancelable(false);
+                TextView versionTitle = dialog.findViewById(R.id.version_tv);
+                versionTitle.setText("Version: " + Utils.getVersionName(activity));
+                TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+                dialogTitle.setText(title);
+                TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
+                dialogMessage.setVisibility(View.VISIBLE);
+                dialogMessage.setText(msg);
+                Button btDialogYes = dialog.findViewById(R.id.btDialogYes);
+                btDialogYes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        if (!TextUtils.isEmpty(fromClass) &&
+                                fromClass.equalsIgnoreCase(MapSectorActivity.class.getSimpleName())) {
+                            Intent newIntent = new Intent(activity, MapSectorActivity.class);
+                            newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            activity.startActivity(newIntent);
+                            activity.finish();
+                        } else if (!TextUtils.isEmpty(fromClass) &&
+                                fromClass.equalsIgnoreCase(DashboardActivity.class.getSimpleName())) {
+                            Intent newIntent = new Intent(activity, DashboardActivity.class);
+                            newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            activity.startActivity(newIntent);
+                            activity.finish();
+                        } else {
+                            activity.finish();
+                        }
                     }
                 });
 
@@ -368,5 +422,48 @@ public class Utils {
     public static void callSnackBar(View view, String msg) {
         Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+
+    public static void customSyncAlertDownload(Activity activity, String title, String msg, String fromClass) {
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (dialog.getWindow() != null && dialog.getWindow().getAttributes() != null) {
+                dialog.getWindow().getAttributes().windowAnimations = R.style.exitdialog_animation1;
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.custom_alert_download);
+
+                dialog.setCancelable(false);
+                TextView versionTitle = dialog.findViewById(R.id.version_tv);
+                versionTitle.setText("Version: " + Utils.getVersionName(activity));
+
+                TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+                dialogTitle.setText(title);
+                TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
+                dialogMessage.setText(msg);
+                Button btnDownload = dialog.findViewById(R.id.btDialogDownload);
+                Button btnCancel = dialog.findViewById(R.id.btDialogCancel);
+                btnDownload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                        activity.startActivity(new Intent(activity, DownloadMasterActivity.class)
+                        .putExtra(AppConstants.FROM_CLASS, fromClass));
+                        activity.finish();
+                    }
+                });
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        activity.finish();
+                    }
+                });
+                if (!dialog.isShowing())
+                    dialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

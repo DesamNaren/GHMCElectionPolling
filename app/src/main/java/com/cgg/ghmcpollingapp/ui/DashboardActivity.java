@@ -20,7 +20,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -31,9 +30,7 @@ import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityDashboardBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
-import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
-import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.LogoutViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -139,6 +136,25 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
             }
         });
 
+
+        MenuItem navDownloadMaster = navigationView.getMenu().findItem(R.id.nav_download_master);
+        navDownloadMaster.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                Intent newIntent = new Intent(DashboardActivity.this, DownloadMasterActivity.class);
+                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                newIntent.putExtra(AppConstants.FROM_CLASS, DashboardActivity.class.getSimpleName());
+                startActivity(newIntent);
+
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+
+                return true;
+            }
+        });
+
         MenuItem navLogout = navigationView.getMenu().findItem(R.id.nav_log_out);
         navLogout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -200,7 +216,7 @@ public class DashboardActivity extends AppCompatActivity implements ErrorHandler
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        Intent newIntent = new Intent(activity, ValidateMPINActivity.class);
+                        Intent newIntent = new Intent(activity, QuitAppActivity.class);
                         newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                                 Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         activity.startActivity(newIntent);
