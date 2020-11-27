@@ -25,6 +25,7 @@ import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.ui.DownloadMasterActivity;
 import com.cgg.ghmcpollingapp.ui.LoginActivity;
 import com.cgg.ghmcpollingapp.ui.MapSectorActivity;
+import com.cgg.ghmcpollingapp.ui.PSWiseEntryActivity;
 import com.cgg.ghmcpollingapp.ui.ValidateMPINActivity;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -182,7 +183,55 @@ public class Utils {
             e.printStackTrace();
         }
     }
+    public static void customInfoAlert(final Activity activity, String title, String msg,
+                                       final SharedPreferences.Editor editor) {
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (dialog.getWindow() != null && dialog.getWindow().getAttributes() != null) {
+                dialog.getWindow().getAttributes().windowAnimations = R.style.exitdialog_animation1;
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.setContentView(R.layout.custom_alert_information);
+                dialog.setCancelable(false);
+                TextView versionTitle = dialog.findViewById(R.id.version_tv);
+                versionTitle.setText("Version: " + Utils.getVersionName(activity));
+                TextView dialogTitle = dialog.findViewById(R.id.dialog_title);
+                dialogTitle.setText(title);
+                TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
+                dialogMessage.setText(msg);
+                Button yes = dialog.findViewById(R.id.btDialogYes);
+                yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
 
+                        Intent newIntent = new Intent(activity, PSWiseEntryActivity.class);
+                        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(newIntent);
+                        activity.finish();
+                    }
+                });
+
+                Button cancel = dialog.findViewById(R.id.btDialogNo);
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+                if (!dialog.isShowing())
+                    dialog.show();
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     public static void customMapSuccessAlert(final Activity activity, String title, String msg, String fromClass) {
         try {
             final Dialog dialog = new Dialog(activity);

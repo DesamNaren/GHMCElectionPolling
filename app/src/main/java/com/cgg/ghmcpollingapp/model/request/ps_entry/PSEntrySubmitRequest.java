@@ -1,53 +1,45 @@
 package com.cgg.ghmcpollingapp.model.request.ps_entry;
 
+import com.cgg.ghmcpollingapp.model.response.psList.PSListData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class PSEntrySubmitRequest {
 
-    @SerializedName("TokenID")
-    @Expose
-    private String tokenId;
-    @SerializedName("PollingStationID")
-    @Expose
-    private String pollingStationId;
-    @SerializedName("VotePolled")
-    @Expose
-    private String votesPolled;
     @SerializedName("SectorID")
     @Expose
-    private String SectorID;
-
-
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
-
-    public String getPollingStationId() {
-        return pollingStationId;
-    }
-
-    public void setPollingStationId(String pollingStationId) {
-        this.pollingStationId = pollingStationId;
-    }
-
-    public String getVotesPolled() {
-        return votesPolled;
-    }
-
-    public void setVotesPolled(String votesPolled) {
-        this.votesPolled = votesPolled;
-    }
+    private String sectorID;
+    @SerializedName("TokenID")
+    @Expose
+    private String tokenID;
+    @SerializedName("AddingPollingList")
+    @Expose
+    private List<PSSubmitData> psEntryRequests = null;
 
     public String getSectorID() {
-        return SectorID;
+        return sectorID;
     }
 
     public void setSectorID(String sectorID) {
-        SectorID = sectorID;
+        this.sectorID = sectorID;
+    }
+
+    public String getTokenID() {
+        return tokenID;
+    }
+
+    public void setTokenID(String tokenID) {
+        this.tokenID = tokenID;
+    }
+
+
+    public List<PSSubmitData> getPsEntryRequests() {
+        return psEntryRequests;
+    }
+
+    public void setPsEntryRequests(List<PSSubmitData> psEntryRequests) {
+        this.psEntryRequests = psEntryRequests;
     }
 }

@@ -142,7 +142,7 @@ public class PSWiseStatusActivity extends AppCompatActivity implements
                 }
             } else {
                 Utils.customErrorAlert(context, getString(R.string.app_name),
-                        getString(R.string.server_not) + " : Mark attendance web service");
+                        getString(R.string.server_not) + " : Report web service");
             }
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();

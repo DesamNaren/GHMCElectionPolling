@@ -1,151 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:shimmer="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.MapSectorActivity">
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
 
         <include
             android:id="@+id/header"
             layout="@layout/activity_basic_layout" />
 
-        <ScrollView
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/header"
+            android:background="@color/white" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/btn_layout"
             android:layout_below="@+id/header"
-            android:background="@color/colorPrimary">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:padding="@dimen/dimen_5dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        style="@style/item_text_label"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/dimen_5dp">
+                        android:layout_weight="0.9"
+                        android:text="Sector"
+                        android:textColor="@color/white" />
 
-                        <TextView
-                            style="@style/item_text_label"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:text="Sector"
-                            android:textColor="@color/white" />
-
-                        <TextView
-                            android:id="@+id/tv_sector"
-                            style="@style/item_text_data"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_sector"
+                        style="@style/item_text_data"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/dimen_5dp">
-
-                        <TextView
-                            style="@style/item_text_label"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:text="Total Count"
-                            android:textColor="@color/white" />
-
-                        <TextView
-                            android:id="@+id/tv_total_votes"
-                            style="@style/item_text_data"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/dimen_5dp">
-
-                        <TextView
-                            style="@style/item_text_label"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:text="Polled Votes"
-                            android:textColor="@color/white" />
-
-                        <TextView
-                            android:id="@+id/tv_polled_votes"
-                            style="@style/item_text_data"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/white" />
-
-                    </LinearLayout>
-
+                        android:layout_weight="1.2"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_pollingstation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_5dp"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimen_5dp">
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/elmessiri_regular"
-                        android:padding="@dimen/dimen_5dp"
-                        android:text="@string/select_polling_station"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/dimen_16sp" />
-
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/sp_polling_station"
-                        style="@style/Widget.App.Spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/elmessiri_regular"
-                        android:minHeight="@dimen/_50dp"
-                        android:spinnerMode="dialog"
-                        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                        app:theme="@style/ThemeOverlay.AppCompat.Light" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_timeslot"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_5dp"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimen_5dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_weight="0.9"
+                        android:layout_gravity="center"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/elmessiri_regular"
                         android:padding="@dimen/dimen_5dp"
@@ -153,99 +74,144 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/dimen_16sp" />
 
+
                     <androidx.appcompat.widget.AppCompatSpinner
                         android:id="@+id/sp_time_slot"
                         style="@style/Widget.App.Spinner"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
                         android:fontFamily="@font/elmessiri_regular"
                         android:minHeight="@dimen/_50dp"
                         android:spinnerMode="dialog"
                         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                         app:theme="@style/ThemeOverlay.AppCompat.Light" />
 
+                    <Button
+                        android:id="@+id/btn_get_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dimen_10dp"
+                        android:layout_marginRight="@dimen/dimen_10dp"
+                        android:fontFamily="@font/muli_bold"
+                        android:gravity="center"
+                        android:text="@string/get_details"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:visibility="gone"
+                        app:backgroundTint="@color/green" />
                 </LinearLayout>
 
-                <!--<com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tv_plot_no_effected"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+            </LinearLayout>
+
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                shimmer:duration="500">
+
+                <!-- Adding 3 rows of placeholders -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/ps_report_placeholder_item" />
+
+                    <include layout="@layout/ps_report_placeholder_item" />
+
+                    <include layout="@layout/ps_report_placeholder_item" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_5dp"
+                android:paddingRight="@dimen/dimen_5dp"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.SearchView
+
+                    android:id="@+id/search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimen_5dp"
-                    android:hint="@string/votes_polled_during_selected_hour"
-                    android:textColorHint="@color/colorPrimary"
+                    android:background="@color/white" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:visibility="visible"
-                    app:errorEnabled="true">
-                           </com.google.android.material.textfield.TextInputLayout>-->
+                    tools:listitem="@layout/item_view_ps" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_5dp"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dimen_5dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/elmessiri_regular"
-                        android:padding="@dimen/dimen_5dp"
-                        android:text="@string/votes_polled_during_selected_hour"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/dimen_16sp" />
-
-                    <EditText
-                        android:id="@+id/et_votes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:fontFamily="@font/elmessiri_regular"
-                        android:imeOptions="actionDone"
-                        android:inputType="number"
-                        android:padding="@dimen/dimen_10dp"
-                        android:textColor="@color/colorPrimary"
-                        android:textColorHint="@color/white"
-                        android:textSize="16dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_20dp"
-                    android:orientation="horizontal">
-
-
-                    <Button
-                        android:id="@+id/btn_clear"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_20dp"
-                        android:layout_marginRight="@dimen/dimen_20dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/clear"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        app:backgroundTint="@color/red" />
-
-
-                    <Button
-                        android:id="@+id/btn_submit"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_20dp"
-                        android:layout_marginRight="@dimen/dimen_20dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="@string/submit"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        app:backgroundTint="@color/white" />
-
-                </LinearLayout>
 
             </LinearLayout>
-        </ScrollView>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:fontFamily="@font/muli_bold"
+            android:textSize="@dimen/dimen_16sp"
+            android:text="@string/no_records_found"
+            android:textColor="@color/white"
+            android:id="@+id/no_records_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
+
+
+        <LinearLayout
+            android:id="@+id/btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_marginRight="@dimen/dimen_10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/muli_bold"
+                android:gravity="center"
+                android:text="@string/clear"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/red" />
+
+
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_10dp"
+                android:layout_marginRight="@dimen/dimen_10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/muli_bold"
+                android:gravity="center"
+                android:text="@string/submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/green" />
+
+        </LinearLayout>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/cl"

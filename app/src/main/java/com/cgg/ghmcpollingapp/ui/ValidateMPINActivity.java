@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -90,6 +92,25 @@ public class ValidateMPINActivity extends AppCompatActivity implements ErrorHand
                         Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(newIntent);
                 finish();
+            }
+        });
+
+        binding.firstPinView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s!=null && s.length()==4){
+                    Utils.hideKeyboard(context, binding.firstPinView);
+                }
             }
         });
 

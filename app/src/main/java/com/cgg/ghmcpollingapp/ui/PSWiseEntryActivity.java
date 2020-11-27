@@ -4,27 +4,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.cgg.ghmcpollingapp.R;
+import com.cgg.ghmcpollingapp.adapter.PSListAdapter;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityPsWiseEntryBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.PSEntryInterface;
-import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
+import com.cgg.ghmcpollingapp.model.request.psList.PSListRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
+import com.cgg.ghmcpollingapp.model.request.ps_entry.PSSubmitData;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
+import com.cgg.ghmcpollingapp.model.response.psList.PSListData;
+import com.cgg.ghmcpollingapp.model.response.psList.PSListResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
-import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.utils.CustomProgressDialog;
 import com.cgg.ghmcpollingapp.utils.Utils;
 import com.cgg.ghmcpollingapp.viewmodel.PSEntryViewModel;
@@ -41,15 +49,17 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
     private Context context;
     private PSEntryViewModel viewModel;
     List<String> pollingStations;
-    List<PollingEntity> pollingEntities;
+    List<MasterTimeSlotData> masterTimeSlotData;
     List<String> timeSlots;
     String psId, totalVotes, polledvotes;
     private CustomProgressDialog customProgressDialog;
-    String zoneId, circleId, wardId, sectorId, zoneName, circleName, wardName, sectorName, tokenID;
+    String zoneId, circleId, wardId, sectorId, zoneName, circleName, wardName, sectorName, tokenID, timeslotID;
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     ArrayAdapter selectAdapter;
     ArrayList sellist;
-
+    private PSListAdapter adapter;
+    List<PSListData> psListData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
         customProgressDialog = new CustomProgressDialog(context);
         try {
             sharedPreferences = PollingApplication.get(context).getPreferences();
+            editor = sharedPreferences.edit();
             zoneId = sharedPreferences.getString(AppConstants.ZONE_ID, "");
             circleId = sharedPreferences.getString(AppConstants.CIRCLE_ID, "");
             wardId = sharedPreferences.getString(AppConstants.WARD_ID, "");
@@ -76,11 +87,13 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
         binding.header.title.setText(getResources().getString(R.string.ps_entry_title));
         viewModel = new PSEntryViewModel(this, getApplication());
         pollingStations = new ArrayList<>();
-        pollingEntities = new ArrayList<>();
+        masterTimeSlotData = new ArrayList<>();
         timeSlots = new ArrayList<>();
+        psListData = new ArrayList<>();
         pollingStations.clear();
 
-        sellist = new ArrayList();
+
+      /*  sellist = new ArrayList();
         sellist.add(getString(R.string.select));
         selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
         binding.spTimeSlot.setAdapter(selectAdapter);
@@ -105,7 +118,9 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     }
                 }
             }
-        });
+        });*/
+
+        setupSearchView(binding.search);
 
         binding.header.imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,58 +137,120 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             }
         });
 
-        viewModel.getPollingStations(zoneId, circleId, wardId, sectorId).observe(this, new Observer<List<PollingEntity>>() {
+        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(List<PollingEntity> ps) {
-                if (ps != null && ps.size() > 0) {
-                    pollingEntities = ps;
-                    pollingStations.add(0, getString(R.string.select));
+            public void onClick(View v) {
+                if (validateData()) {
+                    if (Utils.checkInternetConnection(context)) {
+                        customProgressDialog.show();
+                        PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
+                        psEntrySubmitRequest.setSectorID(sectorId);
+                        psEntrySubmitRequest.setTokenID(tokenID);
 
-                    for (int i = 0; i < pollingEntities.size(); i++) {
-                        pollingStations.add(pollingEntities.get(i).getPs_no() + "-" + pollingEntities.get(i).getPs_name());
+                        List<PSSubmitData> tempPsListData = new ArrayList<>();
+
+                        for (int x = 0; x < psListData.size(); x++) {
+                            if (psListData.get(x).isCb_status()) {
+                                PSSubmitData data = new PSSubmitData();
+                                data.setVotePolled(psListData.get(x).getvOTES());
+                                data.setPollingStationID(psListData.get(x).getPollingStationID());
+                                tempPsListData.add(data);
+                            }
+                        }
+                        psEntrySubmitRequest.setPsEntryRequests(tempPsListData);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    viewModel.submitPSEntryCall(psEntrySubmitRequest);
+                                } catch (Exception e) {
+                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, 3000);
+
+
+                    } else {
+                        Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
+                    }
+                }
+            }
+        });
+
+
+        binding.btnGetDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validateGetDatails()) {
+//                    if (binding.btnGetDetails.getText().toString().trim().equals(getResources().getString(R.string.get_details))) {
+//                        if (Utils.checkInternetConnection(context)) {
+//                            binding.shimmerViewContainer.setVisibility(View.VISIBLE);
+//                            binding.shimmerViewContainer.startShimmerAnimation();
+//                            PSListRequest req = new PSListRequest();
+//                            req.setSectorID(sectorId);
+//                            req.setTokenID(tokenID);
+//                            req.setTimeSlotId(timeslotID);
+//
+//                            viewModel.getPSList(req);
+//
+//                        } else {
+//                            Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
+//                        }
+//                    } else {
+//                        Utils.customInfoAlert(PSWiseEntryActivity.this, context.getResources().getString(R.string.app_name), "Data will be lost. Do you want to exit?", editor);
+//                    }
+                }
+            }
+        });
+
+        viewModel.getTimeSlots().observe(this, new Observer<List<MasterTimeSlotData>>() {
+            @Override
+            public void onChanged(List<MasterTimeSlotData> list) {
+                if (list != null && list.size() > 0) {
+                    masterTimeSlotData = list;
+                    timeSlots.add(0, getString(R.string.select));
+
+                    for (int i = 0; i < masterTimeSlotData.size(); i++) {
+                        timeSlots.add(masterTimeSlotData.get(i).getTimeSlotName());
                     }
 
                     ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
-                            pollingStations);
-                    binding.spPollingStation.setAdapter(adapter);
+                            timeSlots);
+                    binding.spTimeSlot.setAdapter(adapter);
                 } else {
                     Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), getString(R.string.no_pollings_found));
                 }
 
             }
         });
-
-
-        binding.spPollingStation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.spTimeSlot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String psName = binding.spPollingStation.getSelectedItem().toString();
-                totalVotes = "";
-                psId = "";
-                polledvotes = "";
-                binding.tvTotalVotes.setText(totalVotes);
-                binding.tvPolledVotes.setText(polledvotes);
-                timeSlots.clear();
-
-                if (binding.spPollingStation.getSelectedItemId() != 0) {
-                    psId = String.valueOf(pollingEntities.get(position - 1).getPs_no());
-                    totalVotes = String.valueOf(pollingEntities.get(position - 1).getPs_total_cnt());
-                    binding.tvTotalVotes.setText(totalVotes);
+                binding.llRecyclerView.setVisibility(View.GONE);
+                binding.btnLayout.setVisibility(View.GONE);
+                binding.noRecordsLl.setVisibility(View.VISIBLE);
+                binding.noRecordsLl.setText(getString(R.string.sel_time_slot_to_proceed));
+                timeslotID = "";
+                if (binding.spTimeSlot.getSelectedItemPosition() != 0) {
                     if (Utils.checkInternetConnection(context)) {
-                        customProgressDialog.show();
-                        PSEntryRequest req = new PSEntryRequest();
+                        timeslotID = String.valueOf(masterTimeSlotData.get(position - 1).getTimeSlotId());
+                        binding.shimmerViewContainer.setVisibility(View.VISIBLE);
+                        binding.shimmerViewContainer.startShimmerAnimation();
+                        PSListRequest req = new PSListRequest();
                         req.setSectorID(sectorId);
-                        req.setPollingStationID(psId);
                         req.setTokenID(tokenID);
+                        req.setTimeSlotId(timeslotID);
 
-                        viewModel.getTimeslotDetails(req);
+
+                        viewModel.getPSList(req);
+
                     } else {
-                        PSWiseEntryActivity.this.psId = "";
-                        binding.spPollingStation.setSelection(0);
+                        binding.spTimeSlot.setSelection(0);
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
                 }
-
             }
 
             @Override
@@ -184,33 +261,66 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
 
     }
 
+
+    private void setupSearchView(SearchView searchView) {
+        searchView.setIconifiedByDefault(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                try {
+                    if (adapter != null) {
+                        adapter.getFilter().filter(newText);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
+
+
+        });
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setQueryHint("Search here");
+    }
+
     private boolean validateData() {
+        if (psListData == null || psListData.size() == 0) {
+            Toast.makeText(context, "Data Not Found", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        boolean flag = false;
+        for (int i = 0; i < psListData.size(); i++) {
+            if (psListData.get(i).isCb_status()) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            for (int i = 0; i < psListData.size(); i++) {
+                if (psListData.get(i).isCb_status() && TextUtils.isEmpty(psListData.get(i).getvOTES())) {
+                    showSnackBar(getString(R.string.sel_votes_polled_till_now));
+                    return false;
+                }
+            }
+        } else {
+            showSnackBar(getString(R.string.sel_one_record));
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateGetDatails() {
         Utils.hideKeyboard(context, binding.btnSubmit);
 
-        if (binding.spPollingStation.getSelectedItem() != null) {
-            pollingStation = binding.spPollingStation.getSelectedItem().toString().trim();
-        }
-        if (binding.spTimeSlot.getSelectedItem() != null) {
-            timeSlot = binding.spTimeSlot.getSelectedItem().toString().trim();
-        }
-        if (TextUtils.isEmpty(pollingStation) || pollingStation.contains(getString(R.string.select))) {
-            binding.llPollingstation.requestFocus();
-            showSnackBar(getString(R.string.select_polling_station));
-            return false;
-        }
-        if (TextUtils.isEmpty(timeSlot) || timeSlot.contains(getString(R.string.select))) {
-            binding.llTimeslot.requestFocus();
+        if (TextUtils.isEmpty(timeslotID)) {
             showSnackBar(getString(R.string.select_time_slot));
-            return false;
-        }
-        if (TextUtils.isEmpty(votes)) {
-            binding.etVotes.requestFocus();
-            showSnackBar(getString(R.string.enter_poll_count));
-            return false;
-        }
-        if (Long.parseLong(votes) + Long.parseLong(polledvotes) > Long.parseLong(totalVotes)) {
-            binding.etVotes.requestFocus();
-            showSnackBar(getString(R.string.exceeded));
             return false;
         }
         return true;
@@ -245,54 +355,52 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
     }
 
     @Override
-    public void getTimeslotDetails(PSEntryResponse psEntryResponse) {
-        polledvotes = "";
-        binding.tvPolledVotes.setText(polledvotes);
+    public void getPSList(PSListResponse psListResponse) {
+        binding.shimmerViewContainer.stopShimmerAnimation();
+        binding.shimmerViewContainer.setVisibility(View.GONE);
+        binding.llRecyclerView.setVisibility(View.GONE);
+        binding.btnLayout.setVisibility(View.GONE);
+        binding.noRecordsLl.setVisibility(View.GONE);
         try {
             customProgressDialog.hide();
-            if (psEntryResponse != null && psEntryResponse.getStatusCode() != null) {
-                if (psEntryResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
-                    //visible time slot and load spinner
-                    timeSlots.add(0, getString(R.string.select));
-                    timeSlots.add(psEntryResponse.getTIMESLOTNAME());
-                    ArrayAdapter adapter = new ArrayAdapter<>(context, R.layout.spinner_layout,
-                            timeSlots);
-                    binding.spTimeSlot.setAdapter(adapter);
-                    polledvotes = psEntryResponse.getVOTES();
-                    if (!TextUtils.isEmpty(polledvotes)) {
-                        binding.tvPolledVotes.setText(polledvotes);
-                    } else {
-                        Utils.customErrorAlert(context, getString(R.string.app_name),
-                                psEntryResponse.getResponseMessage());
-                    }
-                } else if (psEntryResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
-                    polledvotes = psEntryResponse.getVOTES();
-                    if (!TextUtils.isEmpty(polledvotes)) {
-                        binding.tvPolledVotes.setText(polledvotes);
-                    }
-                    Utils.customErrorAlert(context, getString(R.string.app_name),
-                            psEntryResponse.getResponseMessage());
+            if (psListResponse != null && psListResponse.getStatusCode() != null) {
+                if (psListResponse.getStatusCode() == AppConstants.SUCCESS_CODE) {
+//                    binding.btnGetDetails.setText(getResources().getString(R.string.edit));
+//                    binding.spTimeSlot.setEnabled(false);
+                    binding.llRecyclerView.setVisibility(View.VISIBLE);
+                    binding.btnLayout.setVisibility(View.VISIBLE);
+                    psListData = psListResponse.getReportData();
+                    adapter = new PSListAdapter(context, psListData);
+                    binding.recyclerView.setAdapter(adapter);
+                    binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-                } else if (psEntryResponse.getStatusCode() == AppConstants.SESSION_CODE) {
+                } else if (psListResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+                    binding.noRecordsLl.setVisibility(View.VISIBLE);
+                    binding.noRecordsLl.setText(getString(R.string.no_records_found));
+                    Utils.customErrorAlert(context, getString(R.string.app_name),
+                            psListResponse.getResponseMessage());
+                } else if (psListResponse.getStatusCode() == AppConstants.SESSION_CODE) {
                     Utils.customSessionAlert(PSWiseEntryActivity.this, getString(R.string.app_name),
-                            psEntryResponse.getResponseMessage());
+                            psListResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
-                            getString(R.string.something) + " No status code found in time slot web service response");
+                            getString(R.string.something) + " No status code found in PsWiseStatus web service response");
                 }
             } else {
                 Utils.customErrorAlert(context, getString(R.string.app_name),
-                        getString(R.string.server_not) + " : Mark attendance web service");
+                        getString(R.string.server_not) + " : PsWiseStatus web service");
             }
         } catch (Exception e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.i("TAG", "getPSList: " + e.getMessage());
             customProgressDialog.hide();
             e.printStackTrace();
         }
+
     }
 
     @Override
-    public void submitPSEntry(PSEntrySubmitResponse psEntrySubmitResponse) {
+    public void submitPSEntry(PSEntryResponse psEntrySubmitResponse) {
         try {
             customProgressDialog.hide();
             if (psEntrySubmitResponse != null && psEntrySubmitResponse.getStatusCode() != null) {
@@ -306,11 +414,11 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                             psEntrySubmitResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
-                            getString(R.string.something) + " No status code found in mark attendance web service response");
+                            getString(R.string.something) + " No status code found in AddPollingVotesList web service response");
                 }
             } else {
                 Utils.customErrorAlert(context, getString(R.string.app_name),
-                        getString(R.string.server_not) + " : Mark attendance web service");
+                        getString(R.string.server_not) + " : AddPollingVotesList web service");
             }
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();

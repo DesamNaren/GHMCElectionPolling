@@ -10,13 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
 import com.cgg.ghmcpollingapp.interfaces.PSEntryInterface;
-import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
+import com.cgg.ghmcpollingapp.model.request.psList.PSListRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
+import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
+import com.cgg.ghmcpollingapp.model.response.psList.PSListResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
-import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -32,8 +32,7 @@ public class PSEntryViewModel extends AndroidViewModel {
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
-    private LiveData<List<PollingEntity>> pollingStations;
-    private LiveData<PollingEntity> pollingStationId;
+    private LiveData<List<MasterTimeSlotData>> timeSlotDataLiveData;
 
     public PSEntryViewModel(Context context, Application application) {
         super(application);
@@ -42,33 +41,31 @@ public class PSEntryViewModel extends AndroidViewModel {
         errorHandlerInterface = (ErrorHandlerInterface) context;
         psEntryInterface = (PSEntryInterface) context;
         pollingMasterRep = new PollingMasterRep(application);
-        pollingStations = new MutableLiveData<>();
-        pollingStationId = new MutableLiveData<>();
+        timeSlotDataLiveData = new MutableLiveData<>();
 
     }
 
+   public LiveData<List<MasterTimeSlotData>> getTimeSlots() {
+       if (timeSlotDataLiveData != null) {
+           timeSlotDataLiveData = pollingMasterRep.getTimeSlots();
+       }
+       return timeSlotDataLiveData;
+   }
 
-    public LiveData<List<PollingEntity>> getPollingStations(String zoneId,String circleId,String wardId,String sectorId) {
-        if (pollingStations != null) {
-            pollingStations = pollingMasterRep.getPollingStations(zoneId,circleId,wardId,sectorId);
-        }
-        return pollingStations;
-    }
-
-    public void getTimeslotDetails(PSEntryRequest psEntryRequest) {
+    public void getPSList(PSListRequest reportRequest) {
         Gson gson = new Gson();
-        String str = gson.toJson(psEntryRequest);
+        String str = gson.toJson(reportRequest);
         GHMCService ghmcService = GHMCService.Factory.create();
-        ghmcService.getTimeSlotResponse(psEntryRequest).enqueue(new Callback<PSEntryResponse>() {
+        ghmcService.getPSList(reportRequest).enqueue(new Callback<PSListResponse>() {
             @Override
-            public void onResponse(@NonNull Call<PSEntryResponse> call, @NonNull Response<PSEntryResponse> response) {
+            public void onResponse(@NonNull Call<PSListResponse> call, @NonNull Response<PSListResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    psEntryInterface.getTimeslotDetails(response.body());
+                    psEntryInterface.getPSList(response.body());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<PSEntryResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<PSListResponse> call, @NonNull Throwable t) {
                 errorHandlerInterface.handleError(t, context);
             }
         });
@@ -78,16 +75,16 @@ public class PSEntryViewModel extends AndroidViewModel {
         Gson gson = new Gson();
         String str = gson.toJson(psEntrySubmitRequest);
         GHMCService virtuoService = GHMCService.Factory.create();
-        virtuoService.getPSSubmitResponse(psEntrySubmitRequest).enqueue(new Callback<PSEntrySubmitResponse>() {
+        virtuoService.getPSSubmitResponse(psEntrySubmitRequest).enqueue(new Callback<PSEntryResponse>() {
             @Override
-            public void onResponse(@NonNull Call<PSEntrySubmitResponse> call, @NonNull Response<PSEntrySubmitResponse> response) {
+            public void onResponse(@NonNull Call<PSEntryResponse> call, @NonNull Response<PSEntryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     psEntryInterface.submitPSEntry(response.body());
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<PSEntrySubmitResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<PSEntryResponse> call, @NonNull Throwable t) {
                 errorHandlerInterface.handleError(t, context);
             }
         });

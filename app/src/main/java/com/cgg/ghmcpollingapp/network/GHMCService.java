@@ -6,7 +6,7 @@ import com.cgg.ghmcpollingapp.model.request.login.LoginRequest;
 import com.cgg.ghmcpollingapp.model.request.logout.LogoutRequest;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.request.mpin.GenerateMPINRequest;
-import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntryRequest;
+import com.cgg.ghmcpollingapp.model.request.psList.PSListRequest;
 import com.cgg.ghmcpollingapp.model.request.ps_entry.PSEntrySubmitRequest;
 import com.cgg.ghmcpollingapp.model.request.reports.ReportRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
@@ -14,8 +14,8 @@ import com.cgg.ghmcpollingapp.model.response.logout.LogoutResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
 import com.cgg.ghmcpollingapp.model.response.master.MasterDataResponse;
 import com.cgg.ghmcpollingapp.model.response.mpin.MPINResponse;
+import com.cgg.ghmcpollingapp.model.response.psList.PSListResponse;
 import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
-import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntrySubmitResponse;
 import com.cgg.ghmcpollingapp.model.response.report.ReportResponse;
 
 import java.util.concurrent.TimeUnit;
@@ -58,11 +58,8 @@ public interface GHMCService {
     @POST("GHMCElection/Logout")
     Call<LogoutResponse> logoutResponse(@Body LogoutRequest logoutRequest);
 
-    @POST("GHMCElection/TimeSlot")
-    Call<PSEntryResponse> getTimeSlotResponse(@Body PSEntryRequest psEntryRequest);
-
-    @POST("GHMCElection/AddPollingVotes")
-    Call<PSEntrySubmitResponse> getPSSubmitResponse(@Body PSEntrySubmitRequest psEntrySubmitRequest);
+    @POST("GHMCElection/AddPollingVotesList")
+    Call<PSEntryResponse> getPSSubmitResponse(@Body PSEntrySubmitRequest psEntrySubmitRequest);
 
     @POST("GHMCElection/AddSectorToUser")
     Call<SectorMapResponse> mapSector(@Body SectorMapRequest sectorMapRequest);
@@ -70,6 +67,8 @@ public interface GHMCService {
     @POST("GHMCElection/Reports")
     Call<ReportResponse> getReport(@Body ReportRequest sectorMapRequest);
 
+    @POST("GHMCElection/PsWiseStatus")
+    Call<PSListResponse> getPSList(@Body PSListRequest sectorMapRequest);
 
     @POST("GHMCElection/GetMasters")
     Call<MasterDataResponse> getMasterDataResponse(@Body MasterDataRequest masterDataRequest);

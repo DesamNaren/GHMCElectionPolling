@@ -20,9 +20,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".ui.QuitAppActivity"
+        <activity
+            android:name=".ui.QuitAppActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.MapSectorActivity"
@@ -57,7 +58,8 @@
         <activity
             android:name=".ui.PSWiseEntryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.PSWiseTimeSlotActivity"
             android:screenOrientation="portrait"
@@ -70,7 +72,7 @@
             android:name=".ui.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.GHMCPollingApp.NoActionBar"/>
+            android:theme="@style/Theme.GHMCPollingApp.NoActionBar" />
     </application>
 
 </manifest>

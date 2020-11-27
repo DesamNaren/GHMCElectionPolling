@@ -25,7 +25,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private SharedPreferences sharedPreferences;
-    String zoneName, circleName, wardName, sectorName;
+    String zoneName, circleName, wardName, sectorName, wardId;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,11 +46,12 @@ public class HomeFragment extends Fragment {
             zoneName = sharedPreferences.getString(AppConstants.ZONE_NAME, "");
             circleName = sharedPreferences.getString(AppConstants.CIRCLE_NAME, "");
             wardName = sharedPreferences.getString(AppConstants.WARD_NAME, "");
+            wardId = sharedPreferences.getString(AppConstants.WARD_ID, "");
             sectorName = sharedPreferences.getString(AppConstants.SECTOR_NAME, "");
 
             binding.tvZone.setText(zoneName);
             binding.tvCircle.setText(circleName);
-            binding.tvWard.setText(wardName);
+            binding.tvWard.setText(wardName + " (" + wardId + ")");
             binding.tvSector.setText(sectorName);
 
         } else {

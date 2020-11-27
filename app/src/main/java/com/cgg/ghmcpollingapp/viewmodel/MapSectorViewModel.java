@@ -99,12 +99,7 @@ public class MapSectorViewModel extends AndroidViewModel {
         });
     }
 
-    public LiveData<List<MasterTimeSlotData>> getTimeSlots() {
-        if (timeSlots != null) {
-            timeSlots = pollingMasterRep.getTimeSlots();
-        }
-        return timeSlots;
-    }
+
 
 
 }

@@ -489,11 +489,11 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
 //                                                logoutResponse.getResponseMessage());
 //                                    } else {
 //                                        Utils.customErrorAlert(context, getString(R.string.app_name),
-//                                                getString(R.string.something) + " No status code found in mark attendance web service response");
+//                                                getString(R.string.something) + " No status code found in Reports web service response");
 //                                    }
 //                                } else {
 //                                    Utils.customErrorAlert(context, getString(R.string.app_name),
-//                                            getString(R.string.server_not) + " : Mark attendance web service");
+//                                            getString(R.string.server_not) + " : Reports web service");
 //                                }
 //
 //                            }
@@ -562,11 +562,11 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
                             sectorMapResponse.getResponseMessage());
                 } else {
                     Utils.customErrorAlert(context, getString(R.string.app_name),
-                            getString(R.string.something) + " No status code found in mark attendance web service response");
+                            getString(R.string.something) + " No status code found in Reports web service response");
                 }
             } else {
                 Utils.customErrorAlert(context, getString(R.string.app_name),
-                        getString(R.string.server_not) + " : Mark attendance web service");
+                        getString(R.string.server_not) + " :Reports web service");
             }
         } catch (Exception e) {
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();

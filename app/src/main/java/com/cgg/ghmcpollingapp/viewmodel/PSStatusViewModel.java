@@ -16,7 +16,7 @@ import com.cgg.ghmcpollingapp.model.response.ps_entry.PSEntryResponse;
 import com.cgg.ghmcpollingapp.model.response.report.ReportResponse;
 import com.cgg.ghmcpollingapp.network.GHMCService;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
-import com.cgg.ghmcpollingapp.source.PollingEntity;
+
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -32,8 +32,8 @@ public class PSStatusViewModel extends AndroidViewModel {
     private Context context;
     private ErrorHandlerInterface errorHandlerInterface;
 
-    private LiveData<List<PollingEntity>> pollingStations;
-    private LiveData<PollingEntity> pollingStationId;
+//    private LiveData<List<PollingEntity>> pollingStations;
+//    private LiveData<PollingEntity> pollingStationId;
 
     public PSStatusViewModel(Context context, Application application) {
         super(application);
@@ -42,8 +42,8 @@ public class PSStatusViewModel extends AndroidViewModel {
         errorHandlerInterface = (ErrorHandlerInterface) context;
         psStatusInterface = (PsStatusInterface) context;
         pollingMasterRep = new PollingMasterRep(application);
-        pollingStations = new MutableLiveData<>();
-        pollingStationId = new MutableLiveData<>();
+//        pollingStations = new MutableLiveData<>();
+//        pollingStationId = new MutableLiveData<>();
 
     }
 
