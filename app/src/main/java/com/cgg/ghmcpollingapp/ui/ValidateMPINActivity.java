@@ -31,7 +31,8 @@ import com.cgg.ghmcpollingapp.viewmodel.GenerateMPINViewModel;
 import com.cgg.ghmcpollingapp.viewmodel.LoginViewModel;
 import com.google.gson.Gson;
 
-public class ValidateMPINActivity extends AppCompatActivity implements ErrorHandlerInterface, GenerateMPINInterface {
+public class ValidateMPINActivity extends AppCompatActivity
+        implements ErrorHandlerInterface, GenerateMPINInterface {
 
     private ActivityValidateMpinBinding binding;
     private SharedPreferences sharedPreferences;

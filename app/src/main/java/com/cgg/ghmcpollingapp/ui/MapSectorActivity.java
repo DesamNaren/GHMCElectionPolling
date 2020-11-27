@@ -29,10 +29,12 @@ import com.cgg.ghmcpollingapp.constants.AppConstants;
 import com.cgg.ghmcpollingapp.databinding.ActivityMapSectorBinding;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandler;
 import com.cgg.ghmcpollingapp.error_handler.ErrorHandlerInterface;
+import com.cgg.ghmcpollingapp.interfaces.DownloadMasterInterface;
 import com.cgg.ghmcpollingapp.interfaces.SectorMappingInterface;
 import com.cgg.ghmcpollingapp.model.request.map_sector.SectorMapRequest;
 import com.cgg.ghmcpollingapp.model.response.login.LoginResponse;
 import com.cgg.ghmcpollingapp.model.response.map_sector.SectorMapResponse;
+import com.cgg.ghmcpollingapp.model.response.master.MasterDataResponse;
 import com.cgg.ghmcpollingapp.model.response.master.MasterPSData;
 import com.cgg.ghmcpollingapp.model.response.master.MasterTimeSlotData;
 import com.cgg.ghmcpollingapp.room.repository.PollingMasterRep;
@@ -47,7 +49,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapSectorActivity extends AppCompatActivity implements View.OnClickListener, ErrorHandlerInterface, SectorMappingInterface {
+public class MapSectorActivity extends AppCompatActivity implements
+        View.OnClickListener, ErrorHandlerInterface, SectorMappingInterface, DownloadMasterInterface {
 
     private ActivityMapSectorBinding binding;
     private Context context;
@@ -573,5 +576,20 @@ public class MapSectorActivity extends AppCompatActivity implements View.OnClick
             customProgressDialog.dismiss();
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void psDataCount(int count) {
+
+    }
+
+    @Override
+    public void timeSlotDataCount(int count) {
+
+    }
+
+    @Override
+    public void masterResponse(MasterDataResponse masterDataResponse) {
+
     }
 }
