@@ -347,6 +347,8 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                     binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
                 } else if (psListResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
+//                    binding.spTimeSlot.setSelection(0);
+//                    binding.noRecordsLl.setText(getString(R.string.sel_time_slot_to_proceed));
                     binding.noRecordsLl.setVisibility(View.VISIBLE);
                     if (psListResponse.getResponseMessage() != null)
                         binding.noRecordsLl.setText(psListResponse.getResponseMessage());
