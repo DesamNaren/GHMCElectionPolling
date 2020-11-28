@@ -1,15 +1,18 @@
 package com.cgg.ghmcpollingapp.ui;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,8 +20,10 @@ import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.cgg.ghmcpollingapp.R;
+import com.cgg.ghmcpollingapp.adapter.PSEntryConfirmAdapter;
 import com.cgg.ghmcpollingapp.adapter.PSListAdapter;
 import com.cgg.ghmcpollingapp.application.PollingApplication;
 import com.cgg.ghmcpollingapp.constants.AppConstants;
@@ -92,34 +97,6 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
         psListData = new ArrayList<>();
         pollingStations.clear();
 
-
-      /*  sellist = new ArrayList();
-        sellist.add(getString(R.string.select));
-        selectAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, sellist);
-        binding.spTimeSlot.setAdapter(selectAdapter);
-        binding.spPollingStation.setAdapter(selectAdapter);
-        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                votes = binding.etVotes.getText().toString().trim();
-                if (validateData()) {
-                    if (Utils.checkInternetConnection(context)) {
-                        customProgressDialog.show();
-                        PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
-                        psEntrySubmitRequest.setPollingStationId(psId);
-                        psEntrySubmitRequest.setVotesPolled(votes);
-                        psEntrySubmitRequest.setSectorID(sectorId);
-                        psEntrySubmitRequest.setTokenId(tokenID);
-                        viewModel.submitPSEntryCall(psEntrySubmitRequest);
-                    } else {
-                        PSWiseEntryActivity.this.psId = "";
-                        binding.spPollingStation.setSelection(0);
-                        Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
-                    }
-                }
-            }
-        });*/
-
         setupSearchView(binding.search);
 
         binding.header.imgBack.setOnClickListener(new View.OnClickListener() {
@@ -142,39 +119,29 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             public void onClick(View v) {
                 if (validateData()) {
                     if (Utils.checkInternetConnection(context)) {
-                        customProgressDialog.show();
-                        PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
-                        psEntrySubmitRequest.setSectorID(sectorId);
-                        psEntrySubmitRequest.setTokenID(tokenID);
-
-                        List<PSSubmitData> tempPsListData = new ArrayList<>();
-
-                        for (int x = 0; x < psListData.size(); x++) {
-                            if (psListData.get(x).isCb_status()) {
-                                PSSubmitData data = new PSSubmitData();
-                                data.setVotePolled(psListData.get(x).getvOTES());
-                                data.setPollingStationID(psListData.get(x).getPollingStationID());
-                                tempPsListData.add(data);
-                            }
-                        }
-                        psEntrySubmitRequest.setPsEntryRequests(tempPsListData);
-
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    viewModel.submitPSEntryCall(psEntrySubmitRequest);
-                                } catch (Exception e) {
-                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    e.printStackTrace();
+                        try {
+                            PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
+                            psEntrySubmitRequest.setSectorID(sectorId);
+                            psEntrySubmitRequest.setTokenID(tokenID);
+                            List<PSSubmitData> tempPsListData = new ArrayList<>();
+                            for (int x = 0; x < psListData.size(); x++) {
+                                if (psListData.get(x).isCb_status()) {
+                                    PSSubmitData data = new PSSubmitData();
+                                    data.setVotePolled(psListData.get(x).getvOTES());
+                                    data.setPollingStationID(psListData.get(x).getPollingStationID());
+                                    tempPsListData.add(data);
                                 }
                             }
-                        }, 3000);
-
-
+                            psEntrySubmitRequest.setPsEntryRequests(tempPsListData);
+                            ShowSubmitRegisterAlert(psEntrySubmitRequest);
+                        } catch (Exception e) {
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
                     } else {
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
+
                 }
             }
         });
@@ -222,7 +189,8 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                 } else {
                     Utils.customSyncAlertDownload(PSWiseEntryActivity.this,
                             getString(R.string.app_name),
-                            getString(R.string.ps_download_message), PSWiseEntryActivity.class.getSimpleName());                }
+                            getString(R.string.ps_download_message), PSWiseEntryActivity.class.getSimpleName());
+                }
 
             }
         });
@@ -251,6 +219,8 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                         binding.spTimeSlot.setSelection(0);
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
+                }else {
+                    binding.noRecordsLl.setText(getString(R.string.sel_time_slot_to_proceed));
                 }
             }
 
@@ -377,7 +347,10 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
 
                 } else if (psListResponse.getStatusCode() == AppConstants.FAILURE_CODE) {
                     binding.noRecordsLl.setVisibility(View.VISIBLE);
-                    binding.noRecordsLl.setText(getString(R.string.no_records_found));
+                    if (psListResponse.getResponseMessage() != null)
+                        binding.noRecordsLl.setText(psListResponse.getResponseMessage());
+                    else
+                        binding.noRecordsLl.setText(getString(R.string.no_records_found));
                     Utils.customErrorAlert(context, getString(R.string.app_name),
                             psListResponse.getResponseMessage());
                 } else if (psListResponse.getStatusCode() == AppConstants.SESSION_CODE) {
@@ -427,4 +400,46 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void confirmAlert(PSEntrySubmitRequest psEntrySubmitRequest) {
+        try {
+            customProgressDialog.show();
+            viewModel.submitPSEntryCall(psEntrySubmitRequest);
+        } catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private Dialog conDialog;
+
+    private void ShowSubmitRegisterAlert(PSEntrySubmitRequest psEntrySubmitRequest) {
+        try {
+            conDialog = new Dialog(this);
+            conDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (conDialog.getWindow() != null && conDialog.getWindow().getAttributes() != null) {
+                conDialog.getWindow().getAttributes().windowAnimations = R.style.exitdialog_animation1;
+                conDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+                conDialog.setContentView(R.layout.ps_entry_confirm_alert);
+                conDialog.setCancelable(true);
+                TextView titleTv = conDialog.findViewById(R.id.alert_titleTv);
+                titleTv.setText("Sector: " + sectorId);
+                final RecyclerView recyclerView = conDialog.findViewById(R.id.rvVotes);
+                PSEntryConfirmAdapter paddyConfirmAdapter = new PSEntryConfirmAdapter(context,
+                        psEntrySubmitRequest.getPsEntryRequests(), psEntrySubmitRequest,
+                        conDialog);
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                recyclerView.setAdapter(paddyConfirmAdapter);
+
+                if (!conDialog.isShowing())
+                    conDialog.show();
+            }
+        } catch (
+                Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

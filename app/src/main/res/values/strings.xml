@@ -100,4 +100,7 @@
     <string name="sel_one_record">Select atleast one record</string>
     <string name="sel_time_slot_to_proceed">Select Time Slot to proceed</string>
     <string name="no_time_slots_found">No time slots found</string>
+    <string name="ps_number">PS Number</string>
+    <string name="polled_count">Entered Count</string>
+    <string name="cancel">Cancel</string>
 </resources>
