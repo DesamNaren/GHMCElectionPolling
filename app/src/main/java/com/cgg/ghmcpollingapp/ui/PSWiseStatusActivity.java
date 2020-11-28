@@ -53,6 +53,7 @@ public class PSWiseStatusActivity extends AppCompatActivity implements
             sharedPreferences = PollingApplication.get(context).getPreferences();
             sectorId = sharedPreferences.getString(AppConstants.SECTOR_ID, "");
             tokenID = sharedPreferences.getString(AppConstants.TOKEN_ID, "");
+            binding.tvSector.setText(sectorId);
         } catch (Exception e) {
             e.printStackTrace();
         }

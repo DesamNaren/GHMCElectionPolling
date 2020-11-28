@@ -15,10 +15,44 @@
 
         <View
             android:id="@+id/view"
-            android:layout_below="@id/header"
+            android:layout_below="@+id/header"
             android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
+
+        <LinearLayout
+            android:id="@+id/sec_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_5dp">
+
+            <TextView
+                android:fontFamily="@font/muli_bold"
+                android:textSize="@dimen/dimen_18sp"
+                android:layout_marginLeft="@dimen/dimen_8dp"
+                style="@style/item_text_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:text="Sector"
+                android:textColor="@color/white"
+                android:layout_marginStart="@dimen/dimen_8dp" />
+
+            <TextView
+                android:fontFamily="@font/muli_bold"
+                android:textSize="@dimen/dimen_18sp"
+                android:id="@+id/tv_sector"
+                style="@style/item_text_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+
         <TextView
             android:textColor="@color/white"
             android:textSize="@dimen/dimen_18sp"
@@ -26,7 +60,7 @@
             android:id="@+id/psNameTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/view"
+            android:layout_below="@+id/sec_ll"
             android:layout_marginTop="@dimen/dimen_8dp"
             android:layout_marginEnd="@dimen/dimen_8dp"
             android:layout_marginRight="@dimen/dimen_8dp"
@@ -36,7 +70,7 @@
             android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/psNameTv"
+            android:layout_below="@+id/sec_ll"
             android:layout_gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
@@ -62,7 +96,7 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/psNameTv"
+            android:layout_below="@+id/psNameTv"
             android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView

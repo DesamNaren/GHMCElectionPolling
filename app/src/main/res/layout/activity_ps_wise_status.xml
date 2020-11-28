@@ -13,16 +13,16 @@
 
         <View
             android:id="@+id/view"
-            android:layout_below="@id/header"
-            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:layout_below="@id/header"
+            android:background="@color/white" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/view"
+            android:layout_below="@+id/sec_ll"
             android:layout_gravity="center"
             android:orientation="vertical"
             android:visibility="visible"
@@ -34,22 +34,56 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include layout="@layout/ps_report_placeholder_item" />
+                <include layout="@layout/loading_layout" />
 
-                <include layout="@layout/ps_report_placeholder_item" />
+                <include layout="@layout/loading_layout" />
 
-                <include layout="@layout/ps_report_placeholder_item" />
+                <include layout="@layout/loading_layout" />
+
+                <include layout="@layout/loading_layout" />
 
             </LinearLayout>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
 
+        <LinearLayout
+            android:id="@+id/sec_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/view"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_5dp">
+
+            <TextView
+                android:fontFamily="@font/muli_bold"
+                android:layout_marginLeft="@dimen/dimen_8dp"
+                style="@style/item_text_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:text="Sector"
+                android:textColor="@color/black"
+                android:layout_marginStart="@dimen/dimen_8dp" />
+
+            <TextView
+                android:fontFamily="@font/muli_bold"
+                android:id="@+id/tv_sector"
+                style="@style/item_text_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+
         <androidx.appcompat.widget.SearchView
-            android:visibility="gone"
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/view" />
+            android:layout_below="@+id/sec_ll"
+            android:visibility="gone" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -60,6 +94,7 @@
             android:padding="@dimen/dimen_2dp"
             android:visibility="gone"
             tools:listitem="@layout/item_view_status" />
+
 
         <include
             android:id="@+id/no_records_ll"

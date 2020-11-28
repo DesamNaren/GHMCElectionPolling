@@ -53,6 +53,7 @@ public class PSWiseTimeSlotActivity extends AppCompatActivity implements
             sharedPreferences = PollingApplication.get(context).getPreferences();
             sectorId = sharedPreferences.getString(AppConstants.SECTOR_ID, "");
             tokenID = sharedPreferences.getString(AppConstants.TOKEN_ID, "");
+            binding.tvSector.setText(sectorId);
             if (getIntent() != null) {
                 psNo = getIntent().getStringExtra("PS_NO");
                 String psName = getIntent().getStringExtra("PS_NAME");

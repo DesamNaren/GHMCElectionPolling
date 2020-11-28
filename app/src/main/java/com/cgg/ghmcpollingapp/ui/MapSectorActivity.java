@@ -369,6 +369,7 @@ public class MapSectorActivity extends AppCompatActivity implements
                 Intent newIntent = new Intent(MapSectorActivity.this, DownloadMasterActivity.class);
                 newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
                         Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                newIntent.putExtra(AppConstants.FROM_CLASS, MapSectorActivity.class.getSimpleName());
                 startActivity(newIntent);
                 finish();
             }

@@ -123,6 +123,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                             PSEntrySubmitRequest psEntrySubmitRequest = new PSEntrySubmitRequest();
                             psEntrySubmitRequest.setSectorID(sectorId);
                             psEntrySubmitRequest.setTokenID(tokenID);
+                            psEntrySubmitRequest.setTimeSlotID(timeslotID);
                             List<PSSubmitData> tempPsListData = new ArrayList<>();
                             for (int x = 0; x < psListData.size(); x++) {
                                 if (psListData.get(x).isCb_status()) {
@@ -219,7 +220,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
                         binding.spTimeSlot.setSelection(0);
                         Utils.customErrorAlert(context, context.getResources().getString(R.string.app_name), context.getString(R.string.plz_check_int));
                     }
-                }else {
+                } else {
                     binding.noRecordsLl.setText(getString(R.string.sel_time_slot_to_proceed));
                 }
             }

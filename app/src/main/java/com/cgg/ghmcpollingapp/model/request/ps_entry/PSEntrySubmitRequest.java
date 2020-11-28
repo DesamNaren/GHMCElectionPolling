@@ -1,6 +1,5 @@
 package com.cgg.ghmcpollingapp.model.request.ps_entry;
 
-import com.cgg.ghmcpollingapp.model.response.psList.PSListData;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -14,9 +13,20 @@ public class PSEntrySubmitRequest {
     @SerializedName("TokenID")
     @Expose
     private String tokenID;
+    @SerializedName("TIMESLOT_ID")
+    @Expose
+    private String timeSlotID;
     @SerializedName("AddingPollingList")
     @Expose
     private List<PSSubmitData> psEntryRequests = null;
+
+    public String getTimeSlotID() {
+        return timeSlotID;
+    }
+
+    public void setTimeSlotID(String timeSlotID) {
+        this.timeSlotID = timeSlotID;
+    }
 
     public String getSectorID() {
         return sectorID;

@@ -12,11 +12,16 @@
         <include
             android:id="@+id/header"
             layout="@layout/activity_basic_layout" />
-
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/header"
+            android:background="@color/white" />
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/header">
+            android:layout_below="@+id/view">
 
             <LinearLayout
                 android:layout_width="match_parent"
