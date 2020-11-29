@@ -112,7 +112,7 @@
                         app:itemHeight="@dimen/dimen_50dp"
                         app:itemRadius="4dp"
                         app:itemSpacing="@dimen/dimen_10dp"
-                        app:itemWidth="@dimen/dimen_50dp"
+                        app:itemWidth="@dimen/_40dp"
                         app:lineColor="@color/black"
                         app:lineWidth="@dimen/dimen_2dp"
                         app:viewType="rectangle" />

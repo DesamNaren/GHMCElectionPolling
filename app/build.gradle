@@ -34,7 +34,7 @@ android {
         release {
             resValue "string", "app_name", "@string/app_name_release"
             versionNameSuffix ".0"
-            buildConfigField("String", "SERVER_URL", "\"http://qaghmc.cgg.gov.in/GhmcElection/api/\"")
+            buildConfigField("String", "SERVER_URL", "\"https://ghmcwebservice.ghmc.gov.in/GhmcElection/api/\"")
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

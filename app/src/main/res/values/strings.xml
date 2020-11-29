@@ -96,7 +96,7 @@
     <string name="time_slot_download_message">Data not available for Time Slots, Would you like to download the data?</string>
     <string name="get_details">Get Details</string>
     <string name="edit">Edit</string>
-    <string name="sel_votes_polled_till_now">Select Votes Polled till now</string>
+    <string name="sel_votes_polled_till_now">Enter Votes Polled till now</string>
     <string name="sel_one_record">Select atleast one record</string>
     <string name="sel_time_slot_to_proceed">Select Time Slot to proceed</string>
     <string name="no_time_slots_found">No time slots found</string>

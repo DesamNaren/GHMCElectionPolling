@@ -277,6 +277,7 @@ public class PSWiseEntryActivity extends AppCompatActivity implements PSEntryInt
             for (int i = 0; i < psListData.size(); i++) {
                 if (psListData.get(i).isCb_status() && TextUtils.isEmpty(psListData.get(i).getvOTES())) {
                     showSnackBar(getString(R.string.sel_votes_polled_till_now));
+                    binding.recyclerView.getLayoutManager().scrollToPosition(i);
                     return false;
                 }
             }
